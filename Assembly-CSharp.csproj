@@ -77,9 +77,11 @@
     <Compile Include="Assets\Scripts\Lonize\Scribe\ScribeCollections.cs" />
     <Compile Include="Assets\Scripts\Kernel\Item\ItemComponentData.cs" />
     <Compile Include="Assets\Scripts\Lonize\Log\LogSink.cs" />
+    <Compile Include="Assets\Scripts\Kernel\Item\ItemDataBase.cs" />
     <Compile Include="Assets\Scripts\Kernel\Item\ItemDef.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
     <Compile Include="Assets\Scripts\Kernel\Map\WorldMapGenerator.cs" />
+    <Compile Include="Assets\Scripts\Kernel\Item\ItemValidation.cs" />
     <Compile Include="Assets\Scripts\Lonize\Event\Events.cs" />
     <Compile Include="Assets\Scripts\Kernel\Save\SaveItem.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_ExampleScript_01.cs" />
@@ -116,6 +118,7 @@
     <Compile Include="Assets\Scripts\Lonize\Scribe\ScribeDeep.cs" />
     <Compile Include="Assets\Scripts\Lonize\Tick\Tick.cs" />
     <Compile Include="Assets\Scripts\Kernel\UI\MainMenuUI.cs" />
+    <Compile Include="Assets\Scripts\Kernel\Item\AddressableRef.cs" />
     <Compile Include="Assets\Scripts\Lonize\UI\UIWidget.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\Kernel\StartUp.cs" />
@@ -124,6 +127,7 @@
     <Compile Include="Assets\Scripts\Lonize\Event\EventBus.cs" />
     <Compile Include="Assets\Scripts\Kernel\Input\initPref.cs" />
     <Compile Include="Assets\Scripts\Kernel\TickControl.cs" />
+    <Compile Include="Assets\Scripts\Kernel\MainSceneStartUp.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\DropdownSample.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexColorCycler.cs" />
     <Compile Include="Assets\Scripts\Lonize\Tick\TickDriver.cs" />
@@ -138,6 +142,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshProFloatingText.cs" />
     <Compile Include="Assets\Scripts\Kernel\Save\PolySaveData.cs" />
     <Compile Include="Assets\Scripts\Lonize\Scribe\IsaveItem.cs" />
+    <Compile Include="Assets\Scripts\Kernel\Item\ItemFactory.cs" />
     <Compile Include="Assets\Scripts\Kernel\Input\Pref.cs" />
     <Compile Include="Assets\Scripts\Lonize\Scribe\Scribe.cs" />
   </ItemGroup>

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Kernel.Item;
 using Lonize.Tick;
 using UnityEngine;
 
@@ -25,6 +27,29 @@ namespace Lonize.Events
         {
             this.speedMultiplier = speedMultiplier;
             this.currentGameSpeed = currentGameSpeed;
+        }
+    }
+    public readonly struct ItemLoadingProgress
+    {
+        public readonly int loadedCount;
+        public readonly int totalCount;
+        public ItemLoadingProgress(int loadedCount, int totalCount)
+        {
+            this.loadedCount = loadedCount;
+            this.totalCount = totalCount;
+        }
+    }
+    public readonly struct ItemLoaded
+    {
+        public readonly int itemCount;
+        // public readonly string Defkeys;
+        
+        // public readonly List<ItemDef> itemDefs;
+        public ItemLoaded(int itemCount)
+        {
+            this.itemCount = itemCount;
+            // this.Defkeys = defKeys;
+            // this.itemDefs = itemDefs;
         }
     }
 }
