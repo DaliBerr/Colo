@@ -24,18 +24,44 @@ namespace Kernel.Building
         [SerializeField] private Color _ghostBlockedColor = new Color(1f, 0.5f, 0.5f, 0.6f);
 
         private BuildingRuntimeHost _host;
+        private BuildingViewMode _currentMode = BuildingViewMode.Normal;
 
         void Awake()
         {
             _host = GetComponent<BuildingRuntimeHost>();
+            _currentMode = BuildingViewMode.Normal;
             SetMode(BuildingViewMode.Normal);
         }
         void Update()
         {
-            //TODO: 根据 Host 的状态更新显示
+            // 根据 Host 的状态更新显示
+            if (_host == null || _host.Runtime == null)
+                return;
+
+            // 检查 HP 状态并更新显示模式
+            var runtime = _host.Runtime;
+            BuildingViewMode targetMode = _currentMode;
+
+            // 如果 HP 为 0 或负数，显示为禁用状态
+            if (runtime.HP <= 0)
+            {
+                targetMode = BuildingViewMode.Disabled;
+            }
+            // 如果 HP 大于 0 且当前是禁用状态，恢复正常状态
+            else if (_currentMode == BuildingViewMode.Disabled)
+            {
+                targetMode = BuildingViewMode.Normal;
+            }
+
+            // 只有在模式改变时才更新显示，避免重复调用
+            if (targetMode != _currentMode)
+            {
+                SetMode(targetMode);
+            }
         }
         public void SetMode(BuildingViewMode mode)
         {
+            _currentMode = mode;
             switch (mode)
             {
                 case BuildingViewMode.Normal:
