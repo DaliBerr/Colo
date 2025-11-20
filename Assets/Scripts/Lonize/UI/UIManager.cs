@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using Lonize.Logging;
 
 
 namespace Lonize.UI
@@ -182,7 +183,7 @@ namespace Lonize.UI
 
             if (handle.Status != AsyncOperationStatus.Succeeded)
             {
-                Debug.LogError($"[UI] Addressables instantiate failed: {address}");
+                Log.Error($"[UI] Addressables instantiate failed: {address}");
                 yield break;
             }
 

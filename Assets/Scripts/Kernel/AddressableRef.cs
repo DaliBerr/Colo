@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-namespace Kernel.Item
+namespace Kernel
 {
-        public static class AddressableRef
+    public static class AddressableRef
     {
         private static readonly Dictionary<string, Object> _cache = new();
 

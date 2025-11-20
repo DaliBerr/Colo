@@ -1,0 +1,18 @@
+{
+  "id": "generator_small",
+  "name": "小型发电机",
+  "description": "稳定输出一点点能量喵～",
+  "icon": "icons/building_generator_small",
+  "prefab": "Prefabs/Building/Building_GeneratorSmall",
+  "width": 2,
+  "height": 2,
+  "allowRotate": true,
+  "maxHP": 150,
+  "buildTime": 3.5,
+  "cost": { "iron_plate": 20, "wire": 10 },
+  "stats": { "noise": 0.2 },
+  "tags": ["power","machine"],
+  "components": [
+    { "type": "power_producer", "params": { "power": 30.0 } }
+  ]
+}

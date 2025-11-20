@@ -5,6 +5,7 @@ using UnityEngine;
 
 using System.Collections.Generic;
 using Lonize.Scribe;
+using Lonize.Logging;
 
 /// <summary>
 /// 放到场景里一个物体上；Awake 自动注册多态条目并加载；对外暴露 Save()/Load() 与 Items。
@@ -36,7 +37,7 @@ namespace Kernel
 
             FilePath = Path.Combine(Application.persistentDataPath, fileName);
             LoadOrCreate();
-            Debug.Log($"[ScribeSaveManager] Ready. Path = {FilePath}");
+            Log.Info($"[ScribeSaveManager] Ready. Path = {FilePath}");
             
         }
 
@@ -84,7 +85,7 @@ namespace Kernel
             }
             catch (System.Exception ex)
             {
-                Debug.LogError($"[ScribeSaveManager] Save failed: {ex}");
+                Log.Error($"[ScribeSaveManager] Save failed: {ex}");
                 try { if (File.Exists(tmp)) File.Delete(tmp); } catch { }
             }
         }
@@ -108,7 +109,7 @@ namespace Kernel
             }
             catch (System.Exception ex)
             {
-                Debug.LogError($"[ScribeSaveManager] Load failed: {ex}");
+                Log.Error($"[ScribeSaveManager] Load failed: {ex}");
                 Data = new PolySaveData();
                 return false;
             }

@@ -1,0 +1,294 @@
+using Lonize.Events;
+using Lonize.Logging;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.Tilemaps;
+using Kernel.Building;
+using Kernel;   // 为了用 AddressableRef.LoadAsync<GameObject>
+
+namespace Kernel.Building
+{
+    /// <summary>
+    /// 基于 BuildingDef / BuildingFactory 的建筑放置控制器
+    /// - 预览：用真实 prefab 实例化一份 ghost（禁用碰撞，只做显示）
+    /// - 放置：用 BuildingFactory.SpawnToWorldAsync(def.Id, pos, rot) 创建正式建筑
+    /// </summary>
+    public class BuildingPlacementController : MonoBehaviour
+    {
+        [Header("基本引用")]
+        public Camera mainCamera;
+        public Transform buildingRoot;
+        public Tilemap placementTilemap;
+
+        [Header("BuildingDef 配置")]
+        [Tooltip("与 UI 按钮 index 对应的 BuildingDef Id 列表")]
+        public string[] buildingIds;
+
+        [Header("虚影参数")]
+        public Color ghostColor = new Color(1f, 1f, 1f, 0.4f);
+        public Color cannotPlaceColor = new Color(1f, 0.3f, 0.3f, 0.4f);
+
+        [Header("旋转设置")]
+        [Tooltip("是否允许在放置时旋转建筑（用 Q/E 或鼠标滚轮等）")]
+        public bool enableRotate = true;
+        public KeyCode rotateLeftKey = KeyCode.Q;
+        public KeyCode rotateRightKey = KeyCode.E;
+
+        // 当前状态
+        private BuildingDef _currentDef;
+        private GameObject _ghostInstance;
+        private int _rotationSteps = 0;  // 0/1/2/3 => 0/90/180/270
+        private bool _isPlacing = false;
+
+        void Update()
+        {
+            if (_isPlacing)
+            {
+                HandlePlacementUpdate();
+            }
+        }
+
+        #region 启动放置
+
+        /// <summary>
+        /// 给 UI 用：根据 index 找对应的 BuildingDef Id
+        /// </summary>
+        public async void StartPlacementByIndex(int index)
+        {
+            if (buildingIds == null || index < 0 || index >= buildingIds.Length)
+            {
+                Log.Warn("[BuildingPlacement] Building index out of range.");
+                return;
+            }
+
+            string id = buildingIds[index];
+            await StartPlacementById(id);
+        }
+
+        /// <summary>
+        /// 主入口：根据 BuildingDef.Id 开始放置流程
+        /// </summary>
+        public async System.Threading.Tasks.Task StartPlacementById(string buildingId)
+        {
+            // 清理旧虚影
+            if (_ghostInstance != null)
+            {
+                Destroy(_ghostInstance);
+                _ghostInstance = null;
+            }
+
+            _rotationSteps = 0;
+            _currentDef = null;
+            _isPlacing = false;
+
+            if (!BuildingDatabase.TryGet(buildingId, out _currentDef))
+            {
+                Log.Error($"[BuildingPlacement] 未找到 BuildingDef: {buildingId}");
+                return;
+            }
+
+            Log.Info($"[BuildingPlacement] 开始放置建筑：{_currentDef.Id} ({_currentDef.Name})");
+
+            // 从 Addressables 加载 prefab（用于 ghost 预览）
+            var prefab = await AddressableRef.LoadAsync<GameObject>(_currentDef.PrefabAddress);
+            if (prefab == null)
+            {
+                Log.Error($"[BuildingPlacement] 无法加载 Prefab: {_currentDef.PrefabAddress}");
+                return;
+            }
+
+            // 实例化 ghost
+            _ghostInstance = Instantiate(prefab, Vector3.zero, Quaternion.identity, buildingRoot);
+            _ghostInstance.name = _currentDef.Id + "_Ghost";
+
+            // 禁用 ghost 上的碰撞器，避免影响射线检测或物理
+            foreach (var col in _ghostInstance.GetComponentsInChildren<Collider2D>())
+            {
+                col.enabled = false;
+            }
+
+            // 设置初始颜色为 ghostColor
+            SetGhostColor(ghostColor);
+
+            // ghost 不需要逻辑：可以选择禁用 BuildingRuntimeHost 等脚本
+            var host = _ghostInstance.GetComponent<BuildingRuntimeHost>();
+            if (host != null)
+            {
+                host.enabled = false;
+            }
+
+            _isPlacing = true;
+        }
+
+        #endregion
+
+        #region 每帧更新逻辑
+
+        private void HandlePlacementUpdate()
+        {
+            if (_currentDef == null || _ghostInstance == null) return;
+
+            // 鼠标在 UI 上就不处理放置
+            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
+
+            // 1. 旋转处理（可选）
+            if (enableRotate)
+            {
+                HandleRotateInput();
+            }
+
+            // 2. 计算锚点格子 & 对齐 ghost
+            Vector3 mouseScreenPos = Input.mousePosition;
+            Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(mouseScreenPos);
+            var cellPos = placementTilemap.WorldToCell(mouseWorldPos);
+            Vector3 cellCenterWorld = placementTilemap.GetCellCenterWorld(cellPos);
+
+            // TODO: 如果你使用 Pivot 在左下角、且考虑宽高/旋转，可以在这里做更复杂的 offset 计算
+            _ghostInstance.transform.position = cellCenterWorld;
+            _ghostInstance.transform.rotation = Quaternion.Euler(0f, 0f, _rotationSteps * 90f);
+
+            // 3. 检查能否放置（现在简单版本，只判断 tile 是否存在；多格/占用检测可在这里扩展）
+            bool canPlace = CheckCanPlace(cellPos);
+
+            // 根据能否放置切换颜色
+            SetGhostColor(canPlace ? ghostColor : cannotPlaceColor);
+
+            // 4. 左键确认放置
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (canPlace)
+                {
+                    // Fire & forget 放置
+                    _ = PlaceBuildingAsync(cellPos, cellCenterWorld);
+                }
+                else
+                {
+                    Log.Info("[BuildingPlacement] 当前位置不可放置。");
+                }
+            }
+
+            // 5. 右键取消放置
+            if (Input.GetMouseButtonDown(1))
+            {
+                CancelPlacement();
+            }
+        }
+
+        private void HandleRotateInput()
+        {
+            if (Input.GetKeyDown(rotateLeftKey))
+            {
+                _rotationSteps = (_rotationSteps + 3) % 4; // -90
+            }
+            if (Input.GetKeyDown(rotateRightKey))
+            {
+                _rotationSteps = (_rotationSteps + 1) % 4; // +90
+            }
+        }
+
+        #endregion
+
+        #region 放置 & 取消
+
+        /// <summary>
+        /// 真正生成建筑：走 BuildingFactory，这里才会初始化 Runtime/Behaviours
+        /// </summary>
+        private async System.Threading.Tasks.Task PlaceBuildingAsync(Vector3Int cellPos, Vector3 worldPos)
+        {
+            if (_currentDef == null)
+            {
+                Log.Warn("[BuildingPlacement] PlaceBuilding 时 _currentDef 为空。");
+                return;
+            }
+
+            // 这里你可以再做一次更详细的可放置检测（比如查看占用表）
+            if (!CheckCanPlace(cellPos))
+            {
+                Log.Info("[BuildingPlacement] PlaceBuilding 时检测失败。");
+                return;
+            }
+
+            Quaternion rot = Quaternion.Euler(0f, 0f, _rotationSteps * 90f);
+
+            // ✅ 关键：通过 BuildingFactory 生成正式建筑
+            var go = await BuildingFactory.SpawnToWorldAsync(_currentDef.Id, worldPos, rot);
+            if (go != null)
+            {
+                if (buildingRoot != null)
+                    go.transform.SetParent(buildingRoot, true);
+
+                // 这里生成的 go 上的 BuildingRuntimeHost.Runtime 一定被初始化完毕
+                Log.Info($"[BuildingPlacement] 已放置建筑：{_currentDef.Id} @ {worldPos}");
+                Events.eventBus.Publish(new BuildingPlaced(true));
+            }
+            else
+            {
+                Log.Error("[BuildingPlacement] SpawnToWorldAsync 返回 null。");
+            }
+        }
+
+        private void CancelPlacement()
+        {
+            if (_ghostInstance != null)
+            {
+                Destroy(_ghostInstance);
+            }
+            _ghostInstance = null;
+            _currentDef = null;
+            _isPlacing = false;
+            _rotationSteps = 0;
+
+            Log.Info("[BuildingPlacement] 已取消放置模式。");
+        }
+
+        #endregion
+
+        #region 工具方法：可放置检测 & 颜色
+
+        /// <summary>
+        /// 判断从给定 anchor cell 开始是否可以放置当前建筑。
+        /// 当前简单版：仅判断该 cell 是否有 tile。
+        /// 你可以在这里接入：
+        /// - BuildingFootprint.GetCells(def.Width, def.Height, _rotationSteps)
+        /// - 自己的占用表/阻挡表
+        /// </summary>
+        private bool CheckCanPlace(Vector3Int anchorCell)
+        {
+            // if (_currentDef == null || placementTilemap == null) return false;
+
+            // // 简单版：要求 anchor 那格必须有 tile
+            // if (!placementTilemap.HasTile(anchorCell))
+            //     return false;
+
+            // ↓↓↓ 如果你想支持多格 & 占用检测，可以扩展如下（示意） ↓↓↓
+            /*
+            var offsets = BuildingFootprint.GetCells(_currentDef.Width, _currentDef.Height, _rotationSteps);
+            foreach (var o in offsets)
+            {
+                var c = anchorCell + o;
+                // 1) 必须有 tile
+                if (!placementTilemap.HasTile(c)) return false;
+                // 2) TODO: 检查此格是否已经被其他建筑占用
+                // if (IsCellOccupied(c)) return false;
+            }
+            */
+            return true;
+        }
+
+        private void SetGhostColor(Color c)
+        {
+            if (_ghostInstance == null) return;
+
+            foreach (var sr in _ghostInstance.GetComponentsInChildren<SpriteRenderer>())
+            {
+                // 只改颜色，不改材质
+                sr.color = c;
+            }
+        }
+
+        #endregion
+    }
+}

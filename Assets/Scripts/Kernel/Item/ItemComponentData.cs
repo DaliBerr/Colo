@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Lonize.Logging;
+
 // using Lonize.Item;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -89,7 +91,7 @@ namespace Kernel.Item
                 }
                 // 继续扩展你的类型……
                 default:
-                    UnityEngine.Debug.LogWarning($"[Items] 未知组件类型: {data.Type}");
+                    Log.Warn($"[Items] 未知组件类型: {data.Type}");
                     return null;
             }
         }

@@ -23,10 +23,10 @@ namespace Kernel.Item
         };
 
         public static async Task LoadAllAsync(string labelOrGroup = "ItemDef")
-        {
+        {   
             Defs.Clear();
 
-            // 1) 查找所有 TextAsset 资源位置（限定类型为 TextAsset）
+            // 1) 查找所有 TextAsset 资源位置（限定类型为 TextAsset）——固定使用名为 "ItemDef" 的 group
             AsyncOperationHandle<IList<IResourceLocation>> locHandle =
                 Addressables.LoadResourceLocationsAsync(labelOrGroup, typeof(TextAsset));
 
@@ -37,14 +37,14 @@ namespace Kernel.Item
             }
             catch (System.Exception ex)
             {
-                Debug.LogError($"[Items] 查询 Addressables 失败（Label/Group: {labelOrGroup}）：\n{ex}");
+                Log.Error($"[Items] 查询 Addressables 失败（Group: ItemDef）：\n{ex}");
                 if (locHandle.IsValid()) Addressables.Release(locHandle);
                 return;
             }
 
             if (locations == null || locations.Count == 0)
             {
-                Debug.LogWarning($"[Items] 未在 Addressables 中找到任何 TextAsset（Label/Group: {labelOrGroup}）。");
+                Log.Warn($"[Items] 未在 Addressables 中找到任何 TextAsset（Group: ItemDef）。");
                 if (locHandle.IsValid()) Addressables.Release(locHandle);
                 return;
             }
@@ -60,7 +60,7 @@ namespace Kernel.Item
             }
             catch (System.Exception ex)
             {
-                Debug.LogError($"[Items] 批量加载 TextAsset 失败：\n{ex}");
+                Log.Error($"[Items] 批量加载 TextAsset 失败：\n{ex}");
                 if (loadHandle.IsValid()) Addressables.Release(loadHandle);
                 if (locHandle.IsValid()) Addressables.Release(locHandle);
                 return;
@@ -69,6 +69,7 @@ namespace Kernel.Item
             // 3) 解析每个 JSON → ItemDef
             foreach (var ta in assets)
             {
+                Log.Info($"[Items] Loading ItemDef from asset: {ta.name}");
                 if (ta == null) continue;
                 try
                 {
@@ -77,17 +78,17 @@ namespace Kernel.Item
                     {
                         if (!Defs.TryAdd(def.Id, def))
                         {
-                            Debug.LogError($"[Items] 重复的物品ID：{def.Id}（资产名：{ta.name}）");
+                            Log.Error($"[Items] 重复的物品ID：{def.Id}（资产名：{ta.name}）");
                         }
                     }
                     else
                     {
-                        Debug.LogError($"[Items] 定义非法（资产名：{ta.name}）：\n{msg}");
+                        Log.Error($"[Items] 定义非法（资产名：{ta.name}）：\n{msg}");
                     }
                 }
                 catch (System.Exception ex)
                 {
-                    Debug.LogError($"[Items] 解析失败（资产名：{ta?.name}）：\n{ex}");
+                    Log.Error($"[Items] 解析失败（资产名：{ta?.name}）：\n{ex}");
                 }
             }
 
@@ -104,7 +105,7 @@ namespace Kernel.Item
         {
             if (!Defs.TryGetValue(id, out var def))
             {
-                Debug.LogError($"[Items] 未找到物品ID：{id}");
+                Log.Error($"[Items] 未找到物品ID：{id}");
                 return null;
             }
             var inst = new ItemInstance { Def = def, Stack = Mathf.Clamp(stack, 1, def.MaxStack) };

@@ -29,29 +29,55 @@ namespace Lonize.Events
             this.currentGameSpeed = currentGameSpeed;
         }
     }
-    public readonly struct ItemLoadingProgress
-    {
-        public readonly int loadedCount;
-        public readonly int totalCount;
-        public ItemLoadingProgress(int loadedCount, int totalCount)
-        {
-            this.loadedCount = loadedCount;
-            this.totalCount = totalCount;
-        }
-    }
+    // public readonly struct ItemLoadingProgress
+    // {
+    //     public readonly int loadedCount;
+    //     public readonly int totalCount;
+    //     public ItemLoadingProgress(int loadedCount, int totalCount)
+    //     {
+    //         this.loadedCount = loadedCount;
+    //         this.totalCount = totalCount;
+    //     }
+    // }
     public readonly struct ItemLoaded
     {
         public readonly int itemCount;
-        // public readonly string Defkeys;
-        
-        // public readonly List<ItemDef> itemDefs;
         public ItemLoaded(int itemCount)
         {
             this.itemCount = itemCount;
-            // this.Defkeys = defKeys;
-            // this.itemDefs = itemDefs;
+
+        }
+    }
+
+    // public readonly struct BuildingLoadingProgress
+    // {
+    //     public readonly int loadedCount;
+    //     public readonly int totalCount;
+    //     public BuildingLoadingProgress(int loadedCount, int totalCount)
+    //     {
+    //         this.loadedCount = loadedCount;
+    //         this.totalCount = totalCount;
+    //     }
+    // }
+    public readonly struct BuildingLoaded
+    {
+        public readonly int buildingCount;
+        public BuildingLoaded(int buildingCount)
+        {
+            this.buildingCount = buildingCount;
+        }
+    }
+
+    public readonly struct BuildingPlaced
+    {
+        // public readonly string buildingId;
+        // public readonly Vector3 position;
+        public readonly bool isPlaced;
+        public BuildingPlaced(bool isPlaced)
+        {
+            // this.buildingId = buildingId;
+            // this.position = position;
+            this.isPlaced = isPlaced;
         }
     }
 }
-    
-
