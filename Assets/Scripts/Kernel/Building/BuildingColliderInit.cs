@@ -45,25 +45,25 @@ public class BuildingColliderInit : MonoBehaviour
 
         // 计算碰撞体大小
         Vector2 size;
-        Vector2 offset;
+        // Vector2 offset;
 
         if (referenceTilemap != null)
         {
             // Log.Info("[BuildingColliderInit] 使用 Tilemap cellSize 计算碰撞体尺寸");
             var cs = referenceTilemap.cellSize;
             size = new Vector2(def.Width * cs.x, def.Height * cs.y);
-            offset = new Vector2(size.x * 0.5f, size.y * 0.5f);
+            // offset = new Vector2(size.x * 0.5f, size.y * 0.5f);
         }
         else
         {
             // 如果你世界坐标就是 1 单位 = 1 格，也可以直接用 width/height
             size = new Vector2(def.Width, def.Height);
-            offset = new Vector2(def.Width * 0.5f, def.Height * 0.5f);
+            // offset = new Vector2(def.Width * 0.5f, def.Height * 0.5f);
         }
-        Log.Info($"[BuildingColliderInit] 碰撞体尺寸：{size}, 偏移：{offset}");
+        Log.Info($"[BuildingColliderInit] 碰撞体尺寸：{size}");
         var collider = gameObject.GetComponent<BoxCollider2D>();
         collider.size = size;
-        collider.offset = offset;
+        collider.offset = new Vector2(0,0);
         collider.isTrigger = true;
 
         _initialized = true;
