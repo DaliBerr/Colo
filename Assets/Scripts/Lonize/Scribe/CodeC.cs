@@ -64,6 +64,13 @@ public sealed class StringCodec : ICodec<string>
     }
 }
 
+public sealed class LongCodec : ICodec<long>
+{
+    public FieldType FieldType => FieldType.Int64;
+    public void Write(BinaryWriter w, in long v) => w.Write(v);
+    public long Read(BinaryReader r) => r.ReadInt64();
+}
+
 // Enum<T> （统一写成 Int32）
 public sealed class EnumCodec<T> : ICodec<T> where T : struct, Enum
 {

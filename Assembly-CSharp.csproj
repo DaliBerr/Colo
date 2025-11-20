@@ -68,6 +68,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
     <Compile Include="Assets\Scripts\Kernel\Map\WorldMapGenerator.cs" />
     <Compile Include="Assets\Scripts\Kernel\Item\ItemValidation.cs" />
+    <Compile Include="Assets\Scripts\Kernel\Building\BuildingSelectionClear.cs" />
     <Compile Include="Assets\Scripts\Lonize\Event\Events.cs" />
     <Compile Include="Assets\Scripts\Kernel\Save\SaveItem.cs" />
     <Compile Include="Assets\Scripts\Kernel\Building\BuildingDef.cs" />
@@ -127,6 +128,7 @@
     <Compile Include="Assets\Scripts\Lonize\Tick\TickDriver.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ObjectSpin.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_PhoneNumberValidator.cs" />
+    <Compile Include="Assets\Scripts\Kernel\Building\BuildingIdGenerator.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextConsoleSimulator.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TeleType.cs" />
     <Compile Include="Assets\Scripts\Kernel\UI\MainUI.cs" />

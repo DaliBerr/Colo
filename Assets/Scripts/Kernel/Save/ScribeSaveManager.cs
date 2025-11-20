@@ -40,7 +40,10 @@ namespace Kernel
             Log.Info($"[ScribeSaveManager] Ready. Path = {FilePath}");
             
         }
-
+        private void Start()
+        {
+            Kernel.Building.BuildingIdGenerator.InitializeFromSave();
+        }
         private static void RegisterSaveItems()
         {
             // 在这里注册你允许进存档的条目类型；新增类型时只需补一行
@@ -52,9 +55,10 @@ namespace Kernel
             CodecRegistry.Register(new IntCodec());
             CodecRegistry.Register(new FloatCodec());
             CodecRegistry.Register(new StringCodec());
+            CodecRegistry.Register(new LongCodec());
 
             CodecRegistry.Register(new DictStrEnumInt32Codec<KeyCode>());
-
+            Kernel.Building.BuildingIdGenerator.RegisterSaveType();
             PolymorphRegistry.Register<SaveControlCommand>("ControlCommandPref");
            
 

@@ -52,6 +52,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Building_GeneratorSmall
       objectReference: {fileID: 0}
+    - target: {fileID: 4489433739728387130, guid: 057cacb2244dfa94d85c55c6315d2d9c, type: 3}
+      propertyPath: m_SortingLayer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4489433739728387130, guid: 057cacb2244dfa94d85c55c6315d2d9c, type: 3}
+      propertyPath: m_SortingOrder
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 4489433739728387130, guid: 057cacb2244dfa94d85c55c6315d2d9c, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 889968693
+      objectReference: {fileID: 0}
     - target: {fileID: 5072791113598974323, guid: 057cacb2244dfa94d85c55c6315d2d9c, type: 3}
       propertyPath: m_Enabled
       value: 1

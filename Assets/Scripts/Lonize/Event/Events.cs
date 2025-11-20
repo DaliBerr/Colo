@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Kernel.Building;
 using Kernel.Item;
 using Lonize.Tick;
 using UnityEngine;
@@ -78,6 +79,18 @@ namespace Lonize.Events
             // this.buildingId = buildingId;
             // this.position = position;
             this.isPlaced = isPlaced;
+        }
+    }
+
+    public  struct BuildingSelected
+    {
+        // public readonly string buildingId;
+        public  BuildingRuntime buildingRuntime;
+        public  bool isSelected;
+        public BuildingSelected(BuildingRuntime buildingRuntime, bool isSelected)
+        {
+            this.buildingRuntime = buildingRuntime;
+            this.isSelected = isSelected;
         }
     }
 }

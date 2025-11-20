@@ -15,6 +15,7 @@ namespace Lonize.Scribe
         Bool = 3,
         String = 4,
         EnumInt32 = 5,
+        Int64 = 6,
 
         DictStrInt = 10,
         DictStrFloat = 11,

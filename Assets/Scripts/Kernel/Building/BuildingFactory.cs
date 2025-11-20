@@ -2,7 +2,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using Kernel.Item;
-using Lonize.Logging; // 若要和物品系统打通（可移除）
+using Lonize.Logging;
+using Lonize.Math; // 若要和物品系统打通（可移除）
 namespace Kernel.Building
 {
 
@@ -24,7 +25,7 @@ namespace Kernel.Building
             var host = go.GetComponent<BuildingRuntimeHost>();
             if (!host) host = go.AddComponent<BuildingRuntimeHost>();
 
-            host.Runtime = new BuildingRuntime { Def = def, HP = def.MaxHP };
+            host.Runtime = new BuildingRuntime { Def = def, HP = def.MaxHP , BuildingID =  BuildingIdGenerator.GenerateBuildingID()};
             host.Behaviours.Clear();
 
             foreach (var c in def.Components)

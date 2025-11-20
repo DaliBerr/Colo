@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5762066156417140716}
   - component: {fileID: 4489433739728387130}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Selection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -103,7 +103,7 @@ GameObject:
   - component: {fileID: 5072791113598974323}
   - component: {fileID: 143481977716894475}
   - component: {fileID: 4029720522161509429}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BuildingBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -216,6 +216,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Kernel.Building.BuildingColliderInit
   buildingRuntimeHost: {fileID: 671648345104116287}
+  referenceTilemap: {fileID: 0}
 --- !u!1 &5658882386047320975
 GameObject:
   m_ObjectHideFlags: 0
@@ -226,7 +227,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2378533219654712388}
   - component: {fileID: 8567434960185658716}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -31,6 +31,11 @@ namespace Lonize.Math
             }
             return (norm > 0f) ? sum / norm : 0f;
         }
+    
+        // public static int GenerateBuildingID(string BuildingID = "")
+        // {
+        //     return Hash128.Compute(System.Guid.NewGuid().ToString()).GetHashCode();
+        // }
     }
 
 

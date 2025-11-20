@@ -7,6 +7,7 @@ namespace Kernel.Building
 {
     public class BuildingRuntimeHost : MonoBehaviour
     {
+        // [SerializeField]
         public BuildingRuntime Runtime;
         public List<IBuildingBehaviour> Behaviours = new();
 

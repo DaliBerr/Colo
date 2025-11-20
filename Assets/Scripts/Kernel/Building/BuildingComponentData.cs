@@ -21,6 +21,7 @@ namespace Kernel.Building
     public class BuildingRuntime
     {
         public BuildingDef Def;
+        public long BuildingID;
         public int HP;
         public Dictionary<string, float> RuntimeStats = new();
     }
