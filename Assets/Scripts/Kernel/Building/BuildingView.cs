@@ -30,7 +30,10 @@ namespace Kernel.Building
             _host = GetComponent<BuildingRuntimeHost>();
             SetMode(BuildingViewMode.Normal);
         }
-
+        void Update()
+        {
+            //TODO: 根据 Host 的状态更新显示
+        }
         public void SetMode(BuildingViewMode mode)
         {
             switch (mode)
