@@ -32,14 +32,14 @@ namespace Kernel.Building
             _host = GetComponent<BuildingRuntimeHost>();
             SetMode(BuildingViewMode.Normal);
         }
-        private void OnEnable()
-        {
-            Events.eventBus.Subscribe<BuildingSelected>(OnBuildingSelected);
-        }
-        private void OnDisable()
-        {
-            Events.eventBus.Unsubscribe<BuildingSelected>(OnBuildingSelected);
-        }
+        // private void OnEnable()
+        // {
+        //     Events.eventBus.Subscribe<BuildingSelected>(OnBuildingSelected);
+        // }
+        // private void OnDisable()
+        // {
+        //     Events.eventBus.Unsubscribe<BuildingSelected>(OnBuildingSelected);
+        // }
         private void OnMouseDown()
         {
             Log.Info("[BuildingView] OnMouseDown - selecting building.");
@@ -58,20 +58,22 @@ namespace Kernel.Building
 
             Events.eventBus.Publish(evt);
         }
-        private void OnBuildingSelected(BuildingSelected evt)
-        {
-            // Log.Info("[BuildingView] OnBuildingSelected event received.");
-            // Log.Info($"[BuildingView] Event buildingID: {evt.buildingRuntime.BuildingID},{_host.Runtime.BuildingID} isSelected: {evt.isSelected},");
-            if(evt.buildingRuntime == null)
-            {
-                SetMode(BuildingViewMode.Normal);
-                return;
-            }
-            if (evt.buildingRuntime.BuildingID == _host.Runtime.BuildingID)
-            {
-                SetMode(evt.isSelected ? BuildingViewMode.Selected : BuildingViewMode.Normal);
-            }
-        }
+        // private void OnBuildingSelected(BuildingSelected evt)
+        // {
+        //     // Log.Info("[BuildingView] OnBuildingSelected event received.");
+        //     // Log.Info($"[BuildingView] Event buildingID: {evt.buildingRuntime.BuildingID},{_host.Runtime.BuildingID} isSelected: {evt.isSelected},");
+        //     if(evt.buildingRuntime == null)
+        //     {
+        //         SetMode(BuildingViewMode.Normal);
+        //         return;
+        //     }
+        //     if (evt.buildingRuntime.BuildingID == _host.Runtime.BuildingID)
+        //     {
+                
+        //         SetMode(evt.isSelected ? BuildingViewMode.Selected : BuildingViewMode.Normal);
+                
+        //     }
+        // }
         /// <summary>切换显示模式。</summary>
         public void SetMode(BuildingViewMode mode)
         {

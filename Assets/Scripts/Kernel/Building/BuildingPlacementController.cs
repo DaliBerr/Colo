@@ -19,6 +19,7 @@ namespace Kernel.Building
         public Camera mainCamera;
         public Transform buildingRoot;
         public Tilemap placementTilemap;
+        public LayerMask buildingLayerMask;
 
         [Header("BuildingDef 配置")]
         [Tooltip("与 UI 按钮 index 对应的 BuildingDef Id 列表")]
@@ -257,6 +258,34 @@ namespace Kernel.Building
         /// </summary>
         private bool CheckCanPlace(Vector3Int anchorCell)
         {
+            if(_currentDef == null || placementTilemap == null)
+            {
+                Log.Warn("[BuildingPlacement] CheckCanPlace 时 _currentDef 或 placementTilemap 为空。");
+                return false;
+            }
+            if(!placementTilemap.HasTile(anchorCell))
+            {
+                Log.Warn("[BuildingPlacement] CheckCanPlace 时目标格子无 Tile。");
+                return false;
+            }
+                // return false;
+            if(buildingLayerCheck() == false)
+            {
+                Log.Warn("[BuildingPlacement] CheckCanPlace 时目标格子有建筑物。");
+                return false;
+            }
+                // return false;
+            
+            // if(_currentDef.Width > 1 || _currentDef.Height > 1)
+            // {
+            //     var offsets = BuildingFootprint.GetCells(_currentDef.Width, _currentDef.Height, _rotationSteps);
+            //     foreach(var o in offsets)
+            //     {
+            //         var c = anchorCell + o;
+            //         if(!placementTilemap.HasTile(c))
+            //             return false;
+            //     }
+            // }
             // if (_currentDef == null || placementTilemap == null) return false;
 
             // // 简单版：要求 anchor 那格必须有 tile
@@ -275,6 +304,20 @@ namespace Kernel.Building
                 // if (IsCellOccupied(c)) return false;
             }
             */
+            return true;
+        }
+        private bool buildingLayerCheck()
+        {
+            Vector3 worldPos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 pos2D = worldPos;
+
+            RaycastHit2D hit = Physics2D.Raycast(pos2D, Vector2.zero, 0f, buildingLayerMask);
+        
+            if (hit.collider != null)
+            {
+                // 点到建筑了
+                return false;
+            }
             return true;
         }
 
