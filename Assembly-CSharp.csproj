@@ -69,6 +69,7 @@
     <Compile Include="Assets\Scripts\Kernel\Map\WorldMapGenerator.cs" />
     <Compile Include="Assets\Scripts\Kernel\Item\ItemValidation.cs" />
     <Compile Include="Assets\Scripts\Lonize\Event\Events.cs" />
+    <Compile Include="Assets\Scripts\Kernel\Pool\PoolMember.cs" />
     <Compile Include="Assets\Scripts\Kernel\Camera\MiniMapInputHandle.cs" />
     <Compile Include="Assets\Scripts\Kernel\Save\SaveItem.cs" />
     <Compile Include="Assets\Scripts\Kernel\Building\BuildingDef.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="Assets\Scripts\Kernel\Building\BuildingPlacementController.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_UiFrameRateCounter.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexZoom.cs" />
+    <Compile Include="Assets\Scripts\Kernel\Pool\PoolManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_B.cs" />
     <Compile Include="Assets\Scripts\Kernel\UI\GameLoadingUI.cs" />
     <Compile Include="Assets\Scripts\Kernel\Input\KeyBoaradControl.cs" />
@@ -97,6 +99,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ShaderPropAnimator.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextInfoDebugTool.cs" />
     <Compile Include="Assets\Scripts\Kernel\Map\MapGenerator.cs" />
+    <Compile Include="Assets\Scripts\Kernel\Flow\Connect.cs" />
     <Compile Include="Assets\Scripts\Kernel\Building\BuildingValidation.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeA.cs" />
     <Compile Include="Assets\Scripts\Kernel\Building\BuildingView.cs" />
@@ -124,6 +127,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs" />
     <Compile Include="Assets\Scripts\Lonize\Event\EventBus.cs" />
     <Compile Include="Assets\Scripts\Kernel\Input\initPref.cs" />
+    <Compile Include="Assets\Scripts\Kernel\Building\BuildingRemoveController.cs" />
     <Compile Include="Assets\Scripts\Kernel\TickControl.cs" />
     <Compile Include="Assets\Scripts\Kernel\MainSceneStartUp.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\DropdownSample.cs" />

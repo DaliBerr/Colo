@@ -3,7 +3,7 @@
   "name": "小型发电机",
   "description": "稳定输出一点点能量喵～",
   "icon": "icons/building_generator_small",
-  "DefType": "PowerGenerator",
+  "defType": "PowerGenerator",
   "prefab": "Prefabs/Building/Building_GeneratorSmall",
   "width": 3,
   "height": 3,

@@ -4,7 +4,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 using Kernel.Building;
-using Kernel;   // 为了用 AddressableRef.LoadAsync<GameObject>
+using Kernel;
+using Kernel.Pool;   // 为了用 AddressableRef.LoadAsync<GameObject>
 
 namespace Kernel.Building
 {
@@ -195,42 +196,49 @@ namespace Kernel.Building
 
         #region 放置 & 取消
 
-        /// <summary>
-        /// 真正生成建筑：走 BuildingFactory，这里才会初始化 Runtime/Behaviours
-        /// </summary>
-        private async System.Threading.Tasks.Task PlaceBuildingAsync(Vector3Int cellPos, Vector3 worldPos)
+    /// <summary>
+    /// 真正生成建筑，优先从对象池中获取，没有则通过 BuildingFactory 创建。
+    /// </summary>
+    private async System.Threading.Tasks.Task PlaceBuildingAsync(Vector3Int cellPos, Vector3 worldPos)
+    {
+        if (_currentDef == null)
         {
-            if (_currentDef == null)
-            {
-                Log.Warn("[BuildingPlacement] PlaceBuilding 时 _currentDef 为空。");
-                return;
-            }
-
-            // 这里你可以再做一次更详细的可放置检测（比如查看占用表）
-            if (!CheckCanPlace(cellPos))
-            {
-                Log.Info("[BuildingPlacement] PlaceBuilding 时检测失败。");
-                return;
-            }
-
-            Quaternion rot = Quaternion.Euler(0f, 0f, _rotationSteps * 90f);
-
-            // ✅ 关键：通过 BuildingFactory 生成正式建筑
-            var go = await BuildingFactory.SpawnToWorldAsync(_currentDef.Id, worldPos, rot);
-            if (go != null)
-            {
-                if (buildingRoot != null)
-                    go.transform.SetParent(buildingRoot, true);
-
-                // 这里生成的 go 上的 BuildingRuntimeHost.Runtime 一定被初始化完毕
-                Log.Info($"[BuildingPlacement] 已放置建筑：{_currentDef.Id} @ {worldPos}");
-                Events.eventBus.Publish(new BuildingPlaced(true));
-            }
-            else
-            {
-                Log.Error("[BuildingPlacement] SpawnToWorldAsync 返回 null。");
-            }
+            Log.Warn("[BuildingPlacement] PlaceBuilding 时 _currentDef 为空。");
+            return;
         }
+
+        if (!CheckCanPlace(cellPos))
+        {
+            Log.Info("[BuildingPlacement] PlaceBuilding 时检测失败。");
+            return;
+        }
+
+        Quaternion rot = Quaternion.Euler(0f, 0f, _rotationSteps * 90f);
+
+        if (PoolManager.Instance == null)
+        {
+            Log.Error("[BuildingPlacement] PoolManager.Instance 为空，无法生成建筑。");
+            return;
+        }
+
+        // 这里使用的是 BuildingDef.Id，和 PoolManager / BuildingFactory 的约定一致
+        var go = await PoolManager.Instance.GetAsync(_currentDef.Id, worldPos, rot);
+        if (go == null)
+        {
+            Log.Error("[BuildingPlacement] PoolManager.GetAsync 失败。");
+            return;
+        }
+
+        if (buildingRoot != null)
+        {
+            go.transform.SetParent(buildingRoot, true);
+        }
+
+        Log.Info($"[BuildingPlacement] 已放置建筑：{_currentDef.Id} @ {worldPos}");
+
+        var runtimeHost = go.GetComponent<BuildingRuntimeHost>();
+        Events.eventBus.Publish(new BuildingPlaced(true, runtimeHost));
+    }
 
         private void CancelPlacement()
         {

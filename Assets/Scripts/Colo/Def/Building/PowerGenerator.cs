@@ -1,5 +1,3 @@
-
-
 using Kernel.Building;
 
 namespace Colo.Def.Building

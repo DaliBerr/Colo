@@ -15,10 +15,10 @@ namespace Kernel.UI
         protected override void OnInit()
         {
             BuildingPlacementController buildingPlacementController = FindAnyObjectByType<BuildingPlacementController>();
-
+            BuildingRemoveController buildingRemoveController = FindAnyObjectByType<BuildingRemoveController>();
 
             Btn1.onClick.AddListener(() => buildingPlacementController.StartPlacementByIndex(0));
-            Btn2.onClick.AddListener(() => Log.Info("Button 2 clicked!"));
+            Btn2.onClick.AddListener(() => buildingRemoveController.StartRemoveMode());
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Kernel.Building
         /// <summary>
         /// 定义类型键，例如 Base、PowerGenerator 等。
         /// </summary>
-        public string DefType { get; set; }
+        public string defType { get; set; }
     }
     public static class BuildingDatabase
     {
@@ -124,7 +124,7 @@ namespace Kernel.Building
                     }
 
                     // 决定应该反序列化成哪种具体 Def 类型
-                    var targetType = ResolveDefType(header.DefType);
+                    var targetType = ResolveDefType(header.defType);
 
                     // 第二步：按具体类型反序列化
                     var defObj = JsonConvert.DeserializeObject(ta.text, targetType, _jsonSettings);

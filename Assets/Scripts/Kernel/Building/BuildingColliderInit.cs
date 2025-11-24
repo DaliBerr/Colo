@@ -16,7 +16,7 @@ public class BuildingColliderInit : MonoBehaviour
     // 允许从外部（Factory）显式调用
     public void Init()
     {
-        Log.Info("[BuildingColliderInit] 初始化碰撞体");
+        // Log.Info("[BuildingColliderInit] 初始化碰撞体");
         if (_initialized) return;
 
         // 自动 GetComponent，避免必须在 Inspector 里拖

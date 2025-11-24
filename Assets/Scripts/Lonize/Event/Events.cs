@@ -74,11 +74,13 @@ namespace Lonize.Events
         // public readonly string buildingId;
         // public readonly Vector3 position;
         public readonly bool isPlaced;
-        public BuildingPlaced(bool isPlaced)
+        public readonly BuildingRuntimeHost BuildingRuntimeHost;
+        public BuildingPlaced(bool isPlaced, BuildingRuntimeHost buildingRuntimeHost)
         {
             // this.buildingId = buildingId;
             // this.position = position;
             this.isPlaced = isPlaced;
+            this.BuildingRuntimeHost = buildingRuntimeHost;
         }
     }
 
