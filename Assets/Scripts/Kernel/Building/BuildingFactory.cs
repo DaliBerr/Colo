@@ -10,6 +10,13 @@ namespace Kernel.Building
 
     public static class BuildingFactory
     {
+        /// <summary>
+        /// 在世界中生成一个建筑实例。
+        /// </summary>
+        /// <param name="id">建筑的唯一标识符。</param>
+        /// <param name="pos">建筑生成的位置。</param>
+        /// <param name="rot">建筑生成的旋转角度。</param>
+        /// <returns>生成的建筑游戏对象。</returns>
         public static async Task<GameObject> SpawnToWorldAsync(string id, Vector3 pos, Quaternion rot)
         {
             if (!BuildingDatabase.TryGet(id, out var def))

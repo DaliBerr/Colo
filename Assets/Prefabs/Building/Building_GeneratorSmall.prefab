@@ -1,5 +1,57 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5247862694674702738
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5891631277013054244}
+  - component: {fileID: 5894562081332020875}
+  m_Layer: 8
+  m_Name: Runtime
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5891631277013054244
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5247862694674702738}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6546956639482201908}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5894562081332020875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5247862694674702738}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26dfa465028bf764489ead5f0485ab90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Buildings.PowerGeneratorRuntime
+  _buildingRuntimeHost: {fileID: 8307562845252463223}
+  maxOutput: 100
+  desiredOutput: 100
+  fuelPerPowerUnit: 0.01
+  supplyPriority: 0
+  fuelAmount: 100
+  isOn: 1
+  lastActualOutput: 0
 --- !u!1001 &8797862102248800328
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -86,6 +138,25 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 2360799453626075004, guid: 057cacb2244dfa94d85c55c6315d2d9c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5891631277013054244}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 057cacb2244dfa94d85c55c6315d2d9c, type: 3}
+--- !u!4 &6546956639482201908 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2360799453626075004, guid: 057cacb2244dfa94d85c55c6315d2d9c, type: 3}
+  m_PrefabInstance: {fileID: 8797862102248800328}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8307562845252463223 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 671648345104116287, guid: 057cacb2244dfa94d85c55c6315d2d9c, type: 3}
+  m_PrefabInstance: {fileID: 8797862102248800328}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c231c13db36e594d868538222576446, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Kernel.Building.BuildingRuntimeHost

@@ -20,6 +20,7 @@ namespace Kernel.Building
         public Transform buildingRoot;
         public Tilemap placementTilemap;
         public LayerMask buildingLayerMask;
+        public LayerMask obstacleLayerMask;
 
         [Header("BuildingDef 配置")]
         [Tooltip("与 UI 按钮 index 对应的 BuildingDef Id 列表")]
@@ -269,12 +270,15 @@ namespace Kernel.Building
                 return false;
             }
                 // return false;
-            if(buildingLayerCheck() == false)
+            // if(BuildingLayerCheck() == false)
+            // {
+            //     Log.Warn("[BuildingPlacement] CheckCanPlace 时目标格子有建筑物。");
+            //     return false;
+            // }
+            if(IsCellOccupied(anchorCell))
             {
-                Log.Warn("[BuildingPlacement] CheckCanPlace 时目标格子有建筑物。");
                 return false;
             }
-                // return false;
             
             // if(_currentDef.Width > 1 || _currentDef.Height > 1)
             // {
@@ -306,19 +310,52 @@ namespace Kernel.Building
             */
             return true;
         }
-        private bool buildingLayerCheck()
+        private bool IsCellOccupied(Vector3Int cellPos)
         {
-            Vector3 worldPos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 pos2D = worldPos;
-
-            RaycastHit2D hit = Physics2D.Raycast(pos2D, Vector2.zero, 0f, buildingLayerMask);
-        
-            if (hit.collider != null)
+            var _startPos = cellPos - new Vector3Int(_currentDef.Width / 2, _currentDef.Height / 2, 0);
+            for(int i = 0; i < _currentDef.Width; i++)
             {
-                // 点到建筑了
-                return false;
+                for(int j = 0; j < _currentDef.Height; j++)
+                {
+                    Vector3Int checkPos = _startPos + new Vector3Int(i, j, 0);
+                    // 共同使用 placementTilemap 的 cell -> world 位置
+                    Vector3 worldPos = placementTilemap.GetCellCenterWorld(checkPos);
+
+                    // 1) 检查建筑物层（通过 Physics2D 碰撞检测）
+                    RaycastHit2D hitBuilding = Physics2D.Raycast(worldPos, Vector2.zero, 0f, buildingLayerMask);
+                    if (hitBuilding.collider != null)
+                    {
+                        // 点到建筑了
+                        return true;
+                    }
+
+                    // 2) 检查场景中所有标记为 obstacle 的 Tilemap（通过 Tilemap.HasTile）
+                    //    这样可以检测到放在其它 Tilemap 上、但与 placementTilemap 不同的 Tilemap
+                            var allTilemaps = Object.FindObjectsByType<Tilemap>(FindObjectsSortMode.None);
+                    foreach (var tm in allTilemaps)
+                    {
+                        // 跳过不在 obstacleLayerMask 中的 Tilemap
+                        if ((obstacleLayerMask.value & (1 << tm.gameObject.layer)) == 0) continue;
+
+                        // 将 worldPos 转换为该 Tilemap 的 cell，然后判断是否存在 Tile
+                        Vector3Int tmCell = tm.WorldToCell(worldPos);
+                        if (tm.HasTile(tmCell))
+                        {
+                            Log.Info("[BuildingPlacement] Obstacle Tile detected at cell: " + checkPos + " on Tilemap: " + tm.name);
+                            return true;
+                        }
+                    }
+
+                    // 3) 保留对 obstacle layer 上物理碰撞体的检测（有些障碍是 Collider）
+                    RaycastHit2D hitObstacle = Physics2D.Raycast(worldPos, Vector2.zero, 0f, obstacleLayerMask);
+                    if (hitObstacle.collider != null)
+                    {
+                        Log.Info("[BuildingPlacement] Obstacle collider detected at cell: " + checkPos + " (collider: " + hitObstacle.collider.name + ")");
+                        return true;
+                    }
+                }
             }
-            return true;
+            return false;
         }
 
         private void SetGhostColor(Color c)

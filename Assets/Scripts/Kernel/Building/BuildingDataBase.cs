@@ -1,4 +1,5 @@
 // BuildingDatabase.cs
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,16 +13,65 @@ using UnityEngine.ResourceManagement.ResourceLocations;
 
 namespace Kernel.Building
 {
+    public class BuildingDefHeader
+    {
+        /// <summary>
+        /// 定义的唯一ID。
+        /// </summary>
+        public string Id { get; set; }
+
+        /// <summary>
+        /// 定义类型键，例如 Base、PowerGenerator 等。
+        /// </summary>
+        public string DefType { get; set; }
+    }
     public static class BuildingDatabase
     {
         public static readonly Dictionary<string, BuildingDef> Defs = new();
+        static readonly Dictionary<string, Type> _defTypeMap = new()
+        {
+            // 普通建筑
+            { "Base", typeof(BuildingDef) },
 
+            // 发电机
+            { "PowerGenerator", typeof(Colo.Def.Building.PowerGeneratorDef) },
+
+            // 以后可以在这里继续添加其他子类
+            // { "ComputeServer", typeof(Colo.Def.Building.ComputeServerDef) },
+        };
         static readonly JsonSerializerSettings _jsonSettings = new()
         {
             MissingMemberHandling = MissingMemberHandling.Ignore,
             NullValueHandling = NullValueHandling.Ignore
         };
 
+        /// <summary>
+        /// 根据 JSON 中的类型键名解析对应的 BuildingDef 具体类型。
+        /// </summary>
+        /// <param name="typeKey">JSON 中声明的类型键，例如 "PowerGenerator"。</param>
+        /// <returns>解析得到的具体类型；如果失败则回退为 typeof(BuildingDef)。</returns>
+        static Type ResolveDefType(string typeKey)
+        {
+            if (string.IsNullOrEmpty(typeKey))
+            {
+                return typeof(BuildingDef);
+            }
+
+            if (_defTypeMap.TryGetValue(typeKey, out var t))
+            {
+                return t;
+            }
+
+            Log.Warn($"[Building] 未知 DefType：{typeKey}，回退为 BuildingDef");
+            return typeof(BuildingDef);
+        }
+
+
+        /// <summary>
+        /// 异步加载所有建筑定义资源。
+        /// </summary>
+        /// <param name="labelOrGroup">Addressables 中的标签或组名，默认是 "BuildingDef"</param>
+        /// <returns></returns>
         public static async Task LoadAllAsync(string labelOrGroup = "BuildingDef")
         {
             Defs.Clear();
@@ -59,16 +109,38 @@ namespace Kernel.Building
                 return;
             }
 
+
             foreach (var ta in assets)
             {
                 if (!ta) continue;
                 try
                 {
-                    var def = JsonConvert.DeserializeObject<BuildingDef>(ta.text, _jsonSettings);
+                    // 第一步：先读头部，拿到 Id 和 DefType
+                    var header = JsonConvert.DeserializeObject<BuildingDefHeader>(ta.text, _jsonSettings);
+                    if (header == null)
+                    {
+                        Log.Error($"[Building] 解析头部失败（资产：{ta.name}）");
+                        continue;
+                    }
+
+                    // 决定应该反序列化成哪种具体 Def 类型
+                    var targetType = ResolveDefType(header.DefType);
+
+                    // 第二步：按具体类型反序列化
+                    var defObj = JsonConvert.DeserializeObject(ta.text, targetType, _jsonSettings);
+                    if (defObj is not BuildingDef def)
+                    {
+                        Log.Error($"[Building] 解析失败，结果不是 BuildingDef（资产：{ta.name}，类型：{targetType}）");
+                        continue;
+                    }
+
+                    // 原有校验流程保持不变
                     if (BuildingValidation.Validate(def, out var msg))
                     {
                         if (!Defs.TryAdd(def.Id, def))
+                        {
                             Log.Error($"[Building] 重复ID：{def.Id}（资产：{ta.name}）");
+                        }
                     }
                     else
                     {

@@ -307,7 +307,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Kernel.Building.BuildingPlacementController
   mainCamera: {fileID: 519420031}
   buildingRoot: {fileID: 1225478015}
-  placementTilemap: {fileID: 1225478013}
+  placementTilemap: {fileID: 403441283}
+  buildingLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
+  obstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 512
   buildingIds:
   - generator_small
   ghostColor: {r: 1, g: 1, b: 1, a: 0.4}
@@ -326,7 +332,7 @@ GameObject:
   - component: {fileID: 311412740}
   - component: {fileID: 311412738}
   - component: {fileID: 311412739}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Min
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -473,7 +479,11 @@ MonoBehaviour:
   panSpeed: 20
   zoomSpeed: 5
   minZoom: 2
-  maxZoom: 30
+  maxZoom: 50
+  edgeThickness: 20
+  edgePanSpeedMultiplier: 1
+  mouseDragPanSpeed: 1
+  enableEdgePan: 0
 --- !u!4 &320228453
 Transform:
   m_ObjectHideFlags: 0
@@ -735,7 +745,7 @@ Camera:
   m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
-  m_OcclusionCulling: 0
+  m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
 --- !u!4 &519420032
@@ -893,7 +903,7 @@ GameObject:
   - component: {fileID: 900135089}
   - component: {fileID: 900135090}
   m_Layer: 0
-  m_Name: SelectionClear
+  m_Name: SelectionController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1511,6 +1521,10 @@ MonoBehaviour:
   zoomSpeed: 8
   minZoom: 4
   maxZoom: 50
+  edgeThickness: 20
+  edgePanSpeedMultiplier: 0.85
+  mouseDragPanSpeed: 0.85
+  enableEdgePan: 1
 --- !u!1 &1608288248
 GameObject:
   m_ObjectHideFlags: 0
@@ -1636,7 +1650,7 @@ Camera:
   m_Depth: -2
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 23
+    m_Bits: 535
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: e2e7d445da5e2c347a448a95260f2846, type: 2}
   m_TargetDisplay: 0

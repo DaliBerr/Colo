@@ -38,6 +38,10 @@ namespace Kernel.Item
         [JsonProperty("stats")]
         public Dictionary<string, float> Stats = new();
 
+        // 可分离（是否可以变成掉落物）
+        [JsonProperty("detachable")]
+        public bool Detachable = false;
+        
         // 标签/过滤
         [JsonProperty("tags")]
         public List<string> Tags = new();

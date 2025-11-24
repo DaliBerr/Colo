@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Kernel.Building
 {   
+    /// <summary>
+    /// 建筑选中控制器：负责处理玩家点击建筑以选中/取消选中建筑的逻辑
+    /// </summary>
     public class BuildingSelectionController : MonoBehaviour
     {
         public Camera mainCamera;
