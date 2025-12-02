@@ -1,15 +1,9 @@
 .vscode/*
-*.meta
-*.dll
-*.asset
+
 *.log
-ProjectSettings/*
-UserSettings/*
-Assets/TileSet/*
-Assets/AddressableAssetsData/*
-Assets/Render/*
 Extract/*
-Packages/*
 Library/*
-Assets/TextMesh Pro/*
 Temp/*
+Obj/
+Logs/
+UserSettings/

@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: ItemDef
+  m_EditorClassIdentifier: 
+  m_GroupName: ItemDef
+  m_GUID: fc4895096466dc047926fa9f89f2c7de
+  m_SerializeEntries:
+  - m_GUID: 4d273aee2a4d66b429f816ccd2739867
+    m_Address: Defs/Items/IronSword
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ItemDef
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 53852229e6d139843a7f3b686d403c91
+    m_Address: Assets/Defs
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ItemDef
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 97411363d8af84540ba6088e7cd94fc3
+    m_Address: Defs/Items
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ItemDef
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: a941b8407f80d254a8f0f5d0d4971434, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 90fb3baa043438343884fbcb809b726a, type: 2}
+    - {fileID: 11400000, guid: 82677decab39a76498d8ee6d1f5e489f, type: 2}

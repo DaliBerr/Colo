@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: BuildingDef
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: BuildingDef
+  m_GUID: 8ad69e6884329e845b5c247449fea11c
+  m_SerializeEntries:
+  - m_GUID: 37d8f7da51561c94ba43308387b71ac4
+    m_Address: Defs/Buildings
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - BuildingDef
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cbc7fc2ba33e6b84bb266d53cccd2bb9
+    m_Address: Prefabs/Building/Building_GeneratorSmall
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - BuildingDef
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d17467d94ee5e2d409fb366c0476232a
+    m_Address: Defs/Buildings/power_generator
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - BuildingDef
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: a941b8407f80d254a8f0f5d0d4971434, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 86c5e2a8e38547843a59ec313a555596, type: 2}
+    - {fileID: 11400000, guid: dd1288fba4c1f374a9ba161eb65a63c9, type: 2}
