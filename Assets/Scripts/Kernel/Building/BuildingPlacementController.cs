@@ -5,7 +5,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 using Kernel.Building;
 using Kernel;
-using Kernel.Pool;   // 为了用 AddressableRef.LoadAsync<GameObject>
+using Kernel.Pool;
+using Kernel.Status;   // 为了用 AddressableRef.LoadAsync<GameObject>
 
 namespace Kernel.Building
 {
@@ -73,6 +74,11 @@ namespace Kernel.Building
         /// </summary>
         public async System.Threading.Tasks.Task StartPlacementById(string buildingId)
         {
+            if (!StatusController.AddStatus(StatusList.BuildingPlacementStatus))
+            {
+                Log.Warn("[BuildingPlacement] 无法进入放置模式，已有其他状态阻塞。");
+                return;
+            }
             // 清理旧虚影
             if (_ghostInstance != null)
             {
@@ -176,6 +182,7 @@ namespace Kernel.Building
             // 5. 右键取消放置
             if (Input.GetMouseButtonDown(1))
             {
+                
                 CancelPlacement();
             }
         }
@@ -240,8 +247,9 @@ namespace Kernel.Building
         Events.eventBus.Publish(new BuildingPlaced(true, runtimeHost));
     }
 
-        private void CancelPlacement()
+        public void CancelPlacement()
         {
+            StatusController.RemoveStatus(StatusList.BuildingPlacementStatus);
             if (_ghostInstance != null)
             {
                 Destroy(_ghostInstance);

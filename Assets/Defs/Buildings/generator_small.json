@@ -1,7 +1,7 @@
 {
   "id": "generator_small",
   "name": "小型发电机",
-  "description": "稳定输出一点点能量喵～",
+  "description": "稳定输出一点点能量～",
   "icon": "icons/building_generator_small",
   "defType": "PowerGenerator",
   "prefab": "Prefabs/Building/Building_GeneratorSmall",

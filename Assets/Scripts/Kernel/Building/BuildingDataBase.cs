@@ -61,8 +61,8 @@ namespace Kernel.Building
             {
                 return t;
             }
-
-            Log.Warn($"[Building] 未知 DefType：{typeKey}，回退为 BuildingDef");
+            Debug.LogWarning($"[Building] 未知 DefType：{typeKey}，回退为 BuildingDef");
+            // Log.Warn($"[Building] 未知 DefType：{typeKey}，回退为 BuildingDef");
             return typeof(BuildingDef);
         }
 
@@ -83,15 +83,16 @@ namespace Kernel.Building
             try { locations = await locHandle.Task; }
             catch (System.Exception ex)
             {
-                Log.Error($"[Building] 查询 Addressables 失败（{labelOrGroup}）：\n{ex}");
-                // Debug.LogError($"[Building] 查询 Addressables 失败（{labelOrGroup}）：\n{ex}");
+                // Log.Error($"[Building] 查询 Addressables 失败（{labelOrGroup}）：\n{ex}");
+                Debug.LogError($"[Building] 查询 Addressables 失败（{labelOrGroup}）：\n{ex}");
                 if (locHandle.IsValid()) Addressables.Release(locHandle);
                 return;
             }
 
             if (locations == null || locations.Count == 0)
             {
-                Log.Warn($"[Building] 未找到任何 TextAsset（{labelOrGroup}）。");
+                Debug.LogWarning($"[Building] 未找到任何 TextAsset（{labelOrGroup}）。");
+                // Log.Warn($"[Building] 未找到任何 TextAsset（{labelOrGroup}）。");
                 if (locHandle.IsValid()) Addressables.Release(locHandle);
                 return;
             }
@@ -103,7 +104,8 @@ namespace Kernel.Building
             try { assets = await loadHandle.Task; }
             catch (System.Exception ex)
             {
-                Log.Error($"[Building] 批量加载 TextAsset 失败：\n{ex}");
+                Debug.LogError($"[Building] 批量加载 TextAsset 失败：\n{ex}");
+                // Log.Error($"[Building] 批量加载 TextAsset 失败：\n{ex}");
                 if (loadHandle.IsValid()) Addressables.Release(loadHandle);
                 if (locHandle.IsValid()) Addressables.Release(locHandle);
                 return;
@@ -112,6 +114,8 @@ namespace Kernel.Building
 
             foreach (var ta in assets)
             {
+                // if(ta.name == "DefType") continue;
+                // Debug.Log($"[Building] Loading BuildingDef from asset: {ta.name}");
                 if (!ta) continue;
                 try
                 {
@@ -119,7 +123,8 @@ namespace Kernel.Building
                     var header = JsonConvert.DeserializeObject<BuildingDefHeader>(ta.text, _jsonSettings);
                     if (header == null)
                     {
-                        Log.Error($"[Building] 解析头部失败（资产：{ta.name}）");
+                        Debug.LogError($"[Building] 解析头部失败（资产：{ta.name}）");
+                        // Log.Error($"[Building] 解析头部失败（资产：{ta.name}）");
                         continue;
                     }
 
@@ -130,7 +135,8 @@ namespace Kernel.Building
                     var defObj = JsonConvert.DeserializeObject(ta.text, targetType, _jsonSettings);
                     if (defObj is not BuildingDef def)
                     {
-                        Log.Error($"[Building] 解析失败，结果不是 BuildingDef（资产：{ta.name}，类型：{targetType}）");
+                        Debug.LogError($"[Building] 解析失败，结果不是 BuildingDef（资产：{ta.name}，类型：{targetType}）");
+                        // Log.Error($"[Building] 解析失败，结果不是 BuildingDef（资产：{ta.name}，类型：{targetType}）");
                         continue;
                     }
 
@@ -139,17 +145,20 @@ namespace Kernel.Building
                     {
                         if (!Defs.TryAdd(def.Id, def))
                         {
-                            Log.Error($"[Building] 重复ID：{def.Id}（资产：{ta.name}）");
+                            Debug.LogError($"[Building] 重复ID：{def.Id}（资产：{ta.name}）");
+                            // Log.Error($"[Building] 重复ID：{def.Id}（资产：{ta.name}）");
                         }
                     }
                     else
                     {
-                        Log.Error($"[Building] 定义非法（资产：{ta.name}）：\n{msg}");
+                        Debug.LogError($"[Building] 定义非法（资产：{ta.name}）：\n{msg}");
+                        // Log.Error($"[Building] 定义非法（资产：{ta.name}）：\n{msg}");
                     }
                 }
                 catch (System.Exception ex)
                 {
-                    Log.Error($"[Building] 解析失败（资产：{ta.name}）：\n{ex}");
+                    Debug.LogError($"[Building] 解析失败（资产：{ta.name}）：\n{ex}");
+                    // Log.Error($"[Building] 解析失败（资产：{ta.name}）：\n{ex}");
                 }
             }
 

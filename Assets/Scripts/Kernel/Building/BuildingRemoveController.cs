@@ -2,6 +2,7 @@ using Lonize.Logging;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Kernel.Pool;
+using Kernel.Status;
 
 namespace Kernel.Building
 {
@@ -27,6 +28,11 @@ namespace Kernel.Building
         /// </summary>
         public void StartRemoveMode()
         {
+            if (!StatusController.AddStatus(StatusList.RemovingBuildingStatus))
+            {
+                Log.Warn("[BuildingRemove] 无法进入拆除模式，已有其他状态阻塞。");
+                return;
+            }
             _isRemoving = true;
             Log.Info("[BuildingRemove] 进入拆除模式。");
         }
@@ -36,6 +42,7 @@ namespace Kernel.Building
         /// </summary>
         public void StopRemoveMode()
         {
+            StatusController.RemoveStatus(StatusList.RemovingBuildingStatus);
             _isRemoving = false;
             Log.Info("[BuildingRemove] 退出拆除模式。");
         }
