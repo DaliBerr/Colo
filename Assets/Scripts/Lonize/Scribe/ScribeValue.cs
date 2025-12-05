@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Newtonsoft.Json.Linq;
 
 namespace Lonize.Scribe
 {
@@ -11,14 +12,13 @@ namespace Lonize.Scribe
             if (Scribe.mode == ScribeMode.Saving)
             {
                 var tmp = value;
-                Scribe.WriteTLV(FieldType.Int32, tag, w => w.Write(tmp));
+                Scribe.WriteField(FieldType.Int32, tag, tmp);
             }
             else if (Scribe.mode == ScribeMode.Loading)
             {
                 if (Scribe.TryGetField(tag, out var rec) && rec.Type == FieldType.Int32)
                 {
-                    using var br = new BinaryReader(new MemoryStream(rec.Payload));
-                    value = br.ReadInt32();
+                    value = ReadInt(rec.Value, defaultValue);
                 }
                 else value = defaultValue;
             }
@@ -30,14 +30,13 @@ namespace Lonize.Scribe
             if (Scribe.mode == ScribeMode.Saving)
             {
                 var tmp = value;
-                Scribe.WriteTLV(FieldType.Single, tag, w => w.Write(tmp));
+                Scribe.WriteField(FieldType.Single, tag, tmp);
             }
             else if (Scribe.mode == ScribeMode.Loading)
             {
                 if (Scribe.TryGetField(tag, out var rec) && rec.Type == FieldType.Single)
                 {
-                    using var br = new BinaryReader(new MemoryStream(rec.Payload));
-                    value = br.ReadSingle();
+                    value = rec.Value is byte[] bytes ? new BinaryReader(new MemoryStream(bytes)).ReadSingle() : Convert.ToSingle(rec.Value ?? defaultValue);
                 }
                 else value = defaultValue;
             }
@@ -48,14 +47,13 @@ namespace Lonize.Scribe
             if (Scribe.mode == ScribeMode.Saving)
             {
                 var tmp = value;
-                Scribe.WriteTLV(FieldType.Bool, tag, w => w.Write(tmp));
+                Scribe.WriteField(FieldType.Bool, tag, tmp);
             }
             else if (Scribe.mode == ScribeMode.Loading)
             {
                 if (Scribe.TryGetField(tag, out var rec) && rec.Type == FieldType.Bool)
                 {
-                    using var br = new BinaryReader(new MemoryStream(rec.Payload));
-                    value = br.ReadBoolean();
+                    value = rec.Value is byte[] bytes ? new BinaryReader(new MemoryStream(bytes)).ReadBoolean() : Convert.ToBoolean(rec.Value ?? defaultValue);
                 }
                 else value = defaultValue;
             }
@@ -65,11 +63,11 @@ namespace Lonize.Scribe
         {
             if (Scribe.mode == ScribeMode.Saving)
             {
-                if (value == null) Scribe.WriteTLV(FieldType.Null, tag, w => { });
+                if (value == null) Scribe.WriteField(FieldType.Null, tag, null);
                 else
                 {
                     var tmp = value;
-                    Scribe.WriteTLV(FieldType.String, tag, w => w.Write(tmp));
+                    Scribe.WriteField(FieldType.String, tag, tmp);
                 }
             }
             else if (Scribe.mode == ScribeMode.Loading)
@@ -84,8 +82,7 @@ namespace Lonize.Scribe
                 }
                 else if (rec.Type == FieldType.String)
                 {
-                    using var br = new BinaryReader(new MemoryStream(rec.Payload));
-                    value = br.ReadString();
+                    value = rec.Value as string;
                 }
                 else value = defaultValue;
             }
@@ -97,17 +94,28 @@ namespace Lonize.Scribe
             if (Scribe.mode == ScribeMode.Saving)
             {
                 var tmp = value;
-                Scribe.WriteTLV(FieldType.EnumInt32, tag, w => w.Write(Convert.ToInt32(tmp)));
+                Scribe.WriteField(FieldType.EnumInt32, tag, Convert.ToInt32(tmp));
             }
             else if (Scribe.mode == ScribeMode.Loading)
             {
                 if (Scribe.TryGetField(tag, out var rec) && rec.Type == FieldType.EnumInt32)
                 {
-                    using var br = new BinaryReader(new MemoryStream(rec.Payload));
-                    value = (TEnum)Enum.ToObject(typeof(TEnum), br.ReadInt32());
+                    var raw = rec.Value;
+                    if (raw is byte[] bytes)
+                        raw = new BinaryReader(new MemoryStream(bytes)).ReadInt32();
+                    value = (TEnum)Enum.ToObject(typeof(TEnum), Convert.ToInt32(raw));
                 }
                 else value = defaultValue;
             }
+        }
+
+        private static int ReadInt(object raw, int defaultValue)
+        {
+            if (raw is byte[] bytes)
+                return new BinaryReader(new MemoryStream(bytes)).ReadInt32();
+            if (raw is JValue jv && jv.Type == JTokenType.Integer) return jv.Value<int>();
+            if (raw == null) return defaultValue;
+            return Convert.ToInt32(raw);
         }
     }
 }

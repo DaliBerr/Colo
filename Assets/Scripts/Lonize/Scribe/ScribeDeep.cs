@@ -9,7 +9,7 @@ namespace Lonize.Scribe
         {
             if (Scribe.mode == ScribeMode.Saving)
             {
-                if (obj == null) { Scribe.WriteTLV(FieldType.Null, tag, w => { }); return; }
+                if (obj == null) { Scribe.WriteField(FieldType.Null, tag, null); return; }
                 using var node = new Scribe.NodeScope(tag);
                 obj.ExposeData();
             }

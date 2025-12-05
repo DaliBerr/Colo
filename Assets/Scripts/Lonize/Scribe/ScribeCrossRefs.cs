@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Lonize.Scribe
 {
@@ -52,7 +53,7 @@ namespace Lonize.Scribe
             {
                 var target = getter();
                 string idToWrite = target == null ? string.Empty : target.GetSaveId() ?? string.Empty;
-                Scribe.WriteTLV(FieldType.RefId, tag, w => w.Write(idToWrite));
+                Scribe.WriteField(FieldType.RefId, tag, idToWrite);
             }
             else if (Scribe.mode == ScribeMode.Loading)
             {
@@ -61,8 +62,7 @@ namespace Lonize.Scribe
                     if (!allowNull) setter(null);
                     return;
                 }
-                using var br = new BinaryReader(new MemoryStream(rec.Payload));
-                var id = br.ReadString();
+                var id = rec.Value as string;
                 if (string.IsNullOrEmpty(id)) { setter(null); return; }
                 // 延后解析
                 ScribeRefs.AddResolve<T>(id, o => setter(o));
@@ -75,25 +75,41 @@ namespace Lonize.Scribe
         {
             if (Scribe.mode == ScribeMode.Saving)
             {
-                // 原逻辑不变
+                if (list == null) { Scribe.WriteField(FieldType.ListRefId, tag, null); return; }
+                Scribe.WriteField(FieldType.ListRefId, tag, list.Select(it => it?.GetSaveId() ?? string.Empty).ToList());
             }
             else if (Scribe.mode == ScribeMode.Loading)
             {
                 if (!Scribe.TryGetField(tag, out var rec) || rec.Type != FieldType.ListRefId) { list = null; return; }
-                using var br = new BinaryReader(new MemoryStream(rec.Payload));
-                int n = br.ReadInt32();
-                if (n < 0) { list = null; return; }
 
-                // 先建出 list 并填充占位
-                list = new List<T>(n);
-                for (int i = 0; i < n; i++) list.Add(null);
-
-                // 拷贝到本地变量，避免在 lambda 中捕获 ref 参数
-                var localList = list;
-
-                for (int i = 0; i < n; i++)
+                List<string> ids = null;
+                if (rec.Value is byte[] bytes)
                 {
-                    var id = br.ReadString();
+                    using var br = new BinaryReader(new MemoryStream(bytes));
+                    int n = br.ReadInt32();
+                    if (n >= 0)
+                    {
+                        ids = new List<string>(n);
+                        for (int i = 0; i < n; i++) ids.Add(br.ReadString());
+                    }
+                }
+                else if (rec.Value is Newtonsoft.Json.Linq.JArray arr)
+                {
+                    ids = arr.ToObject<List<string>>();
+                }
+                else if (rec.Value is IEnumerable<string> enumerable)
+                {
+                    ids = new List<string>(enumerable);
+                }
+
+                if (ids == null) { list = null; return; }
+
+                list = new List<T>(ids.Count);
+                for (int i = 0; i < ids.Count; i++) list.Add(null);
+                var localList = list;
+                for (int i = 0; i < ids.Count; i++)
+                {
+                    var id = ids[i];
                     int idx = i;
                     if (string.IsNullOrEmpty(id)) continue;
                     ScribeRefs.AddResolve<T>(id, o => localList[idx] = o); // 直接写回 list 的本地引用
