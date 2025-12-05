@@ -1,8 +1,10 @@
 
 
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
+using System.IO;
+using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace Lonize.Scribe
 {
@@ -13,75 +15,92 @@ namespace Lonize.Scribe
         {
             if (Scribe.mode == ScribeMode.Saving)
             {
-                if (list == null) { Scribe.WriteTLV(FieldType.ListPoly, tag, w => w.Write(-1)); return; }
+                if (list == null) { Scribe.WriteField(FieldType.ListPoly, tag, null); return; }
 
-                var localList = list;
-                Scribe.WriteTLV(FieldType.ListPoly, tag, w =>
+                var payload = new List<Dictionary<string, object>>(list.Count);
+                var frameField = typeof(Scribe).GetField("_frameStack", BindingFlags.NonPublic | BindingFlags.Static);
+                var frames = (Stack<NodeFrame>)frameField.GetValue(null);
+
+                foreach (var it in list)
                 {
-                    w.Write(localList.Count);
-                    for (int i = 0; i < localList.Count; i++)
+                    var typeId = it?.TypeId ?? string.Empty;
+                    if (it == null)
                     {
-                        var it = localList[i];
-                        var typeId = it?.TypeId ?? string.Empty;
-                        w.Write(typeId);
-
-                        if (it == null) { w.Write(0); continue; }
-
-                        // 把条目内容写成一个 Node 的 TLV，序列化进列表 payload
-                        using var elemBuf = new MemoryStream();
-                        using var elemW   = new BinaryWriter(elemBuf);
-
-                        // 临时把 writer 压到 Scribe 的栈顶，借助 NodeScope 写内部 TLV
-                        var wsField = typeof(Scribe).GetField("_writerStack", BindingFlags.NonPublic|BindingFlags.Static);
-                        var ws = (Stack<BinaryWriter>)wsField.GetValue(null);
-                        ws.Push(elemW);
-                        using (var node = new Scribe.NodeScope($"elem{i}"))
-                            it.ExposeData();
-                        ws.Pop();
-
-                        var data = elemBuf.ToArray();
-                        w.Write(data.Length);
-                        w.Write(data);
+                        payload.Add(new Dictionary<string, object> { { "TypeId", typeId }, { "Node", null } });
+                        continue;
                     }
-                });
+
+                    var frame = new NodeFrame();
+                    frames.Push(frame);
+                    it.ExposeData();
+                    frames.Pop();
+                    payload.Add(new Dictionary<string, object> { { "TypeId", typeId }, { "Node", frame } });
+                }
+
+                Scribe.WriteField(FieldType.ListPoly, tag, payload);
             }
             else if (Scribe.mode == ScribeMode.Loading)
             {
                 if (!Scribe.TryGetField(tag, out var rec) || rec.Type != FieldType.ListPoly) { list = null; return; }
 
-                using var br = new BinaryReader(new MemoryStream(rec.Payload));
-                int n = br.ReadInt32();
-                if (n < 0) { list = null; return; }
-                list = new List<ISaveItem>(n);
-
                 var frameField = typeof(Scribe).GetField("_frameStack", BindingFlags.NonPublic|BindingFlags.Static);
                 var frames = (Stack<NodeFrame>)frameField.GetValue(null);
 
-                for (int i = 0; i < n; i++)
+                if (rec.Value is byte[] bytes)
                 {
-                    var typeId = br.ReadString();
-                    int len = br.ReadInt32();
-                    if (string.IsNullOrEmpty(typeId) || len == 0) { list.Add(null); continue; }
-
-                    if (!PolymorphRegistry.TryCreate(typeId, out var obj))
+                    using var br = new BinaryReader(new MemoryStream(bytes));
+                    int n = br.ReadInt32();
+                    if (n < 0) { list = null; return; }
+                    list = new List<ISaveItem>(n);
+                    for (int i = 0; i < n; i++)
                     {
-                        // 未注册的类型：跳过 payload，放空位，避免崩
-                        br.ReadBytes(len);
-                        list.Add(null);
-                        continue;
+                        var typeId = br.ReadString();
+                        int len = br.ReadInt32();
+                        if (string.IsNullOrEmpty(typeId) || len == 0) { list.Add(null); continue; }
+
+                        if (!PolymorphRegistry.TryCreate(typeId, out var obj))
+                        {
+                            br.ReadBytes(len);
+                            list.Add(null);
+                            continue;
+                        }
+
+                        var buf = br.ReadBytes(len);
+                        using var ms = new MemoryStream(buf);
+                        using var r = new BinaryReader(ms);
+                        if (!NodeFrame.TryReadLegacy(r, out var elemRec) || elemRec.Type != FieldType.Node) { list.Add(null); continue; }
+
+                        frames.Push(NodeFrame.FromLegacyBytes(elemRec.Payload));
+                        obj.ExposeData();
+                        frames.Pop();
+
+                        list.Add(obj);
                     }
+                }
+                else
+                {
+                    List<Dictionary<string, object>> payload = null;
+                    if (rec.Value is JArray arr)
+                        payload = arr.ToObject<List<Dictionary<string, object>>>();
+                    else if (rec.Value is IEnumerable<Dictionary<string, object>> dicts)
+                        payload = dicts.ToList();
 
-                    var buf = br.ReadBytes(len);
-                    using var ms = new MemoryStream(buf);
-                    using var r  = new BinaryReader(ms);
-                    if (!TLV.TryRead(r, out var elemRec) || elemRec.Type != FieldType.Node) { list.Add(null); continue; }
+                    if (payload == null) { list = null; return; }
+                    list = new List<ISaveItem>(payload.Count);
+                    foreach (var entry in payload)
+                    {
+                        var typeId = entry.TryGetValue("TypeId", out var tid) ? tid as string : null;
+                        if (string.IsNullOrEmpty(typeId)) { list.Add(null); continue; }
+                        if (!PolymorphRegistry.TryCreate(typeId, out var obj)) { list.Add(null); continue; }
+                        var frame = entry.TryGetValue("Node", out var nodeObj) ? nodeObj as NodeFrame : null;
+                        if (frame == null && entry.TryGetValue("Node", out var maybeToken) && maybeToken is JToken token)
+                            frame = token.ToObject<NodeFrame>();
 
-                    // 压入子帧，ExposeData 读取其内部 TLV
-                    frames.Push(NodeFrame.Parse(elemRec.Payload));
-                    obj.ExposeData();
-                    frames.Pop();
-
-                    list.Add(obj);
+                        frames.Push(frame ?? new NodeFrame());
+                        obj.ExposeData();
+                        frames.Pop();
+                        list.Add(obj);
+                    }
                 }
             }
             else throw new System.InvalidOperationException();

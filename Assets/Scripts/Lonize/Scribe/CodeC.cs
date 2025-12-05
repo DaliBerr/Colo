@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using Lonize.Scribe;
 
 
@@ -8,9 +7,9 @@ namespace Lonize.Scribe
 {
     public interface ICodec<T>
     {
-        FieldType FieldType { get; }            // 该类型使用的 TLV 类型码
-        void Write(BinaryWriter w, in T value); // 写 payload
-        T Read(BinaryReader r);                 // 读 payload
+        FieldType FieldType { get; }            // 该类型使用的类型码
+        object Write(in T value);               // 转成 JSON 友好的结构
+        T Read(object value);                   // 从 JSON 结构读取
     }
     public static class CodecRegistry
     {
@@ -30,75 +29,60 @@ namespace Lonize.Scribe
 public sealed class BoolCodec : ICodec<bool>
 {
     public FieldType FieldType => FieldType.Bool;
-    public void Write(BinaryWriter w, in bool v) => w.Write(v);
-    public bool Read(BinaryReader r) => r.ReadBoolean();
+    public object Write(in bool v) => v;
+    public bool Read(object value) => value is bool b ? b : false;
 }
 
 // Int
 public sealed class IntCodec : ICodec<int>
 {
     public FieldType FieldType => FieldType.Int32;
-    public void Write(BinaryWriter w, in int v) => w.Write(v);
-    public int Read(BinaryReader r) => r.ReadInt32();
+    public object Write(in int v) => v;
+    public int Read(object value) => Convert.ToInt32(value);
 }
 
 // Float
 public sealed class FloatCodec : ICodec<float>
 {
     public FieldType FieldType => FieldType.Single;
-    public void Write(BinaryWriter w, in float v) => w.Write(v);
-    public float Read(BinaryReader r) => r.ReadSingle();
+    public object Write(in float v) => v;
+    public float Read(object value) => Convert.ToSingle(value);
 }
 
 // String (null 支持)
 public sealed class StringCodec : ICodec<string>
 {
     public FieldType FieldType => FieldType.String;
-    public void Write(BinaryWriter w, in string v)
-    {
-        bool has = v != null; w.Write(has); if (has) w.Write(v);
-    }
-    public string Read(BinaryReader r)
-    {
-        bool has = r.ReadBoolean(); return has ? r.ReadString() : null;
-    }
+    public object Write(in string v) => v;
+    public string Read(object value) => value as string;
 }
 
 public sealed class LongCodec : ICodec<long>
 {
     public FieldType FieldType => FieldType.Int64;
-    public void Write(BinaryWriter w, in long v) => w.Write(v);
-    public long Read(BinaryReader r) => r.ReadInt64();
+    public object Write(in long v) => v;
+    public long Read(object value) => Convert.ToInt64(value);
 }
 
 // Enum<T> （统一写成 Int32）
 public sealed class EnumCodec<T> : ICodec<T> where T : struct, Enum
 {
     public FieldType FieldType => FieldType.EnumInt32;
-    public void Write(BinaryWriter w, in T v) => w.Write(Convert.ToInt32(v));
-    public T Read(BinaryReader r) => (T)Enum.ToObject(typeof(T), r.ReadInt32());
+    public object Write(in T v) => Convert.ToInt32(v);
+    public T Read(object value) => (T)Enum.ToObject(typeof(T), Convert.ToInt32(value));
 }
 
     // Dictionary<string,string>
     public sealed class DictStrStrCodec : ICodec<Dictionary<string, string>>
     {
         public FieldType FieldType => FieldType.DictStrStr; // 之前已定义
-        public void Write(BinaryWriter w, in Dictionary<string, string> dict)
+        public object Write(in Dictionary<string, string> dict) => dict;
+        public Dictionary<string, string> Read(object value)
         {
-            if (dict == null) { w.Write(-1); return; }
-            w.Write(dict.Count);
-            foreach (var kv in dict)
-            {
-                w.Write(kv.Key ?? string.Empty);
-                bool has = kv.Value != null; w.Write(has); if (has) w.Write(kv.Value);
-            }
-        }
-        public Dictionary<string, string> Read(BinaryReader r)
-        {
-            int n = r.ReadInt32(); if (n < 0) return null;
-            var d = new Dictionary<string, string>(n);
-            for (int i = 0; i < n; i++) { var k = r.ReadString(); bool has = r.ReadBoolean(); d[k] = has ? r.ReadString() : null; }
-            return d;
+            if (value == null) return null;
+            if (value is Dictionary<string, string> dict) return dict;
+            if (value is Newtonsoft.Json.Linq.JObject obj) return obj.ToObject<Dictionary<string, string>>();
+            return null;
         }
 
         
@@ -107,49 +91,32 @@ public sealed class EnumCodec<T> : ICodec<T> where T : struct, Enum
     public sealed class DictStrFloatCodec : ICodec<Dictionary<string, float>>
     {
         public FieldType FieldType => FieldType.DictStrFloat; // 之前已定义
-        public void Write(BinaryWriter w, in Dictionary<string, float> dict)
+        public object Write(in Dictionary<string, float> dict) => dict;
+        public Dictionary<string, float> Read(object value)
         {
-            if (dict == null) { w.Write(-1); return; }
-            w.Write(dict.Count);
-            foreach (var kv in dict)
-            {
-                w.Write(kv.Key ?? string.Empty);
-                w.Write(kv.Value);
-            }
-        }
-        public Dictionary<string, float> Read(BinaryReader r)
-        {
-            int n = r.ReadInt32(); if (n < 0) return null;
-            var d = new Dictionary<string, float>(n);
-            for (int i = 0; i < n; i++) { var k = r.ReadString(); var v = r.ReadSingle(); d[k] = v; }
-            return d;
+            if (value == null) return null;
+            if (value is Dictionary<string, float> dict) return dict;
+            if (value is Newtonsoft.Json.Linq.JObject obj) return obj.ToObject<Dictionary<string, float>>();
+            return null;
         }
     }
     // Dictionary<string,EnumInt32>
     public sealed class DictStrEnumInt32Codec<T> : ICodec<Dictionary<string, T>> where T : struct, Enum
     {
         public FieldType FieldType => FieldType.DictStrEnumInt32; // 之前已定义
-        public void Write(BinaryWriter w, in Dictionary<string, T> dict)
+        public object Write(in Dictionary<string, T> dict) => dict;
+        public Dictionary<string, T> Read(object value)
         {
-            if (dict == null) { w.Write(-1); return; }
-            w.Write(dict.Count);
-            foreach (var kv in dict)
+            if (value == null) return null;
+            if (value is Dictionary<string, T> dict) return dict;
+            if (value is Newtonsoft.Json.Linq.JObject obj)
             {
-                w.Write(kv.Key ?? string.Empty);
-                w.Write(Convert.ToInt32(kv.Value));
+                var raw = obj.ToObject<Dictionary<string, int>>();
+                var result = new Dictionary<string, T>();
+                foreach (var kv in raw) result[kv.Key] = (T)Enum.ToObject(typeof(T), kv.Value);
+                return result;
             }
-        }
-        public Dictionary<string, T> Read(BinaryReader r)
-        {
-            int n = r.ReadInt32(); if (n < 0) return null;
-            var d = new Dictionary<string, T>(n);
-            for (int i = 0; i < n; i++)
-            {
-                var k = r.ReadString();
-                var v = (T)Enum.ToObject(typeof(T), r.ReadInt32());
-                d[k] = v;
-            }
-            return d;
+            return null;
         }
     }
 }

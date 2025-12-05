@@ -19,7 +19,7 @@ namespace Kernel
         public static ScribeSaveManager Instance { get; private set; }
 
         [Header("Save Settings")]
-        [SerializeField] private string fileName = "save.tlv";
+        [SerializeField] private string fileName = "save.json";
         [SerializeField] private int version = 1;
         [SerializeField] private bool autoSaveOnQuit = true;
 
@@ -96,10 +96,19 @@ namespace Kernel
 
         public bool Load()
         {
-            if (!File.Exists(FilePath)) return false;
+            var pathToUse = FilePath;
+            bool loadingLegacy = false;
+            if (!File.Exists(pathToUse))
+            {
+                var legacyPath = Path.ChangeExtension(FilePath, ".tlv");
+                if (!File.Exists(legacyPath)) return false;
+                Log.Warn($"[ScribeSaveManager] JSON save missing; attempting legacy load from {legacyPath}.");
+                pathToUse = legacyPath;
+                loadingLegacy = true;
+            }
             try
             {
-                using (var fs = File.OpenRead(FilePath))
+                using (var fs = File.OpenRead(pathToUse))
                 {
                     Scribe.InitLoading(fs);
                     ScribeRefs.Clear();
@@ -114,6 +123,8 @@ namespace Kernel
             catch (System.Exception ex)
             {
                 Log.Error($"[ScribeSaveManager] Load failed: {ex}");
+                if (loadingLegacy || Path.GetExtension(pathToUse).Equals(".tlv", System.StringComparison.OrdinalIgnoreCase))
+                    Log.Warn("[ScribeSaveManager] Legacy format load failed. Consider resaving as JSON.");
                 Data = new PolySaveData();
                 return false;
             }
