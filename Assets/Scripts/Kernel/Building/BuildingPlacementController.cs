@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Lonize.Events;
 using Lonize.Logging;
 using UnityEngine;
@@ -24,6 +25,9 @@ namespace Kernel.Building
         public LayerMask buildingLayerMask;
         public LayerMask obstacleLayerMask;
 
+        [Header("导航网格")]
+        public NavGrid navGrid;
+
         [Header("BuildingDef 配置")]
         [Tooltip("与 UI 按钮 index 对应的 BuildingDef Id 列表")]
         public string[] buildingIds;
@@ -43,6 +47,16 @@ namespace Kernel.Building
         private GameObject _ghostInstance;
         private int _rotationSteps = 0;  // 0/1/2/3 => 0/90/180/270
         private bool _isPlacing = false;
+
+        private void Awake()
+        {
+            if (navGrid == null)
+            {
+                navGrid = NavGrid.Instance;
+            }
+
+            navGrid?.InitializeFromTilemap(placementTilemap, buildingLayerMask, obstacleLayerMask);
+        }
 
         void Update()
         {
@@ -206,11 +220,11 @@ namespace Kernel.Building
     /// <summary>
     /// 真正生成建筑，优先从对象池中获取，没有则通过 BuildingFactory 创建。
     /// </summary>
-    private async System.Threading.Tasks.Task PlaceBuildingAsync(Vector3Int cellPos, Vector3 worldPos)
-    {
-        if (_currentDef == null)
+        private async System.Threading.Tasks.Task PlaceBuildingAsync(Vector3Int cellPos, Vector3 worldPos)
         {
-            Log.Warn("[BuildingPlacement] PlaceBuilding 时 _currentDef 为空。");
+            if (_currentDef == null)
+            {
+                Log.Warn("[BuildingPlacement] PlaceBuilding 时 _currentDef 为空。");
             return;
         }
 
@@ -242,6 +256,9 @@ namespace Kernel.Building
         }
 
         Log.Info($"[BuildingPlacement] 已放置建筑：{_currentDef.Id} @ {worldPos}");
+
+        var nav = navGrid != null ? navGrid : NavGrid.Instance;
+        nav?.UpdateAreaBlocked(cellPos, _currentDef.Width, _currentDef.Height, _rotationSteps, true);
 
         var runtimeHost = go.GetComponent<BuildingRuntimeHost>();
         Events.eventBus.Publish(new BuildingPlaced(true, runtimeHost));
@@ -285,92 +302,84 @@ namespace Kernel.Building
                 Log.Warn("[BuildingPlacement] CheckCanPlace 时目标格子无 Tile。");
                 return false;
             }
-                // return false;
-            // if(BuildingLayerCheck() == false)
-            // {
-            //     Log.Warn("[BuildingPlacement] CheckCanPlace 时目标格子有建筑物。");
-            //     return false;
-            // }
-            if(IsCellOccupied(anchorCell))
-            {
-                return false;
-            }
-            
-            // if(_currentDef.Width > 1 || _currentDef.Height > 1)
-            // {
-            //     var offsets = BuildingFootprint.GetCells(_currentDef.Width, _currentDef.Height, _rotationSteps);
-            //     foreach(var o in offsets)
-            //     {
-            //         var c = anchorCell + o;
-            //         if(!placementTilemap.HasTile(c))
-            //             return false;
-            //     }
-            // }
-            // if (_currentDef == null || placementTilemap == null) return false;
 
-            // // 简单版：要求 anchor 那格必须有 tile
-            // if (!placementTilemap.HasTile(anchorCell))
-            //     return false;
-
-            // ↓↓↓ 如果你想支持多格 & 占用检测，可以扩展如下（示意） ↓↓↓
-            /*
-            var offsets = BuildingFootprint.GetCells(_currentDef.Width, _currentDef.Height, _rotationSteps);
-            foreach (var o in offsets)
+            var nav = navGrid != null ? navGrid : NavGrid.Instance;
+            if (nav != null)
             {
-                var c = anchorCell + o;
-                // 1) 必须有 tile
-                if (!placementTilemap.HasTile(c)) return false;
-                // 2) TODO: 检查此格是否已经被其他建筑占用
-                // if (IsCellOccupied(c)) return false;
+                nav.InitializeFromTilemap(placementTilemap, buildingLayerMask, obstacleLayerMask);
             }
-            */
-            return true;
-        }
-        private bool IsCellOccupied(Vector3Int cellPos)
-        {
-            var _startPos = cellPos - new Vector3Int(_currentDef.Width / 2, _currentDef.Height / 2, 0);
-            for(int i = 0; i < _currentDef.Width; i++)
+
+            foreach (var cell in GetFootprintCells(anchorCell))
             {
-                for(int j = 0; j < _currentDef.Height; j++)
+                if (!placementTilemap.HasTile(cell))
                 {
-                    Vector3Int checkPos = _startPos + new Vector3Int(i, j, 0);
-                    // 共同使用 placementTilemap 的 cell -> world 位置
-                    Vector3 worldPos = placementTilemap.GetCellCenterWorld(checkPos);
+                    return false;
+                }
 
-                    // 1) 检查建筑物层（通过 Physics2D 碰撞检测）
-                    RaycastHit2D hitBuilding = Physics2D.Raycast(worldPos, Vector2.zero, 0f, buildingLayerMask);
-                    if (hitBuilding.collider != null)
+                if (nav != null)
+                {
+                    if (nav.IsCellBlocked(cell))
                     {
-                        // 点到建筑了
-                        return true;
-                    }
-
-                    // 2) 检查场景中所有标记为 obstacle 的 Tilemap（通过 Tilemap.HasTile）
-                    //    这样可以检测到放在其它 Tilemap 上、但与 placementTilemap 不同的 Tilemap
-                            var allTilemaps = Object.FindObjectsByType<Tilemap>(FindObjectsSortMode.None);
-                    foreach (var tm in allTilemaps)
-                    {
-                        // 跳过不在 obstacleLayerMask 中的 Tilemap
-                        if ((obstacleLayerMask.value & (1 << tm.gameObject.layer)) == 0) continue;
-
-                        // 将 worldPos 转换为该 Tilemap 的 cell，然后判断是否存在 Tile
-                        Vector3Int tmCell = tm.WorldToCell(worldPos);
-                        if (tm.HasTile(tmCell))
-                        {
-                            Log.Info("[BuildingPlacement] Obstacle Tile detected at cell: " + checkPos + " on Tilemap: " + tm.name);
-                            return true;
-                        }
-                    }
-
-                    // 3) 保留对 obstacle layer 上物理碰撞体的检测（有些障碍是 Collider）
-                    RaycastHit2D hitObstacle = Physics2D.Raycast(worldPos, Vector2.zero, 0f, obstacleLayerMask);
-                    if (hitObstacle.collider != null)
-                    {
-                        Log.Info("[BuildingPlacement] Obstacle collider detected at cell: " + checkPos + " (collider: " + hitObstacle.collider.name + ")");
-                        return true;
+                        return false;
                     }
                 }
+                else if (IsCellBlockedByMask(cell))
+                {
+                    return false;
+                }
             }
+            return true;
+        }
+
+        private IEnumerable<Vector3Int> GetFootprintCells(Vector3Int anchorCell)
+        {
+            var nav = navGrid != null ? navGrid : NavGrid.Instance;
+            if (nav != null)
+            {
+                return nav.GetFootprintCells(anchorCell, _currentDef.Width, _currentDef.Height, _rotationSteps);
+            }
+
+            var cells = new List<Vector3Int>();
+            var startPos = anchorCell - new Vector3Int(_currentDef.Width / 2, _currentDef.Height / 2, 0);
+            for (int i = 0; i < _currentDef.Width; i++)
+            {
+                for (int j = 0; j < _currentDef.Height; j++)
+                {
+                    cells.Add(startPos + new Vector3Int(i, j, 0));
+                }
+            }
+
+            return cells;
+        }
+
+        private bool IsCellBlockedByMask(Vector3Int cellPos)
+        {
+            Vector3 worldPos = placementTilemap.GetCellCenterWorld(cellPos);
+
+            RaycastHit2D hitBuilding = Physics2D.Raycast(worldPos, Vector2.zero, 0f, buildingLayerMask);
+            if (hitBuilding.collider != null)
+            {
+                return true;
+            }
+
+            var allTilemaps = Object.FindObjectsByType<Tilemap>(FindObjectsSortMode.None);
+            foreach (var tm in allTilemaps)
+            {
+                if ((obstacleLayerMask.value & (1 << tm.gameObject.layer)) == 0) continue;
+
+                Vector3Int tmCell = tm.WorldToCell(worldPos);
+                if (tm.HasTile(tmCell))
+                {
+                    return true;
+                }
+            }
+
+            RaycastHit2D hitObstacle = Physics2D.Raycast(worldPos, Vector2.zero, 0f, obstacleLayerMask);
+            if (hitObstacle.collider != null)
+            {
+                return true;
+            }
+
             return false;
         }
 

@@ -1,6 +1,7 @@
 using Lonize.Logging;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Tilemaps;
 using Kernel.Pool;
 using Kernel.Status;
 
@@ -16,12 +17,30 @@ namespace Kernel.Building
         [Header("基本引用")]
         public Camera mainCamera;
         public LayerMask buildingLayerMask;
+        public LayerMask obstacleLayerMask;
+        public Tilemap placementTilemap;
+        public NavGrid navGrid;
 
         [Header("输入设置")]
         [Tooltip("退出拆除模式的按键，例如 Esc。")]
         public KeyCode exitKey = KeyCode.Escape;
 
         private bool _isRemoving = false;
+
+        private void Awake()
+        {
+            if (navGrid == null)
+            {
+                navGrid = NavGrid.Instance;
+            }
+
+            if (placementTilemap == null && navGrid != null)
+            {
+                placementTilemap = navGrid.mainTilemap;
+            }
+
+            navGrid?.InitializeFromTilemap(placementTilemap, buildingLayerMask, obstacleLayerMask);
+        }
 
         /// <summary>
         /// 启动拆除模式（可绑定到 UI 按钮）。
@@ -104,19 +123,23 @@ namespace Kernel.Building
                 return;
             }
 
-            RemoveBuilding(host.gameObject);
+            RemoveBuilding(host);
         }
 
         /// <summary>
         /// 执行建筑移除逻辑，优先回收到对象池，否则直接销毁。
         /// </summary>
-        /// <param name="buildingGo">要移除的建筑根 GameObject。</param>
-        private void RemoveBuilding(GameObject buildingGo)
+        /// <param name="host">要移除的建筑宿主组件。</param>
+        private void RemoveBuilding(BuildingRuntimeHost host)
         {
-            if (buildingGo == null)
+            if (host == null)
             {
                 return;
             }
+
+            GameObject buildingGo = host.gameObject;
+
+            TryReleaseNavGridArea(host);
 
             // 尝试使用对象池回收
             var poolMember = buildingGo.GetComponent<BuildingPoolMember>();
@@ -135,6 +158,31 @@ namespace Kernel.Building
             // 如果你以后定义了 BuildingRemoved 事件，可以在这里发布
             // var host = buildingGo.GetComponent<BuildingRuntimeHost>();
             // Events.eventBus.Publish(new BuildingRemoved(host));
+        }
+
+        private void TryReleaseNavGridArea(BuildingRuntimeHost host)
+        {
+            var nav = navGrid != null ? navGrid : NavGrid.Instance;
+            if (nav == null)
+            {
+                return;
+            }
+
+            var map = placementTilemap != null ? placementTilemap : nav.mainTilemap;
+            if (map == null)
+            {
+                return;
+            }
+
+            nav.InitializeFromTilemap(map, buildingLayerMask, obstacleLayerMask);
+
+            var def = host.Runtime?.Def;
+            int width = def?.Width ?? 1;
+            int height = def?.Height ?? 1;
+            int rotationSteps = Mathf.RoundToInt(host.transform.eulerAngles.z / 90f) % 4;
+            Vector3Int anchorCell = map.WorldToCell(host.transform.position);
+
+            nav.UpdateAreaBlocked(anchorCell, width, height, rotationSteps, false);
         }
     }
 }
