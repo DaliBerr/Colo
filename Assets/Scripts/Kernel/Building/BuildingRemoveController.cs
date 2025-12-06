@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 using Kernel.Pool;
 using Kernel.Status;
-
+using Kernel.Nav;
 namespace Kernel.Building
 {
     /// <summary>

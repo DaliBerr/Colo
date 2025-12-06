@@ -4,8 +4,7 @@ using Lonize.Logging;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
-using Kernel.Building;
-using Kernel;
+using Kernel.Nav;
 using Kernel.Pool;
 using Kernel.Status;   // 为了用 AddressableRef.LoadAsync<GameObject>
 

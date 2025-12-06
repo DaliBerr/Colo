@@ -62,6 +62,7 @@ MonoBehaviour:
   m_GroupAssets:
   - {fileID: 11400000, guid: a02ced7819fa4ee4d9b0c27a0aec475b, type: 2}
   - {fileID: 11400000, guid: dfa3ffbb9d0e69d42ab2798f26e01c5c, type: 2}
+  - {fileID: 11400000, guid: b34b599d04ef61b46951c2931fbc3beb, type: 2}
   - {fileID: 11400000, guid: 9a8cbcece1cae254991c994ec03f3de6, type: 2}
   m_BuildSettings:
     m_LogResourceManagerExceptions: 1
@@ -104,6 +105,7 @@ MonoBehaviour:
     - default
     - ItemDef
     - BuildingDef
+    - AudioDef
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: cdabfcb46d45dcd4f911a117b00055d1, type: 2}

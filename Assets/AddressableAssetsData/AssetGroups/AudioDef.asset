@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: AudioDef
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: AudioDef
+  m_GUID: 96fe89b82f32b0e43b45f44687dc9ff5
+  m_SerializeEntries:
+  - m_GUID: 06369fa4e6afdd74c8cf1600f1ed922b
+    m_Address: Defs/Audio/bgm_test
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AudioDef
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 42ce2b8c6f18cbf478f49b4582773817
+    m_Address: Defs/Audio/bgm_main
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AudioDef
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7707e0feaa472547a8a45136d119512
+    m_Address: AudioClips/BGM/Forced_landing
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e624367082ef63341a21f9521b9bb095
+    m_Address: AudioClips/BGM/Aurora
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: a941b8407f80d254a8f0f5d0d4971434, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 0cb4ddf746d22fe40999678ee450c9bf, type: 2}
+    - {fileID: 11400000, guid: 3d79f89161dcdd548905511dbc4e8873, type: 2}

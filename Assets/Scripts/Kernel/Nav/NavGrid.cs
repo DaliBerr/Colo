@@ -3,7 +3,7 @@ using Lonize.Logging;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-namespace Kernel
+namespace Kernel.Nav
 {
     /// <summary>
     /// 简易导航格子服务，记录每个格子的可行走状态。

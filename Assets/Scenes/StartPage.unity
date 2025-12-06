@@ -152,6 +152,10 @@ MonoBehaviour:
   zoomSpeed: 5
   minZoom: 2
   maxZoom: 30
+  edgeThickness: 20
+  edgePanSpeedMultiplier: 0.85
+  mouseDragPanSpeed: 0.85
+  enableEdgePan: 1
 --- !u!4 &64242508
 Transform:
   m_ObjectHideFlags: 0
@@ -179,6 +183,102 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &537737007
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 537737009}
+  - component: {fileID: 537737008}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &537737008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 537737007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db8f0cf439170d543990c9776a1b97b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Kernel.Audio.AudioManager
+  _prewarmSfxSourceCount: 4
+--- !u!4 &537737009
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 537737007}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1047.9495, y: -377.1977, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &618898547
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 618898548}
+  - component: {fileID: 618898549}
+  m_Layer: 0
+  m_Name: AudioPlayer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &618898548
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 618898547}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1047.9495, y: -377.1977, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &618898549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 618898547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9560012f42bce3a4c8c758b2041dbd60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Kernel.Audio.BgmPlaylistPlayer
+  _bgmIds:
+  - bgm_main
+  _playOnStart: 1
+  _loopPlaylist: 1
+  _shuffle: 1
+  _fadeTime: 0.5
+  _gapTime: 0
 --- !u!1 &716545670
 GameObject:
   m_ObjectHideFlags: 0
@@ -362,8 +462,8 @@ MonoBehaviour:
   musicSystemPrefab:
     m_AssetGUID: 
     m_SubObjectName: 
-    m_SubObjectGUID: 
     m_SubObjectType: 
+    m_SubObjectGUID: 
     m_EditorAssetChanged: 0
 --- !u!114 &1310737498
 MonoBehaviour:
@@ -462,7 +562,6 @@ MonoBehaviour:
   m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
-  m_Version: 2
   m_TaaSettings:
     m_Quality: 3
     m_FrameInfluence: 0.1
@@ -470,6 +569,7 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
 --- !u!81 &1382646488
 AudioListener:
   m_ObjectHideFlags: 0
@@ -778,3 +878,5 @@ SceneRoots:
   - {fileID: 4683376907322697411}
   - {fileID: 1310737495}
   - {fileID: 743688226413381271}
+  - {fileID: 537737009}
+  - {fileID: 618898548}
