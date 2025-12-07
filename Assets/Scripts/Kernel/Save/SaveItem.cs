@@ -41,6 +41,16 @@ namespace Kernel
             Scribe_Values.Look("v", ref Value, 0f);
         }
     }
+    public sealed class SaveString : ISaveItem
+    {
+        public string TypeId => "String";
+        public string Value;
+        public void ExposeData()
+        {
+            Scribe_Values.Look("v", ref Value, null);
+        }
+    }
+
 
     // public sealed class SaveDictionaryStringKeyCode : ISaveItem
     // {

@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Kernel.Building
 {
-        public static class BuildingValidation
+    public static class BuildingValidation
     {
         public static bool Validate(BuildingDef def, out string msg)
         {

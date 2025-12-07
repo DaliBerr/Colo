@@ -6,6 +6,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using Lonize.Scribe;
 using Lonize.Logging;
+using Kernel.Status;
 
 /// <summary>
 /// 放到场景里一个物体上；Awake 自动注册多态条目并加载；对外暴露 Save()/Load() 与 Items。
@@ -42,7 +43,7 @@ namespace Kernel
         }
         private void Start()
         {
-            Kernel.Building.BuildingIdGenerator.InitializeFromSave();
+            // Kernel.Building.BuildingIdGenerator.InitializeFromSave();
         }
         private static void RegisterSaveItems()
         {
@@ -50,16 +51,22 @@ namespace Kernel
             PolymorphRegistry.Register<SaveBool>("Bool");
             PolymorphRegistry.Register<SaveInt>("Int");
             PolymorphRegistry.Register<SaveFloat>("Float");
+            
+            PolymorphRegistry.Register<StatusSaveData>("StatusNames");
+
 
             CodecRegistry.Register(new BoolCodec());
             CodecRegistry.Register(new IntCodec());
             CodecRegistry.Register(new FloatCodec());
             CodecRegistry.Register(new StringCodec());
             CodecRegistry.Register(new LongCodec());
-
             CodecRegistry.Register(new DictStrEnumInt32Codec<KeyCode>());
+
+
             Kernel.Building.BuildingIdGenerator.RegisterSaveType();
-            PolymorphRegistry.Register<SaveControlCommand>("ControlCommandPref");
+
+
+            // PolymorphRegistry.Register<SaveControlCommand>("ControlCommandPref");
            
 
             // PolymorphRegistry.Register<SaveDictionaryStringKeyCode>("DictionaryStringKeyCode");
@@ -97,6 +104,7 @@ namespace Kernel
         public bool Load()
         {
             var pathToUse = FilePath;
+            Debug.Log("[ScribeSaveManager] Load called. Path: "+ pathToUse);
             bool loadingLegacy = false;
             if (!File.Exists(pathToUse))
             {

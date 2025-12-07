@@ -87,7 +87,25 @@ namespace Lonize.Scribe
                 else value = defaultValue;
             }
         }
-
+        public static void Look(string tag, ref long value, long defaultValue = 0L)
+        {
+            if (Scribe.mode == ScribeMode.Saving)
+            {
+                var tmp = value;
+                Scribe.WriteField(FieldType.Int64, tag, tmp);
+            }
+            else if (Scribe.mode == ScribeMode.Loading)
+            {
+                if (Scribe.TryGetField(tag, out var rec) && rec.Type == FieldType.Int64)
+                {
+                    var raw = rec.Value;
+                    if (raw is byte[] bytes)
+                        raw = new BinaryReader(new MemoryStream(bytes)).ReadInt64();
+                    value = Convert.ToInt64(raw);
+                }
+                else value = defaultValue;
+            }
+        }
         public static void LookEnum<TEnum>(string tag, ref TEnum value, TEnum defaultValue = default)
             where TEnum : struct, Enum
         {
@@ -106,6 +124,37 @@ namespace Lonize.Scribe
                     value = (TEnum)Enum.ToObject(typeof(TEnum), Convert.ToInt32(raw));
                 }
                 else value = defaultValue;
+            }
+        }
+        public static void LookDictStrEnumInt32<TEnum>(string tag, ref Dictionary<string, TEnum> dict, Dictionary<string, TEnum> defaultValue = null)
+            where TEnum : struct, Enum
+        {
+            if (Scribe.mode == ScribeMode.Saving)
+            {
+                var tmp = dict;
+                Scribe.WriteField(FieldType.DictStrEnumInt32, tag, tmp);
+            }
+            else if (Scribe.mode == ScribeMode.Loading)
+            {
+                if (Scribe.TryGetField(tag, out var rec) && rec.Type == FieldType.DictStrEnumInt32)
+                {
+                    var rawDict = rec.Value as Dictionary<string, object>;
+                    if (rawDict != null)
+                    {
+                        dict = new Dictionary<string, TEnum>();
+                        foreach (var kvp in rawDict)
+                        {
+                            int intVal = ReadInt(kvp.Value, 0);
+                            TEnum enumVal = (TEnum)Enum.ToObject(typeof(TEnum), intVal);
+                            dict[kvp.Key] = enumVal;
+                        }
+                    }
+                    else
+                    {
+                        dict = defaultValue;
+                    }
+                }
+                else dict = defaultValue;
             }
         }
 

@@ -1427,7 +1427,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f80f54093a81434c9acb79ae6f719d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fileName: save.tlv
+  fileName: save.json
   version: 1
   autoSaveOnQuit: 1
 --- !u!114 &1506011631
@@ -1445,6 +1445,7 @@ MonoBehaviour:
   isLoadMusicSystem: 0
   isLoadStartMenu: 1
   isLoadLocalizationSystem: 0
+  isDevMode: 0
   musicSystemPrefab:
     m_AssetGUID: 
     m_SubObjectName: 

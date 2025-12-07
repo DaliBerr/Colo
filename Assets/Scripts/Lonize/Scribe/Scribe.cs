@@ -206,8 +206,16 @@ namespace Lonize.Scribe
             try
             {
                 var text = Encoding.UTF8.GetString(data);
+
+                // ★ 去掉 UTF-8 BOM（\uFEFF），防止挡在最前面
+                if (text.Length > 0 && text[0] == '\uFEFF')
+                {
+                    text = text.Substring(1);
+                }
+
                 var trimmed = text.TrimStart();
                 if (!trimmed.StartsWith("{")) return false;
+
                 doc = JsonConvert.DeserializeObject<SaveDocument>(text, _serializerSettings);
                 return doc != null;
             }

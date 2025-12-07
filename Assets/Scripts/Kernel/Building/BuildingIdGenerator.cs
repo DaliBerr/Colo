@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 using System.Linq;
 using Lonize.Scribe;
 
@@ -16,7 +17,7 @@ namespace Kernel.Building
         private static long _nextBuildingID = 1;
 
         // 对应的存档条目对象（加载后会指向同一个实例）
-        private static SaveItem _saveItem;
+        public static BuildingIdSaveData _saveItem;
 
         private static bool _initialized;
 
@@ -26,8 +27,12 @@ namespace Kernel.Building
         /// </summary>
         public static long GenerateBuildingID()
         {
+            if(_saveItem == null)
+            {
+                _saveItem = new();
+            }
             EnsureInitialized();
-
+            Debug.Log($"Generating Building ID: {_nextBuildingID}");
             long id = _nextBuildingID++;
             if (_saveItem != null)
             {
@@ -41,32 +46,48 @@ namespace Kernel.Building
         /// 初始化：从当前存档中读取计数器，没有的话就创建一个新的条目。
         /// 应该在 ScribeSaveManager 读完存档之后调用一次。
         /// </summary>
-        public static void InitializeFromSave()
+        public static void InitializeFromSave(long _savedNextId = -1)
         {
-            if (_initialized) return;
-            _initialized = true;
-
-            var mgr = ScribeSaveManager.Instance;
-            if (mgr == null)
+            Debug.Log("BuildingIdGenerator.InitializeFromSave called."+ _savedNextId);
+            if(_savedNextId > 0)
             {
-                // 没有存档管理器，就只用内存计数（不会持久化）
+                _nextBuildingID = Math.Max(_savedNextId, 1L);
+                _initialized = true;
                 return;
-            }
-
-            // 找有没有已经存在的计数条目（通常只有一个）
-            _saveItem = mgr.GetItems<SaveItem>().FirstOrDefault();
-
-            if (_saveItem == null)
-            {
-                // 旧存档里没有这个条目：创建一份新的，并用当前内存值初始化
-                _saveItem = new SaveItem { nextId = _nextBuildingID };
-                mgr.AddItem(_saveItem);
             }
             else
             {
-                // 从存档恢复计数器，至少从 1 开始
-                _nextBuildingID = Math.Max(_saveItem.nextId, 1L);
+                // Debug.LogWarning("BuildingIdGenerator.InitializeFromSave called without valid saved ID, defaulting to 1.");
+                _nextBuildingID = 1L;
+                _initialized = true;
+                return;
             }
+            // if (_initialized) return;
+            // _initialized = true;
+
+            // var mgr = ScribeSaveManager.Instance;
+            // if (mgr == null)
+            // {
+            //     // 没有存档管理器，就只用内存计数（不会持久化）
+            //     return;
+            // }
+
+            // // 找有没有已经存在的计数条目（通常只有一个）
+            // _saveItem = mgr.GetItems<BuildingIdSaveData>().FirstOrDefault();
+            // Debug.Log("Loaded BuildingIdSaveData: " + (_saveItem != null ? _saveItem.nextId.ToString() : "null"));
+
+
+            // if (_saveItem == null)
+            // {
+            //     // 旧存档里没有这个条目：创建一份新的，并用当前内存值初始化
+            //     _saveItem = new BuildingIdSaveData { nextId = _nextBuildingID };
+            //     mgr.AddItem(_saveItem);
+            // }
+            // else
+            // {
+            //     // 从存档恢复计数器，至少从 1 开始
+            //     _nextBuildingID = Math.Max(_saveItem.nextId, 1L);
+            // }
         }
 
         /// <summary>
@@ -86,37 +107,16 @@ namespace Kernel.Building
         /// </summary>
         public static void RegisterSaveType()
         {
-            PolymorphRegistry.Register<SaveItem>(SaveItemTypeId);
+            PolymorphRegistry.Register<BuildingIdSaveData>(SaveItemTypeId);
         }
-
-        // —— 兼容旧接口（可选）——
-        // 如果你项目里还有旧保存逻辑，可以这样桥接到新的实现：
-        // public static void LoadFromSavedData(long lastUsedID)
-        // {
-        //     EnsureInitialized();
-        //     if (lastUsedID >= _nextBuildingID)
-        //         _nextBuildingID = lastUsedID;
-
-        //     if (_saveItem != null)
-        //         _saveItem.nextId = _nextBuildingID;
-        // }
-
-        // public static void SaveLastUsedID(out long lastUsedID)
-        // {
-        //     EnsureInitialized();
-        //     lastUsedID = _nextBuildingID;
-        //     if (_saveItem != null)
-        //         _saveItem.nextId = _nextBuildingID;
-        // }
 
         // —— 内部工具 —— //
         private static void EnsureInitialized()
         {
             if (!_initialized)
             {
-                // 如果你保证外面会显式调用 InitializeFromSave，可以直接 return；
                 // 这里做个兜底，防止忘记初始化时也不会炸。
-                InitializeFromSave();
+                // InitializeFromSave();
             }
         }
 
@@ -125,17 +125,25 @@ namespace Kernel.Building
         /// 由 Scribe 系统负责序列化/反序列化。
         /// </summary>
         [Serializable]
-        private sealed class SaveItem : ISaveItem
+        public class BuildingIdSaveData : ISaveItem
         {
             public string TypeId => SaveItemTypeId;
 
-            public long nextId = 1;
+            public long nextId;
 
             public void ExposeData()
             {
-                // 用我们之前的 long Codec，通过泛型 Look 保存/读取
-                Scribe.Scribe_Generic.Look("nextId", ref nextId, 1L, forceSave: true);
+                
+                Scribe_Values.Look(TypeId, ref nextId, -1L);
+            
+                if(Scribe.mode == ScribeMode.Loading)
+                {
+                    InitializeFromSave(nextId);
+                    BuildingIdGenerator._saveItem = this;
+                }
             }
+
+            
         }
     }
 }

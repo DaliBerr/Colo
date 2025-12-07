@@ -298,7 +298,7 @@ namespace Kernel.Building
             }
             if(!placementTilemap.HasTile(anchorCell))
             {
-                Log.Warn("[BuildingPlacement] CheckCanPlace 时目标格子无 Tile。");
+                // Log.Warn("[BuildingPlacement] CheckCanPlace 时目标格子无 Tile。");
                 return false;
             }
 

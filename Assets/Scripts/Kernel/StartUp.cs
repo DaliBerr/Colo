@@ -1,5 +1,6 @@
 using System.Collections;
 using System.IO;
+using Kernel.Status;
 using Kernel.UI;
 using Lonize.Logging;
 using Lonize.UI;
@@ -19,9 +20,11 @@ namespace Kernel
 
         [SerializeField] private bool isLoadStartMenu = true;
         [SerializeField] private bool isLoadLocalizationSystem = true;
+        
+        [SerializeField] private bool isDevMode = false;
         [Header("系统模块预制体")]
         [SerializeField] private AssetReference musicSystemPrefab;
-
+        
         public static class LoggingInit
         {
             [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -62,6 +65,10 @@ namespace Kernel
             {
                 UIManager.Instance.PushScreen<MainMenuScreen>();
                 yield return null;
+            }
+            if (isDevMode)
+            {
+                StatusController.AddStatus(StatusList.DevModeStatus);
             }
             // yield return StartCoroutine(InitKeyBindings());
         }
