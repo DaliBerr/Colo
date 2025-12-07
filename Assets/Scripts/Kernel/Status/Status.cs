@@ -91,6 +91,22 @@ namespace Kernel.Status
             allowSwitchWith = new List<string> { "Paused" },
             Persistent = false
         };
+
+        public static Status GameLoadingStatus = new Status
+        {
+            StatusName = "Loading",
+            InActiveWith = new List<string> { "Paused", "Playing", "SaveLoading" },
+            allowSwitchWith = new List<string> { "Paused", "Playing", "SaveLoading" },
+            Persistent = false
+        };
+
+        public static Status SaveLoadingStatus = new Status
+        {
+            StatusName = "SaveLoading",
+            InActiveWith = new List<string> { "Paused", "Playing", "GameLoading" },
+            allowSwitchWith = new List<string> { "Paused", "Playing", "GameLoading" },
+            Persistent = false
+        };
         #endregion
 
         /// <summary>
@@ -110,6 +126,8 @@ namespace Kernel.Status
             Register(NormalModeStatus);
             Register(PausedStatus);
             Register(PlayingStatus);
+            Register(GameLoadingStatus);
+            Register(SaveLoadingStatus);
         }
 
         /// <summary>

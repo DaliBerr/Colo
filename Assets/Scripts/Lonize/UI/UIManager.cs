@@ -58,8 +58,18 @@ namespace Lonize.UI
         {
             StartCoroutine(PushScreenCo<T>());
         }
+
+        // summary: 顺序压栈指定类型的UIScreen，并等待动画完成。
+        // param T: 要创建的UIScreen类型。
+        // return: 用于yield的协程枚举器。
+        public IEnumerator PushScreenAndWait<T>() where T : UIScreen
+        {
+
+            yield return PushScreenCo<T>();
+        }
         public void PopScreen()
         {
+            Debug.Log("Popping screen.");
             if (screenStack.Count == 0) return;
             StartCoroutine(PopScreenCo());
         }

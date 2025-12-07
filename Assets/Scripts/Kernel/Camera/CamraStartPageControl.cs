@@ -10,15 +10,15 @@ namespace Kernel
         {
             CameraComponent = GetComponentInChildren<Camera>();
             zoomSpeed = 0f;
-            panSpeed = 1f;
+            panSpeed = 0f;
 
         }
 
         protected override void HandlePan()
         {
             
-            float moveX = Random.Range(-0.5f, 0.5f) * panSpeed * Time.deltaTime;
-            float moveY = Random.Range(-0.5f, 0.5f) * panSpeed * Time.deltaTime;
+            // float moveX = Random.Range(-0.5f, 0.5f) * panSpeed * Time.deltaTime;
+            // float moveY = Random.Range(-0.5f, 0.5f) * panSpeed * Time.deltaTime;
         }
     }
 

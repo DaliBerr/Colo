@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Kernel.Status;
+using Kernel.UI;
 using Lonize.Events;
 using Lonize.Logging;
 using Newtonsoft.Json;
@@ -112,55 +114,64 @@ namespace Kernel.Building
             }
 
 
-            foreach (var ta in assets)
+            int total = assets?.Count ?? 0;
+            int loadedCount = 0;
+            if (total <= 0)
             {
-                // if(ta.name == "DefType") continue;
-                // Debug.Log($"[Building] Loading BuildingDef from asset: {ta.name}");
-                if (!ta) continue;
-                try
+                GlobalLoadingProgress.ReportBuilding(1, 1);
+            }
+            else
+            {
+                // 解析每个 TextAsset
+                foreach (var ta in assets)
                 {
-                    // 第一步：先读头部，拿到 Id 和 DefType
-                    var header = JsonConvert.DeserializeObject<BuildingDefHeader>(ta.text, _jsonSettings);
-                    if (header == null)
+                    try
                     {
-                        Debug.LogError($"[Building] 解析头部失败（资产：{ta.name}）");
-                        // Log.Error($"[Building] 解析头部失败（资产：{ta.name}）");
-                        continue;
-                    }
+                        if (!ta) continue;
 
-                    // 决定应该反序列化成哪种具体 Def 类型
-                    var targetType = ResolveDefType(header.defType);
-
-                    // 第二步：按具体类型反序列化
-                    var defObj = JsonConvert.DeserializeObject(ta.text, targetType, _jsonSettings);
-                    if (defObj is not BuildingDef def)
-                    {
-                        Debug.LogError($"[Building] 解析失败，结果不是 BuildingDef（资产：{ta.name}，类型：{targetType}）");
-                        // Log.Error($"[Building] 解析失败，结果不是 BuildingDef（资产：{ta.name}，类型：{targetType}）");
-                        continue;
-                    }
-
-                    // 原有校验流程保持不变
-                    if (BuildingValidation.Validate(def, out var msg))
-                    {
-                        if (!Defs.TryAdd(def.Id, def))
+                        // 第一步：先读头部，拿到 Id 和 DefType
+                        var header = JsonConvert.DeserializeObject<BuildingDefHeader>(ta.text, _jsonSettings);
+                        if (header == null)
                         {
-                            Debug.LogError($"[Building] 重复ID：{def.Id}（资产：{ta.name}）");
-                            // Log.Error($"[Building] 重复ID：{def.Id}（资产：{ta.name}）");
+                            Debug.LogError($"[Building] 解析头部失败（资产：{ta.name}）");
+                            continue;
+                        }
+
+                        var targetType = ResolveDefType(header.defType);
+
+                        // 第二步：按具体类型反序列化
+                        var defObj = JsonConvert.DeserializeObject(ta.text, targetType, _jsonSettings);
+                        if (defObj is not BuildingDef def)
+                        {
+                            Debug.LogError($"[Building] 解析失败，结果不是 BuildingDef（资产：{ta.name}，类型：{targetType}）");
+                            continue;
+                        }
+
+                        if (BuildingValidation.Validate(def, out var msg))
+                        {
+                            if (!Defs.TryAdd(def.Id, def))
+                            {
+                                Debug.LogError($"[Building] 重复ID：{def.Id}（资产：{ta.name}）");
+                            }
+                        }
+                        else
+                        {
+                            Debug.LogError($"[Building] 定义非法（资产：{ta.name}）：\n{msg}");
                         }
                     }
-                    else
+                    catch (System.Exception ex)
                     {
-                        Debug.LogError($"[Building] 定义非法（资产：{ta.name}）：\n{msg}");
-                        // Log.Error($"[Building] 定义非法（资产：{ta.name}）：\n{msg}");
+                        Debug.LogError($"[Building] 解析失败（资产：{ta.name}）：\n{ex}");
+                    }
+                    finally
+                    {
+                        // ★ 无论成败都算处理完一个资产，更新进度
+                        loadedCount++;
+                        GlobalLoadingProgress.ReportBuilding(loadedCount, total);
                     }
                 }
-                catch (System.Exception ex)
-                {
-                    Debug.LogError($"[Building] 解析失败（资产：{ta.name}）：\n{ex}");
-                    // Log.Error($"[Building] 解析失败（资产：{ta.name}）：\n{ex}");
-                }
             }
+
 
             if (loadHandle.IsValid()) Addressables.Release(loadHandle);
             if (locHandle.IsValid()) Addressables.Release(locHandle);

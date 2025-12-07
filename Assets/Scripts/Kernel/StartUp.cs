@@ -1,5 +1,7 @@
 using System.Collections;
 using System.IO;
+using Kernel.Building;
+using Kernel.Item;
 using Kernel.Status;
 using Kernel.UI;
 using Lonize.Logging;
@@ -10,21 +12,13 @@ namespace Kernel
 {
 
 
+ namespace Kernel
+{
     public sealed class Startup : MonoBehaviour
     {
         public static Startup Instance { get; private set; }
         private static readonly bool useDontDestroyOnLoad = true;
-        [Header("系统模块加载开关")]
-        [SerializeField] private bool isLoadMusicSystem = true;
-        // [SerializeField] private bool isLoadSaveSystem = true;
 
-        [SerializeField] private bool isLoadStartMenu = true;
-        [SerializeField] private bool isLoadLocalizationSystem = true;
-        
-        [SerializeField] private bool isDevMode = false;
-        [Header("系统模块预制体")]
-        [SerializeField] private AssetReference musicSystemPrefab;
-        
         public static class LoggingInit
         {
             [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -51,59 +45,88 @@ namespace Kernel
             if (useDontDestroyOnLoad)
                 DontDestroyOnLoad(gameObject);
         }
-        // 启动时显示主菜单
+
         IEnumerator Start()
         {
-            // yield return null; // 等一帧，确保 UIRoot/Manager 就绪
+            // 如果担心 UIManager 还没起来，可以在这里先 yield return null;
+            // yield return null;
             yield return StartCoroutine(Boot());
         }
 
+        /// <summary>
+        /// 启动协程：初始化状态系统，顺序压栈主菜单
+        ///  + 加载界面，执行全局初始化。
+        /// </summary>
+        /// <returns>协程枚举器。</returns>
+        
         private IEnumerator Boot()
         {
+            // 1) 初始化状态系统
+            StatusController.Initialize();
+            GlobalLoadingProgress.Reset();
+
+            // 2) 顺序压栈主菜单（作为底层界面）
+            //    等 MainMenu 创建 + Show 动画完全结束
+            yield return UIManager.Instance.PushScreenAndWait<MainMenuScreen>();
+
+            // 3) 再添加“游戏加载中”状态，并把加载界面压在主菜单上面
+            StatusController.AddStatus(StatusList.GameLoadingStatus);
+
+            //    同样顺序压栈 GameLoading（这时 MainMenu 会被 Hide）
+            yield return UIManager.Instance.PushScreenAndWait<GameLoading>();
+            Debug.Log("[Startup] Pushed GameLoading Screen (with waiting)");
+
+            // 4) 执行全局初始化（Addressables + Def 加载）
             yield return StartCoroutine(InitGlobal());
-            if (isLoadStartMenu)
-            {
-                UIManager.Instance.PushScreen<MainMenuScreen>();
-                yield return null;
-            }
-            if (isDevMode)
-            {
-                StatusController.AddStatus(StatusList.DevModeStatus);
-            }
-            // yield return StartCoroutine(InitKeyBindings());
+
+            // 5) 不要再 Push 主菜单：GameLoading 完成时会自己 Pop，
+            //    然后 UIManager 会把下面的 MainMenu 再 Show 出来。
         }
 
+        /// <summary>
+        /// 全局初始化：初始化 Addressables 并加载静态 Def 数据。
+        /// </summary>
+        /// <returns>协程枚举器。</returns>
         private IEnumerator InitGlobal()
         {
-            yield return Addressables.InitializeAsync();
-            if (isLoadMusicSystem && musicSystemPrefab != null)
-            {
-                var handle = musicSystemPrefab.InstantiateAsync();
-                yield return handle;
-                if (handle.Status == UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.Succeeded)
-                {
-                    if (useDontDestroyOnLoad)
-                        DontDestroyOnLoad(handle.Result);
-                }
-                else
-                {
-                    // Debug.LogError("[Startup] 音乐系统预制体实例化失败！");
-                    Log.Error("[Startup] Music system prefab instantiation failed!");
-                }
-            }
-            yield return null;
-            yield break;
+            // 1) Addressables 初始化
+            var initHandle = Addressables.InitializeAsync();
+            yield return initHandle;
 
+            // 2) 加载所有 Def（建筑 / 物品）
+            yield return StartCoroutine(LoadAllDefsCoroutine());
 
+            // 3) 预留位置：例如音乐系统、按键绑定等后续全局初始化内容
         }
-        // private IEnumerator InitKeyBindings()
-        // {
-            
 
-        // }
+        /// <summary>
+        /// 协程形式等待 Building / Item Def 异步加载完成。
+        /// </summary>
+        /// <returns>协程枚举器。</returns>
+        private IEnumerator LoadAllDefsCoroutine()
+        {
+            // GlobalLoadingProgress.Reset();
+            // StatusController.AddStatus(StatusList.GameLoadingStatus);
+            // UIManager.Instance.PushScreen<GameLoading>();
+            // 建筑定义加载 :contentReference[oaicite:3]{index=3}
+            var buildingTask = BuildingDatabase.LoadAllAsync();
+            while (!buildingTask.IsCompleted)
+            {
+                yield return null;
+            }
 
-
-
+            // 物品定义加载 :contentReference[oaicite:4]{index=4}
+            var itemTask = ItemDatabase.LoadAllAsync();
+            while (!itemTask.IsCompleted)
+            {
+                yield return null;
+            }
+        }
     }
+}
+
+
+
 
 }
+

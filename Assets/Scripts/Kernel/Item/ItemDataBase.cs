@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Kernel.Status;
+using Kernel.UI;
 using Lonize.Events;
 using Lonize.Logging;
 using Newtonsoft.Json;
@@ -22,11 +24,16 @@ namespace Kernel.Item
             NullValueHandling = NullValueHandling.Ignore
         };
 
+        /// <summary>
+        /// 异步加载所有物品定义。
+        /// </summary>
+        /// <param name="labelOrGroup">Addressables 的标签或分组名。</param>
+        /// <returns>异步任务。</returns>
         public static async Task LoadAllAsync(string labelOrGroup = "ItemDef")
-        {   
+        {
             Defs.Clear();
 
-            // 1) 查找所有 TextAsset 资源位置（限定类型为 TextAsset）——固定使用名为 "ItemDef" 的 group
+            // 1) 查找所有 TextAsset 资源位置
             AsyncOperationHandle<IList<IResourceLocation>> locHandle =
                 Addressables.LoadResourceLocationsAsync(labelOrGroup, typeof(TextAsset));
 
@@ -37,15 +44,17 @@ namespace Kernel.Item
             }
             catch (System.Exception ex)
             {
-                Log.Error($"[Items] 查询 Addressables 失败（Group: ItemDef）：\n{ex}");
+                Log.Error($"[Items] 查询 Addressables 失败（Group: {labelOrGroup}）：\n{ex}");
                 if (locHandle.IsValid()) Addressables.Release(locHandle);
+                GlobalLoadingProgress.ReportItem(1, 1);
                 return;
             }
 
             if (locations == null || locations.Count == 0)
             {
-                Log.Warn($"[Items] 未在 Addressables 中找到任何 TextAsset（Group: ItemDef）。");
+                Log.Warn($"[Items] 未在 Addressables 中找到任何 TextAsset（Group: {labelOrGroup}）。");
                 if (locHandle.IsValid()) Addressables.Release(locHandle);
+                GlobalLoadingProgress.ReportItem(1, 1);
                 return;
             }
 
@@ -63,41 +72,52 @@ namespace Kernel.Item
                 Log.Error($"[Items] 批量加载 TextAsset 失败：\n{ex}");
                 if (loadHandle.IsValid()) Addressables.Release(loadHandle);
                 if (locHandle.IsValid()) Addressables.Release(locHandle);
+                GlobalLoadingProgress.ReportItem(1, 1);
                 return;
             }
 
-            // 3) 解析每个 JSON → ItemDef
-            foreach (var ta in assets)
+            // ★ 统计数量并初始化进度
+            int total = assets?.Count ?? 0;
+            int loadedCount = 0;
+            if (total <= 0)
             {
-                Log.Info($"[Items] Loading ItemDef from asset: {ta.name}");
-                if (ta == null) continue;
-                try
+                GlobalLoadingProgress.ReportItem(1, 1);
+            }
+            else
+            {
+                // 3) 解析每个 JSON → ItemDef
+                foreach (var ta in assets)
                 {
-                    var def = JsonConvert.DeserializeObject<ItemDef>(ta.text, _jsonSettings);
-                    if (ItemValidation.Validate(def, out var msg))
+                    try
                     {
-                        if (!Defs.TryAdd(def.Id, def))
+                        Log.Info($"[Items] Loading ItemDef from asset: {ta?.name}");
+                        if (ta == null) continue;
+
+                        var def = JsonConvert.DeserializeObject<ItemDef>(ta.text, _jsonSettings);
+                        if (ItemValidation.Validate(def, out var msg))
                         {
-                            Log.Error($"[Items] 重复的物品ID：{def.Id}（资产名：{ta.name}）");
+                            if (!Defs.TryAdd(def.Id, def))
+                            {
+                                Log.Error($"[Items] 重复的物品ID：{def.Id}（资产名：{ta.name}）");
+                            }
+                        }
+                        else
+                        {
+                            Log.Error($"[Items] 定义非法（资产名：{ta.name}）：\n{msg}");
                         }
                     }
-                    else
+                    catch (System.Exception ex)
                     {
-                        Log.Error($"[Items] 定义非法（资产名：{ta.name}）：\n{msg}");
+                        Log.Error($"[Items] 解析失败（资产名：{ta?.name}）：\n{ex}");
+                    }
+                    finally
+                    {
+                        // ★ 同样在 finally 里更新进度
+                        loadedCount++;
+                        GlobalLoadingProgress.ReportItem(loadedCount, total);
                     }
                 }
-                catch (System.Exception ex)
-                {
-                    Log.Error($"[Items] 解析失败（资产名：{ta?.name}）：\n{ex}");
-                }
             }
-
-            // 4) 释放句柄（防资源泄漏）
-            if (loadHandle.IsValid()) Addressables.Release(loadHandle);
-            if (locHandle.IsValid()) Addressables.Release(locHandle);
-
-            // 5) 广播事件
-            Events.eventBus.Publish(new ItemLoaded(Defs.Count));
         }
         public static bool TryGet(string id, out ItemDef def) => Defs.TryGetValue(id, out def);
 

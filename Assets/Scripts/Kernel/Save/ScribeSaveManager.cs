@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Lonize.Scribe;
 using Lonize.Logging;
 using Kernel.Status;
+using Kernel.Building;
 
 /// <summary>
 /// 放到场景里一个物体上；Awake 自动注册多态条目并加载；对外暴露 Save()/Load() 与 Items。
@@ -63,7 +64,7 @@ namespace Kernel
             CodecRegistry.Register(new DictStrEnumInt32Codec<KeyCode>());
 
 
-            Kernel.Building.BuildingIdGenerator.RegisterSaveType();
+            BuildingIdGenerator.RegisterSaveType();
 
 
             // PolymorphRegistry.Register<SaveControlCommand>("ControlCommandPref");

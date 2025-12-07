@@ -71,6 +71,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
     <Compile Include="Assets\Scripts\Kernel\Map\WorldMapGenerator.cs" />
     <Compile Include="Assets\Scripts\Kernel\Save\GlobalSeeting\GlobalSettingsData.cs" />
+    <Compile Include="Assets\Scripts\Kernel\UI\LoadingProgress.cs" />
     <Compile Include="Assets\Scripts\Kernel\Item\ItemValidation.cs" />
     <Compile Include="Assets\Scripts\Kernel\Audio\AudioManager.cs" />
     <Compile Include="Assets\Scripts\Lonize\Event\Events.cs" />
@@ -93,7 +94,6 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexZoom.cs" />
     <Compile Include="Assets\Scripts\Kernel\Pool\PoolManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_B.cs" />
-    <Compile Include="Assets\Scripts\Kernel\UI\GameLoadingUI.cs" />
     <Compile Include="Assets\Scripts\Kernel\Input\KeyBoaradControl.cs" />
     <Compile Include="Assets\Scripts\Kernel\Building\BuildingColliderInit.cs" />
     <Compile Include="Assets\Scripts\Colo\Building\PowerGenerator.cs" />
@@ -106,6 +106,7 @@
     <Compile Include="Assets\Scripts\Kernel\Nav\PathfindingManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextInfoDebugTool.cs" />
     <Compile Include="Assets\Scripts\Kernel\Map\MapGenerator.cs" />
+    <Compile Include="Assets\Scripts\Kernel\UI\LoadingModal.cs" />
     <Compile Include="Assets\Scripts\Kernel\Flow\Connect.cs" />
     <Compile Include="Assets\Scripts\Kernel\Building\BuildingValidation.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeA.cs" />
