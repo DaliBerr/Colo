@@ -19,6 +19,8 @@ namespace Kernel
         public static Startup Instance { get; private set; }
         private static readonly bool useDontDestroyOnLoad = true;
 
+        [SerializeField] public bool isEnableDevMode = true;
+
         public static class LoggingInit
         {
             [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -48,6 +50,7 @@ namespace Kernel
 
         IEnumerator Start()
         {
+
             // 如果担心 UIManager 还没起来，可以在这里先 yield return null;
             // yield return null;
             yield return StartCoroutine(Boot());
@@ -64,7 +67,10 @@ namespace Kernel
             // 1) 初始化状态系统
             StatusController.Initialize();
             GlobalLoadingProgress.Reset();
-
+            if (isEnableDevMode)
+            {
+                StatusController.AddStatus(StatusList.DevModeStatus);
+            }
             // 2) 顺序压栈主菜单（作为底层界面）
             //    等 MainMenu 创建 + Show 动画完全结束
             yield return UIManager.Instance.PushScreenAndWait<MainMenuScreen>();

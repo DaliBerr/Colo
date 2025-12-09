@@ -27,6 +27,8 @@ namespace Kernel.Audio
         /// 全局单例实例。
         /// </summary>
         public static AudioManager Instance { get; private set; }
+        
+
 
         [Header("SFX Settings")]
         [SerializeField]

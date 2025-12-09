@@ -53,7 +53,9 @@ namespace Kernel
             PolymorphRegistry.Register<SaveInt>("Int");
             PolymorphRegistry.Register<SaveFloat>("Float");
             
+
             PolymorphRegistry.Register<StatusSaveData>("StatusNames");
+            PolymorphRegistry.Register<SaveAllBuildings>("AllBuildings");
 
 
             CodecRegistry.Register(new BoolCodec());
@@ -65,7 +67,6 @@ namespace Kernel
 
 
             BuildingIdGenerator.RegisterSaveType();
-
 
             // PolymorphRegistry.Register<SaveControlCommand>("ControlCommandPref");
            

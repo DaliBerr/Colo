@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using UnityEngine;
 
 namespace Kernel.Building
 {
@@ -22,6 +23,8 @@ namespace Kernel.Building
     {
         public BuildingDef Def;
         public long BuildingID;
+        public Vector2Int CellPosition; // 基于网格的坐标
+        public byte RotationSteps; // 0-3，表示0/90/180/
         public int HP;
         public Dictionary<string, float> RuntimeStats = new();
     }

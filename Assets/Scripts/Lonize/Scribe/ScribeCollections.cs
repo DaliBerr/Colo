@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Kernel.Building;
 using Newtonsoft.Json.Linq;
 
 namespace Lonize.Scribe
@@ -67,6 +68,63 @@ namespace Lonize.Scribe
                 else list = null;
             }
         }
+        public static void Look(string tag, ref List<SaveBuildingInstance> list)
+        {
+            if (Scribe.mode == ScribeMode.Saving)
+            {
+                Scribe.WriteField(FieldType.ListSaveBuildingInstance, tag, list);
+            }
+            else if (Scribe.mode == ScribeMode.Loading)
+            {
+                if (!Scribe.TryGetField(tag, out var rec) || rec.Type != FieldType.ListSaveBuildingInstance) { list = null; return; }
+                if (rec.Value is byte[] bytes)
+                {
+                    using var br = new BinaryReader(new MemoryStream(bytes));
+                    int n = br.ReadInt32();
+                    if (n < 0) { list = null; return; }
+                    list = new List<SaveBuildingInstance>(n);
+                    for (int i = 0; i < n; i++)
+                    {
+                        bool has = br.ReadBoolean();
+                        if (has)
+                        {
+                            var instance = new SaveBuildingInstance
+                            {
+                                DefId = br.ReadString(),
+                                RuntimeId = br.ReadInt64(),
+                                CellX = br.ReadInt32(),
+                                CellY = br.ReadInt32(),
+                                RotSteps = br.ReadByte(),
+                                HP = br.ReadInt32()
+                            };
+                            int statCount = br.ReadInt32();
+                            instance.StatKeys = new string[statCount];
+                            instance.StatValues = new float[statCount];
+                            for (int j = 0; j < statCount; j++)
+                            {
+                                instance.StatKeys[j] = br.ReadString();
+                                instance.StatValues[j] = br.ReadSingle();
+                            }
+                            list.Add(instance);
+                        }
+                        else
+                        {
+                            list.Add(null);
+                        }
+                    }
+                }
+                else if (rec.Value is JArray arr)
+                {
+                    list = arr.ToObject<List<SaveBuildingInstance>>();
+                }
+                else if (rec.Value is IEnumerable<SaveBuildingInstance> instances)
+                {
+                    list = new List<SaveBuildingInstance>(instances);
+                }
+                else list = null;
+            }
+        }
+
         public static void LookDeep<T>(string tag, ref List<T> list) where T : class, IExposable, new()
         {
             if (Scribe.mode == ScribeMode.Saving)

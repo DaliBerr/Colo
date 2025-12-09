@@ -172,39 +172,6 @@ Transform:
   - {fileID: 1382646486}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &235392520
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 235392521}
-  m_Layer: 0
-  m_Name: MusicSystem
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &235392521
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 235392520}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -386.99762, y: 216.80023, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 537737009}
-  - {fileID: 618898548}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &282320048 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8454073593690312813, guid: 0edba941047a1504b9a9f67ce8ea3df1, type: 3}
@@ -299,11 +266,11 @@ Transform:
   m_GameObject: {fileID: 537737007}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -660.95184, y: -593.9979, z: 0}
+  m_LocalPosition: {x: -1047.9495, y: -377.1977, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 235392521}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &618898547
 GameObject:
@@ -331,11 +298,11 @@ Transform:
   m_GameObject: {fileID: 618898547}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -660.95184, y: -593.9979, z: 0}
+  m_LocalPosition: {x: -1047.9495, y: -377.1977, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 235392521}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &618898549
 MonoBehaviour:
@@ -536,6 +503,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5f53eb8517032f4fbfd95d0ab082b4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isEnableDevMode: 1
 --- !u!114 &1310737498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1102,7 +1070,8 @@ SceneRoots:
   - {fileID: 4683376907322697411}
   - {fileID: 1310737495}
   - {fileID: 743688226413381271}
-  - {fileID: 235392521}
+  - {fileID: 537737009}
+  - {fileID: 618898548}
   - {fileID: 1716536988}
   - {fileID: 364456311}
   - {fileID: 4182042800899073764}

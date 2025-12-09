@@ -52,6 +52,7 @@ namespace Kernel.Audio
         private void Awake()
         {
             _random = new System.Random();
+            DontDestroyOnLoad(gameObject);
         }
 
         /// <summary>

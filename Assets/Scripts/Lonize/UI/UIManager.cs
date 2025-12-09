@@ -69,7 +69,7 @@ namespace Lonize.UI
         }
         public void PopScreen()
         {
-            Debug.Log("Popping screen.");
+            // Debug.Log("Popping screen.");
             if (screenStack.Count == 0) return;
             StartCoroutine(PopScreenCo());
         }

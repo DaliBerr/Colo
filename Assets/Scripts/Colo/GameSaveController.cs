@@ -1,5 +1,4 @@
 using Kernel;
-using Kernel.Building;
 using UnityEngine;
 
 namespace Colo
@@ -30,37 +29,18 @@ namespace Colo
         {
             var saveMgr = ScribeSaveManager.Instance;
         
-        // 1. 【关键】先清空，否则数据会无限堆叠
-        saveMgr.Data.Items.Clear();
+            saveMgr.Data.Items.Clear();
 
-        // 2. 收集玩家数据（举例）
-        // var player = FindObjectOfType<PlayerController>();
-        // var savePlayer = new SaveInt(); // 假设你用 SaveInt 存血量作为演示
-        // savePlayer.Value = player.HP;
-        // saveMgr.AddItem(savePlayer);
+            // Debug.Log($"Collected {allBuildings.Length} buildings for saving.");
+            // 添加状态数据保存项
+            saveMgr.AddItem(new Kernel.Building.SaveAllBuildings());
+            saveMgr.AddItem(new Kernel.Status.StatusSaveData());
+            // Debug.Log("saveItem : " + BuildingIdGenerator._saveItem);
 
-        // 3. 收集所有建筑数据
-        var allBuildings = FindObjectsByType<BuildingView>(FindObjectsSortMode.None);
-        
-        
-        foreach (var build in allBuildings)
-        {
-
-            /* var saveBuild = new SaveBuilding();
-            saveBuild.Position = build.transform.position;
-            saveBuild.TypeId = build.BuildingTypeId;
-            saveMgr.AddItem(saveBuild);
-            */
-        }
-        // Debug.Log($"Collected {allBuildings.Length} buildings for saving.");
-        // 添加状态数据保存项
-        saveMgr.AddItem(new Kernel.Status.StatusSaveData());
-        // Debug.Log("saveItem : " + BuildingIdGenerator._saveItem);
-
-        saveMgr.AddItem(BuildingIdGenerator._saveItem);
-        // 4. 落盘
-        saveMgr.Save();
-        Debug.Log("游戏已保存！");
+            saveMgr.AddItem(Kernel.Building.BuildingIdGenerator._saveItem);
+            // 4. 落盘
+            saveMgr.Save();
+            Debug.Log("游戏已保存！");
 
         }
 
@@ -75,27 +55,8 @@ namespace Colo
             Debug.LogWarning("没有存档文件！");
             return;
         }
-
-        // 2. 清理场景（把旧的建筑删了，准备生成新的）
-        var oldBuildings = FindObjectsByType<BuildingView>(FindObjectsSortMode.None);
-        foreach (var b in oldBuildings) Destroy(b.gameObject);
-
-        // 3. 还原数据
-        foreach (var item in saveMgr.Data.Items)
-        {
-            // 识别这是什么类型的数据
-            if (item is SaveInt playerHp) // C# 模式匹配
-            {
-                // FindObjectOfType<PlayerController>().HP = playerHp.Value;
-            }
-            // else if (item is SaveBuilding buildData)
-            // {
-            //     // 重新生成物体
-            //     var newObj = Instantiate(buildingPrefab, buildData.Position, Quaternion.identity);
-            //     newObj.GetComponent<BuildingView>().Init(buildData);
-            // }
-        }
-        
+        //这里什么也没做，只是为了触发 ScribeSaveManager 的 Load 逻辑
+        //加载部分都在各个 SaveItem 的 ExposeData中的Loading 部分处理
         Debug.Log("游戏读取完毕！");
     }
     }

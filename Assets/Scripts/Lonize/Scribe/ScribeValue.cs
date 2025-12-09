@@ -166,5 +166,7 @@ namespace Lonize.Scribe
             if (raw == null) return defaultValue;
             return Convert.ToInt32(raw);
         }
+
+        
     }
 }

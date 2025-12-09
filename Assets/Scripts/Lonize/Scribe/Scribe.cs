@@ -37,6 +37,9 @@ namespace Lonize.Scribe
         RefId = 40, // 引用（string id）
         ListRefId = 41,
         ListPoly = 63,
+    
+        ListSaveBuildingInstance = 100,
+        
     }
 
     public interface IExposable { void ExposeData(); }

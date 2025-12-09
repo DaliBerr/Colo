@@ -253,13 +253,20 @@ namespace Kernel.Building
         {
             go.transform.SetParent(buildingRoot, true);
         }
-
+        var runtimeHost = go.GetComponent<BuildingRuntimeHost>();
+        if (runtimeHost != null)
+        {
+            // 这里先给它打上 DefId，RuntimeId 可以是全局自增，也可以先不管
+            runtimeHost.Runtime.Def.Id = _currentDef.Id;
+            // runtimeHost.Runtime.BuildingID = RuntimeIdGenerator.Next(); // 如果你有的话
+            // runtimeHost.Runtime.HP = _currentDef.MaxHP;         // 或者默认值
+}
         Log.Info($"[BuildingPlacement] 已放置建筑：{_currentDef.Id} @ {worldPos}");
 
         var nav = navGrid != null ? navGrid : NavGrid.Instance;
         nav?.UpdateAreaBlocked(cellPos, _currentDef.Width, _currentDef.Height, _rotationSteps, true);
 
-        var runtimeHost = go.GetComponent<BuildingRuntimeHost>();
+        // var runtimeHost = go.GetComponent<BuildingRuntimeHost>();
         Events.eventBus.Publish(new BuildingPlaced(true, runtimeHost));
     }
 
