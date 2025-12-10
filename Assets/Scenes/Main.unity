@@ -1402,7 +1402,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1506011629
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1442,16 +1442,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5f53eb8517032f4fbfd95d0ab082b4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isLoadMusicSystem: 0
-  isLoadStartMenu: 1
-  isLoadLocalizationSystem: 0
-  isDevMode: 0
-  musicSystemPrefab:
-    m_AssetGUID: 
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_SubObjectGUID: 
-    m_EditorAssetChanged: 0
+  isEnableDevMode: 1
 --- !u!4 &1506011632
 Transform:
   m_ObjectHideFlags: 0

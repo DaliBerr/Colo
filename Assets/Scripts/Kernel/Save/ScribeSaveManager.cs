@@ -38,7 +38,8 @@ namespace Kernel
             RegisterSaveItems();
 
             FilePath = Path.Combine(Application.persistentDataPath, fileName);
-            LoadOrCreate();
+            // LoadOrCreate();
+            Data = new PolySaveData();
             Log.Info($"[ScribeSaveManager] Ready. Path = {FilePath}");
             
         }

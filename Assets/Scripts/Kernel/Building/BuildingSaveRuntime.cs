@@ -13,7 +13,7 @@ namespace Kernel.Building
     /// </summary>
     public static class BuildingSaveRuntime
     {
-        private static bool _hasRestoredOnce = false;
+        // private static bool _hasRestoredOnce = false;
 
         /// <summary>
         /// summary: 收集场景中所有建筑并写入存档列表
@@ -122,8 +122,7 @@ namespace Kernel.Building
                     // }
                 }
 
-                // TODO: 如果你的 PoolManager 有专门的 Release 接口，可以改成回收
-                Object.Destroy(go);
+                PoolManager.Instance.ReturnToPool(go);
             }
 
             Log.Info($"[SaveAllBuildings] ClearExistingBuildings：清理 {hosts.Length} 个建筑。");

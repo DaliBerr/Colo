@@ -140,7 +140,6 @@
     <Compile Include="Assets\Scripts\Lonize\Scribe\ScribeCrossRefs.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs" />
     <Compile Include="Assets\Scripts\Lonize\Event\EventBus.cs" />
-    <Compile Include="Assets\Scripts\Kernel\Input\initPref.cs" />
     <Compile Include="Assets\Scripts\Kernel\Building\BuildingRemoveController.cs" />
     <Compile Include="Assets\Scripts\Kernel\TickControl.cs" />
     <Compile Include="Assets\Scripts\Kernel\Audio\MainAudioPlayer.cs" />

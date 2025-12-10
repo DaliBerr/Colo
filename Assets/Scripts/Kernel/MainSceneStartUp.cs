@@ -14,7 +14,7 @@ namespace Kernel
     {
         public static MainSceneStartUp Instance { get; private set; }
 
-        private static readonly bool useDontDestroyOnLoad = true;
+        private static readonly bool useDontDestroyOnLoad = false;
         async void Awake()
         {
             // Addressables.InitializeAsync().Task;
