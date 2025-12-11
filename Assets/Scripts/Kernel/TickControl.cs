@@ -16,7 +16,8 @@ namespace Kernel
 
             if (tickDriver == null)
             {
-                Log.Error("TickControl: TickDriver not found."); // 用你自己的 Log
+                GameDebug.LogError("TickControl: TickDriver not found.");
+                Log.Error("TickControl: TickDriver not found.");
                 enabled = false;
                 return;
             }

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Lonize.Logging;
 using UnityEngine;
 
 namespace Kernel.Audio
@@ -91,7 +92,7 @@ namespace Kernel.Audio
 
             if (_bgmIds == null || _bgmIds.Count == 0)
             {
-                Debug.LogWarning("[BgmPlaylistPlayer] 播放列表为空，无法开始播放。");
+                GameDebug.LogWarning("[BgmPlaylistPlayer] 播放列表为空，无法开始播放。");
                 return;
             }
 
@@ -154,7 +155,7 @@ namespace Kernel.Audio
 
             if (AudioManager.Instance == null)
             {
-                Debug.LogError("[BgmPlaylistPlayer] 场景中没有 AudioManager 实例。");
+                GameDebug.LogError("[BgmPlaylistPlayer] 场景中没有 AudioManager 实例。");
                 return;
             }
 
@@ -209,7 +210,8 @@ namespace Kernel.Audio
                     if (!Application.isPlaying || token.IsCancellationRequested)
                         break;
 
-                    Debug.LogError($"[BgmPlaylistPlayer] 播放 BGM 失败（id={id}）：\n{ex}");
+                    Log.Error($"[BgmPlaylistPlayer] 播放 BGM 失败（id={id}）：\n{ex}");
+                    GameDebug.LogError($"[BgmPlaylistPlayer] 播放 BGM 失败（id={id}）：\n{ex}");
                 }
 
                 if (!Application.isPlaying || token.IsCancellationRequested)
@@ -270,7 +272,8 @@ namespace Kernel.Audio
 
             if (!AudioDatabase.TryGet(id, out var def))
             {
-                Debug.LogWarning($"[BgmPlaylistPlayer] 未找到 AudioDef: {id}");
+                Log.Warn($"[BgmPlaylistPlayer] 未找到 AudioDef: {id}");
+                GameDebug.LogWarning($"[BgmPlaylistPlayer] 未找到 AudioDef: {id}");
                 return 0f;
             }
 
@@ -281,7 +284,8 @@ namespace Kernel.Audio
             var clip = await AddressableRef.LoadAsync<AudioClip>(def.Address);
             if (clip == null)
             {
-                Debug.LogWarning($"[BgmPlaylistPlayer] 无法加载 AudioClip: {def.Address}");
+                Log.Warn($"[BgmPlaylistPlayer] 无法加载 AudioClip: {def.Address}");
+                GameDebug.LogWarning($"[BgmPlaylistPlayer] 无法加载 AudioClip: {def.Address}");
                 return 0f;
             }
 

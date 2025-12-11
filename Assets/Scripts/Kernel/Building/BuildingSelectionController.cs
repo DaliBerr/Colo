@@ -56,7 +56,7 @@ namespace Kernel.Building
                 }
 
                 long hitId = (hitRuntimeHost.Runtime != null) ? hitRuntimeHost.Runtime.BuildingID : -1;
-
+                GameDebug.Log("BuildingSelectionController: Clicked building id: " + hitId + ", current selected: " + _selectedBuildingID);
                 Log.Info("[BuildingSelectionController] Clicked building id: " + hitId + ", current selected: " + _selectedBuildingID);
 
                 // 再次点击同一建筑 → 取消选中
@@ -86,7 +86,7 @@ namespace Kernel.Building
                         buildingRuntime = _selectedBuildingRuntimeHost.Runtime,
                         isSelected = true
                     });
-
+                    GameDebug.Log("BuildingSelectionController: Selected building id: " + _selectedBuildingID);
                     Log.Info("[BuildingSelectionController] Selected building id: " + _selectedBuildingID);
                 }
             }
@@ -117,7 +117,7 @@ namespace Kernel.Building
                 buildingRuntime = null,
                 isSelected = false
             });
-
+    
             Log.Info("[BuildingSelectionController] Clear selection. Previous id: " + _selectedBuildingID);
 
             // 清掉内部状态

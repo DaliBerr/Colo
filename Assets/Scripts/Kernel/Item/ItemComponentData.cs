@@ -91,7 +91,7 @@ namespace Kernel.Item
                 }
                 // 继续扩展你的类型……
                 default:
-                    Log.Warn($"[Items] 未知组件类型: {data.Type}");
+                    GameDebug.LogWarning($"[Items] 未知组件类型: {data.Type}");
                     return null;
             }
         }

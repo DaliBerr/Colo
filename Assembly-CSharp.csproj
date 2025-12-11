@@ -94,6 +94,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_UiFrameRateCounter.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexZoom.cs" />
     <Compile Include="Assets\Scripts\Kernel\Pool\PoolManager.cs" />
+    <Compile Include="Assets\Scripts\Lonize\Log\LogBootStrap.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_B.cs" />
     <Compile Include="Assets\Scripts\Kernel\Input\KeyBoaradControl.cs" />
     <Compile Include="Assets\Scripts\Kernel\Building\BuildingColliderInit.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="Assets\Scripts\Kernel\Nav\PathfindingManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextInfoDebugTool.cs" />
     <Compile Include="Assets\Scripts\Kernel\Map\MapGenerator.cs" />
+    <Compile Include="Assets\Scripts\Lonize\Log\GameDebug.cs" />
     <Compile Include="Assets\Scripts\Kernel\UI\LoadingModal.cs" />
     <Compile Include="Assets\Scripts\Kernel\Flow\Connect.cs" />
     <Compile Include="Assets\Scripts\Kernel\Building\BuildingValidation.cs" />
@@ -128,6 +130,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshSpawner.cs" />
     <Compile Include="Assets\Scripts\Lonize\Scribe\ScribeDeep.cs" />
+    <Compile Include="Assets\Scripts\Lonize\Log\LogForwarder.cs" />
     <Compile Include="Assets\Scripts\Kernel\Nav\PathfindingService.cs" />
     <Compile Include="Assets\Scripts\Lonize\Tick\Tick.cs" />
     <Compile Include="Assets\Scripts\Kernel\UI\MainMenuUI.cs" />

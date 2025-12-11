@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Kernel.UI;
 using Lonize.Logging;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -54,6 +55,7 @@ namespace Kernel.Nav
 
             if (mainTilemap == null)
             {
+                GameDebug.LogWarning("[NavGrid] mainTilemap 未设置，跳过初始化。");
                 Log.Warn("[NavGrid] mainTilemap 未设置，跳过初始化。");
                 return;
             }

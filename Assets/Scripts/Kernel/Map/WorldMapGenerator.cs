@@ -111,7 +111,7 @@ namespace Kernel
         {
             if (!landTile || !rockTile)
             {
-                Log.Error("[WorldMapGenerator] 请拖入 LandTile / RockTile 喵！");
+                GameDebug.LogError("[WorldMapGenerator] 请拖入 LandTile / RockTile ");
                 // Debug.LogError("[WorldMapGenerator] 请拖入 LandTile / RockTile 喵！");
                 return;
             }
@@ -207,7 +207,7 @@ namespace Kernel
                 }
 
             sw.Stop();
-            Log.Info($"[WorldMapGenerator] 世界生成完成：{worldCols}×{worldRows} 个小地图，耗时 {sw.ElapsedMilliseconds} ms");
+            GameDebug.Log($"[WorldMapGenerator] 世界生成完成：{worldCols}×{worldRows} 个小地图，耗时 {sw.ElapsedMilliseconds} ms");
             // Debug.Log($"[WorldMapGenerator] 世界生成完成：{worldCols}×{worldRows} 个小地图，耗时 {sw.ElapsedMilliseconds} ms");
         }
 
@@ -223,11 +223,11 @@ namespace Kernel
 #if UNITY_EDITOR
                 if (!Application.isPlaying) DestroyImmediate(t.gameObject);
                 else Destroy(t.gameObject);
-                Log.Info($"[WorldMapGenerator] 删除小地图对象 {t.gameObject.name}");
+                GameDebug.Log($"[WorldMapGenerator] 删除小地图对象 {t.gameObject.name}");
                 // Debug.Log($"[WorldMapGenerator] 删除小地图对象 {t.gameObject.name}");
 #else
             Destroy(t.gameObject);
-            Log.Info($"[WorldMapGenerator] 删除小地图对象 {t.gameObject.name}");
+            GameDebug.Log($"[WorldMapGenerator] 删除小地图对象 {t.gameObject.name}");
             // Debug.Log($"[WorldMapGenerator] 删除小地图对象 {t.gameObject.name}");
 #endif
             }

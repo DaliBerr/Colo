@@ -44,7 +44,7 @@ namespace Kernel.Item
             }
             catch (System.Exception ex)
             {
-                Log.Error($"[Items] 查询 Addressables 失败（Group: {labelOrGroup}）：\n{ex}");
+                GameDebug.LogError($"[Items] 查询 Addressables 失败（Group: {labelOrGroup}）：\n{ex}");
                 if (locHandle.IsValid()) Addressables.Release(locHandle);
                 GlobalLoadingProgress.ReportItem(1, 1);
                 return;
@@ -52,7 +52,7 @@ namespace Kernel.Item
 
             if (locations == null || locations.Count == 0)
             {
-                Log.Warn($"[Items] 未在 Addressables 中找到任何 TextAsset（Group: {labelOrGroup}）。");
+                GameDebug.LogWarning($"[Items] 未在 Addressables 中找到任何 TextAsset（Group: {labelOrGroup}）。");
                 if (locHandle.IsValid()) Addressables.Release(locHandle);
                 GlobalLoadingProgress.ReportItem(1, 1);
                 return;
@@ -70,6 +70,7 @@ namespace Kernel.Item
             catch (System.Exception ex)
             {
                 Log.Error($"[Items] 批量加载 TextAsset 失败：\n{ex}");
+                GameDebug.LogError($"[Items] 批量加载 TextAsset 失败：\n{ex}");
                 if (loadHandle.IsValid()) Addressables.Release(loadHandle);
                 if (locHandle.IsValid()) Addressables.Release(locHandle);
                 GlobalLoadingProgress.ReportItem(1, 1);
@@ -90,6 +91,7 @@ namespace Kernel.Item
                 {
                     try
                     {
+                        GameDebug.Log($"[Items] Loading ItemDef from asset: {ta.name}");
                         Log.Info($"[Items] Loading ItemDef from asset: {ta?.name}");
                         if (ta == null) continue;
 
@@ -98,16 +100,19 @@ namespace Kernel.Item
                         {
                             if (!Defs.TryAdd(def.Id, def))
                             {
+                                GameDebug.LogError($"[Items] 重复的物品ID：{def.Id}（资产名：{ta.name}）");
                                 Log.Error($"[Items] 重复的物品ID：{def.Id}（资产名：{ta.name}）");
                             }
                         }
                         else
                         {
+                            GameDebug.LogError($"[Items] 定义非法（资产名：{ta.name}）：\n{msg}");
                             Log.Error($"[Items] 定义非法（资产名：{ta.name}）：\n{msg}");
                         }
                     }
                     catch (System.Exception ex)
                     {
+                        GameDebug.LogError($"[Items] 解析失败（资产名：{ta?.name}）：\n{ex}");
                         Log.Error($"[Items] 解析失败（资产名：{ta?.name}）：\n{ex}");
                     }
                     finally
@@ -125,6 +130,7 @@ namespace Kernel.Item
         {
             if (!Defs.TryGetValue(id, out var def))
             {
+                GameDebug.LogError($"[Items] 未找到物品ID：{id}");
                 Log.Error($"[Items] 未找到物品ID：{id}");
                 return null;
             }

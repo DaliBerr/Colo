@@ -14,7 +14,8 @@ namespace Kernel.UI
             // base.OnInit();
             Btn1.onClick.AddListener(() =>
             {
-                Log.Info("Options Modal Button Clicked!");
+                // Log.Info("Options Modal Button Clicked!");
+                GameDebug.Log("Options Modal Button Clicked!");
             });
         }
 

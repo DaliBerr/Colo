@@ -25,21 +25,21 @@ public class BuildingColliderInit : MonoBehaviour
 
         if (!buildingRuntimeHost)
         {
-            Debug.LogError("[BuildingColliderInit] 没找到 BuildingRuntimeHost 组件", this);
+            GameDebug.LogError("[BuildingColliderInit] 没找到 BuildingRuntimeHost 组件");
             return;
         }
 
         var runtime = buildingRuntimeHost.Runtime;
         if (runtime == null)
         {
-            Debug.LogError("[BuildingColliderInit] Runtime 为空（Factory 还没赋值？）", this);
+            GameDebug.LogError("[BuildingColliderInit] Runtime 为空（Factory 还没赋值？）");
             return;
         }
 
         var def = runtime.Def;
         if (def == null)
         {
-            Debug.LogError("[BuildingColliderInit] Def 为空（BuildingDatabase/Factory 有问题）", this);
+            GameDebug.LogError("[BuildingColliderInit] Def 为空（BuildingDatabase/Factory 有问题）");
             return;
         }
 

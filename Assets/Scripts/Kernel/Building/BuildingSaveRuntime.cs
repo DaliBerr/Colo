@@ -25,14 +25,14 @@ namespace Kernel.Building
             var controller = Object.FindFirstObjectByType<BuildingPlacementController>();
             if (controller == null)
             {
-                Log.Error("[SaveAllBuildings] CollectBuildingsForSave 找不到 BuildingPlacementController。");
+                GameDebug.LogError("[SaveAllBuildings] CollectBuildingsForSave 找不到 BuildingPlacementController。");
                 list = null;
                 return;
             }
 
             if (controller.placementTilemap == null)
             {
-                Log.Error("[SaveAllBuildings] CollectBuildingsForSave 中 placementTilemap 为空。");
+                GameDebug.LogError("[SaveAllBuildings] CollectBuildingsForSave 中 placementTilemap 为空。");
                 list = null;
                 return;
             }
@@ -51,7 +51,7 @@ namespace Kernel.Building
             if (hosts == null || hosts.Length == 0)
             {
                 list = new List<SaveBuildingInstance>();
-                Log.Info("[SaveAllBuildings] CollectBuildingsForSave：当前没有建筑需要保存。");
+                GameDebug.Log("[SaveAllBuildings] CollectBuildingsForSave：当前没有建筑需要保存。");
                 return;
             }
 
@@ -76,8 +76,8 @@ namespace Kernel.Building
                     list.Add(data);
                 }
             }
-
             Log.Info($"[SaveAllBuildings] CollectBuildingsForSave：已收集 {list.Count} 个建筑。");
+            GameDebug.Log($"[SaveAllBuildings] CollectBuildingsForSave：已收集 {list.Count} 个建筑。");
         }
         /// <summary>
         /// summary: 清理当前地图上的所有建筑
@@ -124,8 +124,8 @@ namespace Kernel.Building
 
                 PoolManager.Instance.ReturnToPool(go);
             }
-
             Log.Info($"[SaveAllBuildings] ClearExistingBuildings：清理 {hosts.Length} 个建筑。");
+            GameDebug.Log($"[SaveAllBuildings] ClearExistingBuildings：清理 {hosts.Length} 个建筑。");
         }
         /// <summary>
         /// summary: 根据存档数据在场景中重新生成建筑
@@ -134,10 +134,10 @@ namespace Kernel.Building
         /// </summary>
         public static void RestoreBuildingsFromSave(List<SaveBuildingInstance> list)
         {
-            Debug.Log("RestoreBuildingsFromSave called. List count: " + (list != null ? list.Count.ToString() : "null"));
+            GameDebug.Log("RestoreBuildingsFromSave called. List count: " + (list != null ? list.Count.ToString() : "null"));
             if (list == null || list.Count == 0)
             {
-                Log.Info("[SaveAllBuildings] RestoreBuildingsFromSave：存档中没有建筑。");
+                GameDebug.Log("[SaveAllBuildings] RestoreBuildingsFromSave：存档中没有建筑。");
                 return;
             }
             var controller = Object.FindFirstObjectByType<BuildingPlacementController>();
@@ -152,7 +152,7 @@ namespace Kernel.Building
             // var controller = Object.FindFirstObjectByType<BuildingPlacementController>();
             if (controller == null)
             {
-                Log.Error("[SaveAllBuildings] RestoreBuildingsFromSave 找不到 BuildingPlacementController。");
+                GameDebug.LogError("[SaveAllBuildings] RestoreBuildingsFromSave 找不到 BuildingPlacementController。");
                 return;
             }
 
@@ -171,7 +171,7 @@ namespace Kernel.Building
         {
             if (controller.placementTilemap == null)
             {
-                Log.Error("[SaveAllBuildings] RestoreBuildingsCoroutine 中 placementTilemap 为空。");
+                GameDebug.LogError("[SaveAllBuildings] RestoreBuildingsCoroutine 中 placementTilemap 为空。");
                 yield break;
             }
             var nav = controller.navGrid != null ? controller.navGrid : NavGrid.Instance;
@@ -185,6 +185,7 @@ namespace Kernel.Building
                 if (!BuildingDatabase.TryGet(data.DefId, out var def))
                 {
                     Log.Warn($"[SaveAllBuildings] 还原时未找到 BuildingDef: {data.DefId}");
+                    GameDebug.LogWarning($"[SaveAllBuildings] 还原时未找到 BuildingDef: {data.DefId}");
                     continue;
                 }
 
@@ -198,6 +199,7 @@ namespace Kernel.Building
                 if (PoolManager.Instance == null)
                 {
                     Log.Error("[SaveAllBuildings] RestoreBuildingsCoroutine 中 PoolManager.Instance 为空。");
+                    GameDebug.LogError("[SaveAllBuildings] RestoreBuildingsCoroutine 中 PoolManager.Instance 为空。");
                     yield break;
                 }
 
@@ -239,7 +241,7 @@ namespace Kernel.Building
                 }
             }
 
-            Log.Info($"[SaveAllBuildings] RestoreBuildingsFromSave 完成，还原 {restoredCount} 个建筑。");
+            GameDebug.Log($"[SaveAllBuildings] RestoreBuildingsFromSave 完成，还原 {restoredCount} 个建筑。");
         }
     }
 }

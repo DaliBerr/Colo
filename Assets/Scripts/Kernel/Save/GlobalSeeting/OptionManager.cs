@@ -44,10 +44,12 @@ public class OptionsManager : MonoBehaviour
                 // 4. 结束写入
                 Scribe.FinalizeWriting();
             }
+            GameDebug.Log("[Options] Settings saved to " + filePath);
             Log.Info("[Options] Settings saved to " + filePath);
         }
         catch (System.Exception ex)
         {
+            GameDebug.LogError("[Options] Failed to save settings: " + ex);
             Log.Error("[Options] Failed to save settings: " + ex);
             Scribe.FinalizeWriting(); // 确保状态复位
         }
@@ -57,6 +59,7 @@ public class OptionsManager : MonoBehaviour
     {
         if (!File.Exists(filePath))
         {
+            GameDebug.LogWarning("[Options] No settings file found, using defaults.");
             Log.Warn("[Options] No settings file found, using defaults.");
             Settings = new GlobalSettings(); // 使用默认值
             SaveOptions(); // 生成一份默认文件
@@ -77,10 +80,12 @@ public class OptionsManager : MonoBehaviour
             
             ApplySettings(); // ★ 读取完立刻应用（如修改音量）
             Log.Info("[Options] Settings loaded.");
+            GameDebug.Log("[Options] Settings loaded.");
         }
         catch (System.Exception ex)
         {
             Log.Error("[Options] Failed to load settings: " + ex);
+            GameDebug.LogError("[Options] Failed to load settings: " + ex);
             Settings = new GlobalSettings(); // 出错则重置为默认
             Scribe.FinalizeLoading();
         }

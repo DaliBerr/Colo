@@ -36,19 +36,19 @@ namespace Kernel
             await ItemDatabase.LoadAllAsync();
 
             //test
-            var inst = ItemFactory.CreateData("iron_sword", 5);
-            Log.Info($"Created Item Instance: Def={inst.Def.Id}, Stack={inst.Stack}");
+            // var inst = ItemFactory.CreateData("iron_sword", 5);
+            // Log.Info($"Created Item Instance: Def={inst.Def.Id}, Stack={inst.Stack}");
 
         }
         private async Task InitBuildings()
         {
             await Building.BuildingDatabase.LoadAllAsync();
             //test
-            var hasDef = Building.BuildingDatabase.TryGet("generator_small", out var def);
-            if (hasDef)
-            {
-                Log.Info($"Building Def loaded: ID={def.Id}, Name={def.Name}");
-            }
+            // var hasDef = Building.BuildingDatabase.TryGet("generator_small", out var def);
+            // if (hasDef)
+            // {
+            //     GameDebug.Log($"Building Def loaded: ID={def.Id}, Name={def.Name}");
+            // }
         }
         private async Task InitAll()
         {

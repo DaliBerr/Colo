@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Lonize.Logging;
 using UnityEngine;
 
 namespace Kernel.Status
@@ -74,7 +75,7 @@ namespace Kernel.Status
         {
             if (!StatusList.TryGetStatus(statusName, out var status))
             {
-                Debug.LogWarning($"[StatusController] 尝试添加未知状态 '{statusName}'，请先在 StatusList 中定义。");
+                GameDebug.LogWarning($"[StatusController] 尝试添加未知状态 '{statusName}'，请先在 StatusList 中定义。");
                 return false;
             }
 
@@ -172,7 +173,8 @@ namespace Kernel.Status
 
                 if (!StatusList.TryGetStatus(name, out var status))
                 {
-                    Debug.LogWarning($"[StatusController] 读档时发现未知状态 '{name}'，已跳过。");
+                    Log.Warn($"[StatusController] 读档时发现未知状态 '{name}'，已跳过。");
+                    GameDebug.LogWarning($"[StatusController] 读档时发现未知状态 '{name}'，已跳过。");
                     continue;
                 }
 

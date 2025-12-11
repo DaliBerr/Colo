@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Lonize.Logging;
 using UnityEngine;
 
 namespace Kernel.Audio
@@ -207,14 +208,14 @@ namespace Kernel.Audio
 
             if (string.IsNullOrEmpty(def.Address))
             {
-                Debug.LogError($"[AudioManager] AudioDef({def.Id}) 的 Address 为空。");
+                GameDebug.LogError($"[AudioManager] AudioDef({def.Id}) 的 Address 为空。");
                 return null;
             }
 
             var clip = await AddressableRef.LoadAsync<AudioClip>(def.Address);
             if (clip == null)
             {
-                Debug.LogError($"[AudioManager] 无法通过Addressables加载AudioClip: {def.Address}");
+                GameDebug.LogError($"[AudioManager] 无法通过Addressables加载AudioClip: {def.Address}");
                 return null;
             }
 
@@ -270,7 +271,8 @@ namespace Kernel.Audio
 
             if (!AudioDatabase.TryGet(id, out var def))
             {
-                Debug.LogWarning($"[AudioManager] 未找到AudioDef: {id}");
+                Log.Warn($"[AudioManager] 未找到AudioDef: {id}");
+                GameDebug.LogWarning($"[AudioManager] 未找到AudioDef: {id}");
                 return null;
             }
 
@@ -325,7 +327,8 @@ namespace Kernel.Audio
 
             if (!AudioDatabase.TryGet(id, out var def))
             {
-                Debug.LogWarning($"[AudioManager] 未找到BGM的AudioDef: {id}");
+                Log.Warn($"[AudioManager] 未找到BGM的AudioDef: {id}");
+                GameDebug.LogWarning($"[AudioManager] 未找到BGM的AudioDef: {id}");
                 return;
             }
 

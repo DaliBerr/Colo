@@ -22,6 +22,7 @@ namespace Kernel.Building
             if (!BuildingDatabase.TryGet(id, out var def))
             {
                 Log.Error($"[Building] 未找到ID：{id}");
+                GameDebug.LogError($"[Building] 未找到ID：{id}");
                 return null;
             }
 

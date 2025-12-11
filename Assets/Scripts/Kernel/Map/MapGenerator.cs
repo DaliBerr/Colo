@@ -124,9 +124,10 @@ namespace Kernel
 
             sw.Stop();
             if (logTime)
+                GameDebug.Log($"[TilemapMapGenerator] 生成完成：{width}×{height}，耗时 {sw.ElapsedMilliseconds} ms");
                 Log.Info($"[TilemapMapGenerator] 生成完成：{width}×{height}，耗时 {sw.ElapsedMilliseconds} ms");
             Events.eventBus.Publish(new MapReady(true, new Vector3(this.transform.position.x, this.transform.position.y, 0)));
-            Log.Info($"This is Central Position: {this.transform.position}");
+            // Log.Info($"This is Central Position: {this.transform.position}");
         }
 
         [ContextMenu("Clear All")]
@@ -152,12 +153,12 @@ namespace Kernel
         {
             if (!landTilemap || !rockTilemap || !landTile || !rockTile)
             {
-                Log.Error("[TilemapMapGenerator] 请在 Inspector 里绑定 Land/Rock Tilemap 与 LandTile/RockTile 喵！");
+                GameDebug.LogError("[TilemapMapGenerator] 请在 Inspector 里绑定 Land/Rock Tilemap 与 LandTile/RockTile");
                 return false;
             }
             if (width <= 0 || height <= 0)
             {
-                Log.Error("[TilemapMapGenerator] width/height 必须为正数喵！");
+                GameDebug.LogError("[TilemapMapGenerator] width/height 必须为正数");
                 return false;
             }
             return true;

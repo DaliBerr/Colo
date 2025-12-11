@@ -40,7 +40,7 @@ namespace Kernel
             FilePath = Path.Combine(Application.persistentDataPath, fileName);
             // LoadOrCreate();
             Data = new PolySaveData();
-            Log.Info($"[ScribeSaveManager] Ready. Path = {FilePath}");
+            GameDebug.Log($"[ScribeSaveManager] Ready. Path = {FilePath}");
             
         }
         private void Start()
@@ -100,6 +100,7 @@ namespace Kernel
             catch (System.Exception ex)
             {
                 Log.Error($"[ScribeSaveManager] Save failed: {ex}");
+                GameDebug.LogError($"[ScribeSaveManager] Save failed: {ex}");
                 try { if (File.Exists(tmp)) File.Delete(tmp); } catch { }
             }
         }
@@ -107,12 +108,14 @@ namespace Kernel
         public bool Load()
         {
             var pathToUse = FilePath;
-            Debug.Log("[ScribeSaveManager] Load called. Path: "+ pathToUse);
+            Log.Info("[ScribeSaveManager] Load called. Path: "+ pathToUse);
+            GameDebug.Log("[ScribeSaveManager] Load called. Path: "+ pathToUse);
             bool loadingLegacy = false;
             if (!File.Exists(pathToUse))
             {
                 var legacyPath = Path.ChangeExtension(FilePath, ".tlv");
                 if (!File.Exists(legacyPath)) return false;
+                GameDebug.LogWarning($"[ScribeSaveManager] JSON save missing; attempting legacy load from {legacyPath}.");
                 Log.Warn($"[ScribeSaveManager] JSON save missing; attempting legacy load from {legacyPath}.");
                 pathToUse = legacyPath;
                 loadingLegacy = true;
@@ -133,8 +136,10 @@ namespace Kernel
             }
             catch (System.Exception ex)
             {
+                GameDebug.LogError($"[ScribeSaveManager] Load failed: {ex}");
                 Log.Error($"[ScribeSaveManager] Load failed: {ex}");
                 if (loadingLegacy || Path.GetExtension(pathToUse).Equals(".tlv", System.StringComparison.OrdinalIgnoreCase))
+                    GameDebug.LogWarning("[ScribeSaveManager] Legacy format load failed. Consider resaving as JSON.");
                     Log.Warn("[ScribeSaveManager] Legacy format load failed. Consider resaving as JSON.");
                 Data = new PolySaveData();
                 return false;

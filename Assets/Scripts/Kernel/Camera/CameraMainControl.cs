@@ -23,6 +23,7 @@ namespace Kernel
         }
         private void OnSpeedChanged(SpeedChange evt)
         {
+            GameDebug.Log($"Main Camera received speed change: {evt.currentGameSpeed} ({evt.speedMultiplier}x)");
             Log.Info($"Main Camera received speed change: {evt.currentGameSpeed} ({evt.speedMultiplier}x)");
         }
         void Update()

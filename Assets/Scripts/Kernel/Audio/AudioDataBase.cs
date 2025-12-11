@@ -74,14 +74,14 @@ namespace Kernel.Audio
             }
             catch (System.Exception ex)
             {
-                Log.Error($"[Audio] 查询 Addressables 失败（Group: {labelOrGroup}）：\n{ex}");
+                GameDebug.LogError($"[Audio] 查询 Addressables 失败（Group: {labelOrGroup}）：\n{ex}");
                 if (locHandle.IsValid()) Addressables.Release(locHandle);
                 return;
             }
 
             if (locations == null || locations.Count == 0)
             {
-                Log.Warn($"[Audio] 未在 Addressables 中找到任何 TextAsset（Group: {labelOrGroup}）。");
+                GameDebug.LogWarning($"[Audio] 未在 Addressables 中找到任何 TextAsset（Group: {labelOrGroup}）。");
                 if (locHandle.IsValid()) Addressables.Release(locHandle);
                 return;
             }
@@ -97,7 +97,7 @@ namespace Kernel.Audio
             }
             catch (System.Exception ex)
             {
-                Log.Error($"[Audio] 批量加载 TextAsset 失败：\n{ex}");
+                GameDebug.LogError($"[Audio] 批量加载 TextAsset 失败：\n{ex}");
                 if (loadHandle.IsValid()) Addressables.Release(loadHandle);
                 if (locHandle.IsValid()) Addressables.Release(locHandle);
                 return;
@@ -107,24 +107,24 @@ namespace Kernel.Audio
             foreach (var ta in assets)
             {
                 if (ta == null) continue;
-                Log.Info($"[Audio] Loading AudioDef from asset: {ta.name}");
+                GameDebug.Log($"[Audio] Loading AudioDef from asset: {ta.name}");
                 try
                 {
                     var def = JsonConvert.DeserializeObject<AudioDef>(ta.text, _jsonSettings);
                     if (def == null || string.IsNullOrEmpty(def.Id))
                     {
-                        Log.Error($"[Audio] 定义非法（资产名：{ta.name}）：ID为空。");
+                        GameDebug.LogError($"[Audio] 定义非法（资产名：{ta.name}）：ID为空。");
                         continue;
                     }
 
                     if (!Defs.TryAdd(def.Id, def))
                     {
-                        Log.Error($"[Audio] 重复的音频ID：{def.Id}（资产名：{ta.name}）");
+                        GameDebug.LogError($"[Audio] 重复的音频ID：{def.Id}（资产名：{ta.name}）");
                     }
                 }
                 catch (System.Exception ex)
                 {
-                    Log.Error($"[Audio] 解析失败（资产名：{ta?.name}）：\n{ex}");
+                    GameDebug.LogError($"[Audio] 解析失败（资产名：{ta?.name}）：\n{ex}");
                 }
             }
 

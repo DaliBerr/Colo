@@ -61,7 +61,7 @@ namespace Kernel.UI
                 // 才真正关闭加载界面
                 if (realProgress >= 1f && _elapsedTime >= MinShowTime)
                 {
-                    Debug.Log("GameLoading completed, popping screen.");
+                    // Debug.Log("GameLoading completed, popping screen.");
                     if (loadingSlider != null)
                         loadingSlider.value = 1f;
 

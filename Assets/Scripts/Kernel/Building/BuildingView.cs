@@ -42,11 +42,13 @@ namespace Kernel.Building
         // }
         private void OnMouseDown()
         {
+            GameDebug.Log("[BuildingView] OnMouseDown - selecting building.");
             Log.Info("[BuildingView] OnMouseDown - selecting building.");
             // 如果 runtimeHost 还没准备好，就别选了，避免空引用
             if (_host == null || _host.Runtime == null)
             {
-                Debug.LogWarning("[BuildingView] OnMouseDown but runtimeHost / Runtime is null.");
+                Log.Warn("[BuildingView] OnMouseDown but runtimeHost / Runtime is null.");
+                GameDebug.LogWarning("[BuildingView] OnMouseDown but runtimeHost / Runtime is null.");
                 return;
             }
 

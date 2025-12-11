@@ -74,7 +74,7 @@ namespace Kernel.Building
         {
             if (buildingIds == null || index < 0 || index >= buildingIds.Length)
             {
-                Log.Warn("[BuildingPlacement] Building index out of range.");
+                GameDebug.LogWarning("[BuildingPlacement] Building index out of range.");
                 return;
             }
 
@@ -89,7 +89,7 @@ namespace Kernel.Building
         {
             if (!StatusController.AddStatus(StatusList.BuildingPlacementStatus))
             {
-                Log.Warn("[BuildingPlacement] 无法进入放置模式，已有其他状态阻塞。");
+                GameDebug.LogWarning("[BuildingPlacement] 无法进入放置模式，已有其他状态阻塞。");
                 return;
             }
             // 清理旧虚影
@@ -105,17 +105,17 @@ namespace Kernel.Building
 
             if (!BuildingDatabase.TryGet(buildingId, out _currentDef))
             {
-                Log.Error($"[BuildingPlacement] 未找到 BuildingDef: {buildingId}");
+                GameDebug.LogError($"[BuildingPlacement] 未找到 BuildingDef: {buildingId}");
                 return;
             }
-
             Log.Info($"[BuildingPlacement] 开始放置建筑：{_currentDef.Id} ({_currentDef.Name})");
+            GameDebug.Log($"[BuildingPlacement] 开始放置建筑：{_currentDef.Id} ({_currentDef.Name})");
 
             // 从 Addressables 加载 prefab（用于 ghost 预览）
             var prefab = await AddressableRef.LoadAsync<GameObject>(_currentDef.PrefabAddress);
             if (prefab == null)
             {
-                Log.Error($"[BuildingPlacement] 无法加载 Prefab: {_currentDef.PrefabAddress}");
+                GameDebug.LogError($"[BuildingPlacement] 无法加载 Prefab: {_currentDef.PrefabAddress}");
                 return;
             }
 
@@ -188,7 +188,7 @@ namespace Kernel.Building
                 }
                 else
                 {
-                    Log.Info("[BuildingPlacement] 当前位置不可放置。");
+                    GameDebug.Log("[BuildingPlacement] 当前位置不可放置。");
                 }
             }
 
@@ -223,13 +223,13 @@ namespace Kernel.Building
         {
             if (_currentDef == null)
             {
-                Log.Warn("[BuildingPlacement] PlaceBuilding 时 _currentDef 为空。");
+                GameDebug.LogWarning("[BuildingPlacement] PlaceBuilding 时 _currentDef 为空。");
             return;
         }
 
         if (!CheckCanPlace(cellPos))
         {
-            Log.Info("[BuildingPlacement] PlaceBuilding 时检测失败。");
+            GameDebug.LogWarning("[BuildingPlacement] PlaceBuilding 时检测失败。");
             return;
         }
 
@@ -237,7 +237,7 @@ namespace Kernel.Building
 
         if (PoolManager.Instance == null)
         {
-            Log.Error("[BuildingPlacement] PoolManager.Instance 为空，无法生成建筑。");
+            GameDebug.LogError("[BuildingPlacement] PoolManager.Instance 为空，无法生成建筑。");
             return;
         }
 
@@ -245,7 +245,7 @@ namespace Kernel.Building
         var go = await PoolManager.Instance.GetAsync(_currentDef.Id, worldPos, rot);
         if (go == null)
         {
-            Log.Error("[BuildingPlacement] PoolManager.GetAsync 失败。");
+            GameDebug.LogError("[BuildingPlacement] PoolManager.GetAsync 失败。");
             return;
         }
 
@@ -261,8 +261,8 @@ namespace Kernel.Building
             // runtimeHost.Runtime.BuildingID = RuntimeIdGenerator.Next(); // 如果你有的话
             // runtimeHost.Runtime.HP = _currentDef.MaxHP;         // 或者默认值
 }
+        GameDebug.Log($"[BuildingPlacement] 已放置建筑：{_currentDef.Id} @ {worldPos}");
         Log.Info($"[BuildingPlacement] 已放置建筑：{_currentDef.Id} @ {worldPos}");
-
         var nav = navGrid != null ? navGrid : NavGrid.Instance;
         nav?.UpdateAreaBlocked(cellPos, _currentDef.Width, _currentDef.Height, _rotationSteps, true);
 
@@ -282,7 +282,7 @@ namespace Kernel.Building
             _isPlacing = false;
             _rotationSteps = 0;
 
-            Log.Info("[BuildingPlacement] 已取消放置模式。");
+            // GameDebug.Log("[BuildingPlacement] 已取消放置模式。");
         }
 
         #endregion
@@ -300,12 +300,11 @@ namespace Kernel.Building
         {
             if(_currentDef == null || placementTilemap == null)
             {
-                Log.Warn("[BuildingPlacement] CheckCanPlace 时 _currentDef 或 placementTilemap 为空。");
+                GameDebug.LogWarning("[BuildingPlacement] CheckCanPlace 时 _currentDef 或 placementTilemap 为空。");
                 return false;
             }
             if(!placementTilemap.HasTile(anchorCell))
             {
-                // Log.Warn("[BuildingPlacement] CheckCanPlace 时目标格子无 Tile。");
                 return false;
             }
 

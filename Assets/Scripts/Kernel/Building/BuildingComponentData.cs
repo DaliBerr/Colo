@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using Lonize.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
@@ -116,7 +117,7 @@ namespace Kernel.Building
                     return new ProducerBehaviour(t, ins, outs);
                 }
                 default:
-                    UnityEngine.Debug.LogWarning($"[Building] 未知组件类型: {data.Type}");
+                    GameDebug.LogWarning($"[Building] 未知组件类型: {data.Type}");
                     return null;
             }
         }

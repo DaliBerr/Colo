@@ -1,4 +1,5 @@
 using Kernel;
+using Lonize.Logging;
 using UnityEngine;
 
 namespace Colo
@@ -40,7 +41,7 @@ namespace Colo
             saveMgr.AddItem(Kernel.Building.BuildingIdGenerator._saveItem);
             // 4. 落盘
             saveMgr.Save();
-            Debug.Log("游戏已保存！");
+            GameDebug.Log("游戏已保存！");
 
         }
 
@@ -52,12 +53,13 @@ namespace Colo
         // 1. 读文件
         if (!saveMgr.Load())
         {
-            Debug.LogWarning("没有存档文件！");
+            GameDebug.LogWarning("没有存档文件！");
+            Log.Warn("没有存档文件！");
             return;
         }
         //这里什么也没做，只是为了触发 ScribeSaveManager 的 Load 逻辑
         //加载部分都在各个 SaveItem 的 ExposeData中的Loading 部分处理
-        Debug.Log("游戏读取完毕！");
+        GameDebug.Log("游戏读取完毕！");
     }
     }
 }

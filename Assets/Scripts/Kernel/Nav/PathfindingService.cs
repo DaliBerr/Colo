@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Lonize.Logging;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -34,7 +35,7 @@ namespace Kernel.Nav
             // 简单一致性检查：如果 NavGrid 已经绑定了 mainTilemap，但与传入的 tilemap 不同，则给出警告。
             if (_navGrid.mainTilemap != null && _navGrid.mainTilemap != _tilemap)
             {
-                Debug.LogWarning("[PathfindingService] NavGrid.mainTilemap 与 PathfindingService 使用的 Tilemap 不一致，寻路结果可能异常。");
+                GameDebug.LogWarning("[PathfindingService] NavGrid.mainTilemap 与 PathfindingService 使用的 Tilemap 不一致，寻路结果可能异常。");
             }
         }
 

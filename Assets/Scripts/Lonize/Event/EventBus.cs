@@ -36,6 +36,7 @@ namespace Lonize.Events
                 try { ((Action<T>)snapshot[i]).Invoke(evt); }
                 catch (Exception ex)
                 {
+                    GameDebug.LogError($"EventBus handler for {typeof(T)} threw exception: {ex}");
                     Log.Error($"EventBus handler for {typeof(T)} threw exception: {ex}");
                 }
             }

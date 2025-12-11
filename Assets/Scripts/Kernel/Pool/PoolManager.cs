@@ -69,7 +69,7 @@ namespace Kernel.Pool
             var go = await BuildingFactory.SpawnToWorldAsync(buildingId, pos, rot);
             if (go == null)
             {
-                Log.Error($"[Pool] BuildingFactory.SpawnToWorldAsync 失败，buildingId = {buildingId}");
+                GameDebug.LogError($"[Pool] BuildingFactory.SpawnToWorldAsync 失败，buildingId = {buildingId}");
                 return null;
             }
 
@@ -95,7 +95,7 @@ namespace Kernel.Pool
             var member = obj.GetComponent<BuildingPoolMember>();
             if (member == null || string.IsNullOrEmpty(member.Address))
             {
-                Log.Warn("[Pool] 回收对象时未找到 BuildingPoolMember 或 Address 为空，将直接销毁。");
+                GameDebug.LogWarning("[Pool] 回收对象时未找到 BuildingPoolMember 或 Address 为空，将直接销毁。");
                 Destroy(obj);
                 return;
             }

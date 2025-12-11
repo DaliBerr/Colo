@@ -49,10 +49,11 @@ namespace Kernel.Building
         {
             if (!StatusController.AddStatus(StatusList.RemovingBuildingStatus))
             {
-                Log.Warn("[BuildingRemove] 无法进入拆除模式，已有其他状态阻塞。");
+                GameDebug.LogWarning("[BuildingRemove] 无法进入拆除模式，已有其他状态阻塞。");
                 return;
             }
             _isRemoving = true;
+            GameDebug.Log("[BuildingRemove] 进入拆除模式。");
             Log.Info("[BuildingRemove] 进入拆除模式。");
         }
 
@@ -63,6 +64,7 @@ namespace Kernel.Building
         {
             StatusController.RemoveStatus(StatusList.RemovingBuildingStatus);
             _isRemoving = false;
+            GameDebug.Log("[BuildingRemove] 退出拆除模式。");
             Log.Info("[BuildingRemove] 退出拆除模式。");
         }
 
@@ -100,7 +102,7 @@ namespace Kernel.Building
         {
             if (mainCamera == null)
             {
-                Log.Error("[BuildingRemove] mainCamera 未设置。");
+                GameDebug.LogError("[BuildingRemove] mainCamera 未设置。");
                 return;
             }
 
@@ -111,7 +113,7 @@ namespace Kernel.Building
             RaycastHit2D hit = Physics2D.Raycast(pos2D, Vector2.zero, 0f, buildingLayerMask);
             if (hit.collider == null)
             {
-                Log.Info("[BuildingRemove] 点击处没有检测到建筑。");
+                GameDebug.Log("[BuildingRemove] 点击处没有检测到建筑。");
                 return;
             }
 
@@ -119,7 +121,7 @@ namespace Kernel.Building
             var host = hit.collider.GetComponentInParent<BuildingRuntimeHost>();
             if (host == null)
             {
-                Log.Warn("[BuildingRemove] 点击到的对象不包含 BuildingRuntimeHost，放弃拆除。");
+                GameDebug.LogWarning("[BuildingRemove] 点击到的对象不包含 BuildingRuntimeHost，放弃拆除。");
                 return;
             }
 
@@ -146,12 +148,14 @@ namespace Kernel.Building
             if (PoolManager.Instance != null && poolMember != null)
             {
                 PoolManager.Instance.ReturnToPool(buildingGo);
+                GameDebug.Log($"[BuildingRemove] 已将建筑回收到对象池：{buildingGo.name}");
                 Log.Info($"[BuildingRemove] 已将建筑回收到对象池：{buildingGo.name}");
             }
             else
             {
                 // 没有池信息或没有 PoolManager，就直接销毁
                 Destroy(buildingGo);
+                GameDebug.Log($"[BuildingRemove] 已销毁建筑（未池化）：{buildingGo.name}");
                 Log.Info($"[BuildingRemove] 已销毁建筑（未池化）：{buildingGo.name}");
             }
 

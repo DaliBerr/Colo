@@ -28,9 +28,9 @@ namespace Kernel
             {
                 Log.MinLevel = LogLevel.Debug;
                 Log.AddSink(new FileSink(Path.Combine(Application.persistentDataPath, "Logs/game.log")));
-#if UNITY_EDITOR
-                Log.AddSink(new UnitySink());
-#endif
+// #if UNITY_EDITOR
+//                 Log.AddSink(new UnitySink());
+// #endif
                 Log.Info("Log bootstrap ok (pid={0})", System.Diagnostics.Process.GetCurrentProcess().Id);
             }
         }
@@ -80,7 +80,7 @@ namespace Kernel
 
             //    同样顺序压栈 GameLoading（这时 MainMenu 会被 Hide）
             yield return UIManager.Instance.PushScreenAndWait<GameLoading>();
-            Debug.Log("[Startup] Pushed GameLoading Screen (with waiting)");
+            GameDebug.Log("[Startup] Pushed GameLoading Screen (with waiting)");
 
             // 4) 执行全局初始化（Addressables + Def 加载）
             yield return StartCoroutine(InitGlobal());
