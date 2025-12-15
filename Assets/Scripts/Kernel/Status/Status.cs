@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Kernel.Status
+namespace Kernel.GameState
 {
     /// <summary>
     /// 单个状态的定义，包含名称、互斥关系、可切换关系以及是否需要持久化。
@@ -78,8 +78,8 @@ namespace Kernel.Status
         public static Status PausedStatus = new Status
         {
             StatusName = "Paused",
-            InActiveWith = new List<string> { "Playing" },
-            allowSwitchWith = new List<string> { "Playing" },
+            InActiveWith = null,
+            allowSwitchWith = new List<string> { "Playing" , "InMenu", "InPauseMenu","InMainMenu"},
             Persistent = false
         };
 
@@ -87,15 +87,35 @@ namespace Kernel.Status
         public static Status PlayingStatus = new Status
         {
             StatusName = "Playing",
-            InActiveWith = new List<string> { "Paused" },
-            allowSwitchWith = new List<string> { "Paused" },
+            InActiveWith = null,
+            allowSwitchWith = new List<string> { "Paused","InMenu", "InPauseMenu","InMainMenu" },
             Persistent = false
         };
-
+        public static Status InPauseMenuStatus = new Status
+        {
+            StatusName = "InPauseMenu",
+            InActiveWith = null,
+            allowSwitchWith = new List<string> { "Playing", "Paused", "InMenu","InMainMenu" },
+            Persistent = false
+        };
+        public static Status InMainMenuStatus = new Status
+        {
+            StatusName = "InMainMenu",
+            InActiveWith = null,
+            allowSwitchWith = new List<string> { "Playing", "Paused", "InMenu", "InPauseMenu" },
+            Persistent = false
+        };
+        public static Status InMenuStatus = new Status
+        {
+            StatusName = "InMenu",
+            InActiveWith = null,
+            allowSwitchWith = new List<string> { "Playing", "Paused", "InPauseMenu", "InMainMenu" },
+            Persistent = false
+        };
         public static Status GameLoadingStatus = new Status
         {
             StatusName = "Loading",
-            InActiveWith = new List<string> { "Paused", "Playing", "SaveLoading" },
+            InActiveWith = null,
             allowSwitchWith = new List<string> { "Paused", "Playing", "SaveLoading" },
             Persistent = false
         };
@@ -103,7 +123,7 @@ namespace Kernel.Status
         public static Status SaveLoadingStatus = new Status
         {
             StatusName = "SaveLoading",
-            InActiveWith = new List<string> { "Paused", "Playing", "GameLoading" },
+            InActiveWith = null,
             allowSwitchWith = new List<string> { "Paused", "Playing", "GameLoading" },
             Persistent = false
         };
@@ -128,6 +148,9 @@ namespace Kernel.Status
             Register(PlayingStatus);
             Register(GameLoadingStatus);
             Register(SaveLoadingStatus);
+            Register(InPauseMenuStatus);
+            Register(InMainMenuStatus);
+            Register(InMenuStatus);
         }
 
         /// <summary>

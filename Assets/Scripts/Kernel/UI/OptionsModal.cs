@@ -1,3 +1,4 @@
+using Kernel.GameState;
 using Lonize.Logging;
 using Lonize.UI;
 using UnityEngine.UI;
@@ -9,7 +10,9 @@ namespace Kernel.UI
     {
         public Button Btn1;
 
-        protected override void OnInit()
+        public override Status currentStatus { get; } = StatusList.InMenuStatus;
+
+            protected override void OnInit()
         {
             // base.OnInit();
             Btn1.onClick.AddListener(() =>
@@ -18,6 +21,7 @@ namespace Kernel.UI
                 GameDebug.Log("Options Modal Button Clicked!");
             });
         }
+        
 
     }
 

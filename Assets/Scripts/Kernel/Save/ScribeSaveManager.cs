@@ -6,7 +6,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using Lonize.Scribe;
 using Lonize.Logging;
-using Kernel.Status;
+using Kernel.GameState;
 using Kernel.Building;
 
 /// <summary>

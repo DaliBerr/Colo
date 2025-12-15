@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Lonize.Logging;
 using UnityEngine;
 
-namespace Kernel.Status
+namespace Kernel.GameState
 {
     /// <summary>
     /// 状态控制器，负责管理和更新游戏中的各种状态信息。
@@ -37,17 +37,7 @@ namespace Kernel.Status
             }
 
             // 检查互斥状态
-            if (status.InActiveWith != null && status.InActiveWith.Count > 0)
-            {
-                foreach (var s in CurrentStatus)
-                {
-                    if (status.InActiveWith.Contains(s.StatusName))
-                    {
-                        // 存在互斥状态，不能添加
-                        return false;
-                    }
-                }
-            }
+
 
             // 处理允许切换的状态（注意不能在 foreach 里 Remove，这会抛异常）
             if (status.allowSwitchWith != null && status.allowSwitchWith.Count > 0)
@@ -61,7 +51,18 @@ namespace Kernel.Status
                     }
                 }
             }
-
+            
+            if (status.InActiveWith != null && status.InActiveWith.Count > 0)
+            {
+                foreach (var s in CurrentStatus)
+                {
+                    if (status.InActiveWith.Contains(s.StatusName))
+                    {
+                        // 存在互斥状态，不能添加
+                        return false;
+                    }
+                }
+            }
             CurrentStatus.Add(status);
             return true;
         }

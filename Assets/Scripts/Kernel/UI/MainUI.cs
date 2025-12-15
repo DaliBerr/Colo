@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Kernel;
 using Kernel.Building;
-using Kernel.Status;
+using Kernel.GameState;
 using Lonize.Logging;
 using Lonize.UI;
 using Unity.VisualScripting;
@@ -14,6 +14,9 @@ namespace Kernel.UI
     public sealed class MainUI : UIScreen
     {
         public Button Btn1, Btn2;
+
+        public override Status currentStatus { get; } = StatusList.PlayingStatus;
+
         public GameObject MiniMapContainer;
         // public List<string> CurrentStatus = new();
         

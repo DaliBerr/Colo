@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 using TMPro;
 using Lonize.Events;
 using Lonize.Logging;
+using Kernel.GameState;
 namespace Kernel
 {
     public class CameraMainControl : CameraControl
@@ -36,9 +37,13 @@ namespace Kernel
         private bool CanMoveCamera()
         {
             var Res = IsPointerCanMoveMainCamera();
-            return Res;
+            var playing = isGamePlaying();
+            return Res && playing;
         }
-
+        private bool isGamePlaying()
+        {
+            return StatusController.HasStatus(StatusList.PlayingStatus) || StatusController.HasStatus(StatusList.PausedStatus);
+        }
         /// <summary>
         /// 鼠标（或触摸）是否可以驱动主摄像机移动。
         /// 如果指针当前在 UI 上，则返回 false。

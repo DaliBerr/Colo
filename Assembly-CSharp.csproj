@@ -73,8 +73,10 @@
     <Compile Include="Assets\Scripts\Kernel\Save\GlobalSeeting\GlobalSettingsData.cs" />
     <Compile Include="Assets\Scripts\Kernel\UI\LoadingProgress.cs" />
     <Compile Include="Assets\Scripts\Kernel\Item\ItemValidation.cs" />
+    <Compile Include="Assets\Scripts\Kernel\UI\PauseMenuUI.cs" />
     <Compile Include="Assets\Scripts\Kernel\Audio\AudioManager.cs" />
     <Compile Include="Assets\Scripts\Lonize\Event\Events.cs" />
+    <Compile Include="Assets\Scripts\Kernel\UI\UIInputRouter.cs" />
     <Compile Include="Assets\Scripts\Kernel\Pool\PoolMember.cs" />
     <Compile Include="Assets\Scripts\Kernel\Camera\MiniMapInputHandle.cs" />
     <Compile Include="Assets\Scripts\Kernel\Building\BuildingSaveInstance.cs" />
@@ -88,7 +90,6 @@
     <Compile Include="Assets\Scripts\Colo\Def\Building\PowerGenerator.cs" />
     <Compile Include="Assets\Scripts\Lonize\UI\UIManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexJitter.cs" />
-    <Compile Include="Assets\Scripts\Lonize\UI\UIInputRouter.cs" />
     <Compile Include="Assets\Scripts\Kernel\Camera\CameraMiniMapControl.cs" />
     <Compile Include="Assets\Scripts\Kernel\Building\BuildingPlacementController.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_UiFrameRateCounter.cs" />

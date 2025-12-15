@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Lonize.Scribe;
 
-namespace Kernel.Status
+namespace Kernel.GameState
 {
     /// <summary>
     /// 用于将 StatusController 的持久化状态接入 Scribe 存档系统的适配器。

@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 using Kernel.Nav;
 using Kernel.Pool;
-using Kernel.Status;   // 为了用 AddressableRef.LoadAsync<GameObject>
+using Kernel.GameState;   // 为了用 AddressableRef.LoadAsync<GameObject>
 
 namespace Kernel.Building
 {

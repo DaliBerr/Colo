@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using Lonize.Logging;
-using UnityEditor.Experimental.GraphView;
 
 
 namespace Lonize.Events

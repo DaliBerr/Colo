@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Kernel.Status;
+using Kernel.GameState;
 using Lonize.UI;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,6 +9,8 @@ namespace Kernel.UI
     [UIPrefab("Prefabs/UI/LoadingModal")]
     public sealed class GameLoading : UIScreen
     {
+        public override Status currentStatus { get; } = StatusList.GameLoadingStatus;
+
         public List<Image> loadingBackgroundImages;
         public Slider loadingSlider;
 
@@ -71,6 +73,7 @@ namespace Kernel.UI
                     UIManager.Instance.PopScreen();
                 }
             }
+            //TODO: 接入真实的存档加载进度
             // ★ 存档加载，先保留你原来的假进度逻辑（之后如果需要也可以接真实进度）
             else if (StatusController.HasStatus(StatusList.SaveLoadingStatus))
             {
@@ -86,6 +89,7 @@ namespace Kernel.UI
                     StatusController.CurrentStatus.RemoveAll(
                         s => s.StatusName == StatusList.SaveLoadingStatus.StatusName);
                     UIManager.Instance.PopScreen();
+                    StatusController.AddStatus(StatusList.PlayingStatus);
                 }
             }
         }

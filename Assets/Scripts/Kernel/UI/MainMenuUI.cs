@@ -1,9 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Lonize.UI;
-using Kernel.Status;
+using Kernel.GameState;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using Lonize.Logging;
 
 namespace Kernel.UI
 {
@@ -11,6 +12,8 @@ namespace Kernel.UI
     public sealed class MainMenuScreen : UIScreen
     {
         public Button startBtn,loadBtn, optionsBtn, quitBtn;
+        
+        public override Status currentStatus { get; } = StatusList.InMainMenuStatus;
 
         public List<Image> backgroundImages;
 
@@ -20,16 +23,21 @@ namespace Kernel.UI
         /// <returns>无返回值。</returns>
         protected override void OnInit()
         {
-            startBtn.onClick.AddListener(() => TryStartGame());
+            startBtn.onClick.AddListener(
+                () => TryStartGame()
+            );
             // loadBtn.onClick.AddListener(() => UIManager.Instance.PushScreen<LoadGameModal>());
-            optionsBtn.onClick.AddListener(() => UIManager.Instance.PushScreen<OptionsModal>());
-            quitBtn.onClick.AddListener(() => Application.Quit());
-
+            optionsBtn.onClick.AddListener(
+                () => TryOpenOptions()
+            );
+            quitBtn.onClick.AddListener(
+                () => Application.Quit()
+            );
+            //TODO: 在没有存档的情况下禁用加载按钮
             // TODO: 随机背景图
 
             // 启动时的加载已经在 Startup 中完成，这里就不再自动打开 GameLoading 了喵。
         }
-
         /// <summary>
         /// 开始游戏按钮逻辑：根据当前状态决定如何进入游戏。
         /// </summary>
@@ -41,6 +49,7 @@ namespace Kernel.UI
                 // 开发模式：直接切到主场景
                 // UIManager.Instance.PushScreen<MainUI>();
                 SceneManager.LoadScene("Main");
+                StatusController.AddStatus(StatusList.PlayingStatus);
             }
             else
             {
@@ -51,6 +60,13 @@ namespace Kernel.UI
                 // TODO: 在这里启动真正的关卡加载 / 存档读取协程，
                 // 加载完成后再切换场景，并视情况切到 Playing / Paused 等状态。
             }
+        }
+
+
+        private void TryOpenOptions()
+        {
+            UIManager.Instance.PushScreen<OptionsModal>();
+            StatusController.AddStatus(StatusList.InMenuStatus);
         }
     }
 }

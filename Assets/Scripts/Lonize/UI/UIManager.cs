@@ -40,11 +40,6 @@ namespace Lonize.UI
             if (Instance && Instance != this) { Destroy(gameObject); return; }
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            // if (!rootCanvas) Debug.LogError("[UI] rootCanvas NOT set!");
-            // if (!layerScreen) Debug.LogError("[UI] layerScreen NOT set!");
-            // if (!layerModal)  Debug.LogError("[UI] layerModal NOT set!");
-            // if (!layerOverlay)Debug.LogError("[UI] layerOverlay NOT set!");
-            // if (!layerToast)  Debug.LogError("[UI] layerToast NOT set!");
             // 防呆：确保有 EventSystem
             if (!FindAnyObjectByType<EventSystem>())
             {
@@ -66,6 +61,17 @@ namespace Lonize.UI
         {
 
             yield return PushScreenCo<T>();
+        }
+
+        public IEnumerator PopScreenAndWait()
+        {
+            if (screenStack.Count == 0) yield break;
+            yield return PopScreenCo();
+        }
+        public IEnumerator PopModalAndWait()
+        {
+            if (modalStack.Count == 0) yield break;
+            yield return DestroyAfterHide(modalStack.Pop());
         }
         public void PopScreen()
         {
@@ -100,39 +106,7 @@ namespace Lonize.UI
                 CloseTopModal();
             }
         }
-        // public T PushScreen<T>() where T : UIScreen
-        // {
-        //     var screen = Create<T>(UILayer.Screen);
-        //     if (screenStack.Count > 0) StartCoroutine(screenStack.Peek().Hide(defaultHide));
-        //     screenStack.Push(screen);
-        //     StartCoroutine(screen.Show(defaultShow));
-        //     return screen;
-        // }
 
-        // public void PopScreen()
-        // {
-        //     if (screenStack.Count == 0) return;
-        //     var top = screenStack.Pop();
-        //     StartCoroutine(DestroyAfterHide(top));
-
-        //     if (screenStack.Count > 0)
-        //         StartCoroutine(screenStack.Peek().Show(defaultShow));
-        // }
-
-        // public T ShowModal<T>() where T : UIScreen
-        // {
-        //     var modal = Create<T>(UILayer.Modal);
-        //     modalStack.Push(modal);
-        //     StartCoroutine(modal.Show(defaultShow));
-        //     return modal;
-        // }
-
-        // public void CloseTopModal()
-        // {
-        //     if (modalStack.Count == 0) return;
-        //     var m = modalStack.Pop();
-        //     StartCoroutine(DestroyAfterHide(m));
-        // }
         public T ShowOverlayImmediate<T>(T existing) where T : UIScreen
         {
             // 可选：复用场景里的现成 Overlay（非 Addressables）
@@ -278,6 +252,56 @@ namespace Lonize.UI
         //     _ => layerScreen
         // };
 
+        /// <summary>
+        /// 获取当前Screen栈顶（不考虑Modal）。
+        /// </summary>
+        /// <param name="includeInactive">是否允许返回已失活/被销毁的对象；为false时会自动跳过无效引用。</param>
+        /// <returns>Screen栈顶UIScreen；若为空则返回null。</returns>
+        public UIScreen GetTopScreen(bool includeInactive = false)
+        {
+            return PeekValid(screenStack, includeInactive);
+        }
+        /// <summary>
+        /// 获取当前Modal栈顶（如果没有Modal则返回null）。
+        /// </summary>
+        /// <param name="includeInactive">是否允许返回已失活/被销毁的对象；为false时会自动跳过无效引用。</param>
+        /// <returns>Modal栈顶UIScreen；若为空则返回null。</returns>
+        public UIScreen GetTopModal(bool includeInactive = false)
+        {
+            return PeekValid(modalStack, includeInactive);
+        }
+        /// <summary>
+        /// 从栈顶开始，弹掉无效引用（被Destroy或失活），返回第一个有效对象但不移除它。
+        /// </summary>
+        /// <param name="stack">要检查的UIScreen栈。</param>
+        /// <param name="includeInactive">是否允许返回失活对象。</param>
+        /// <returns>有效UIScreen或null。</returns>
+        private static UIScreen PeekValid(Stack<UIScreen> stack, bool includeInactive)
+        {
+            while (stack.Count > 0)
+            {
+                var s = stack.Peek();
+                if (s == null)
+                {
+                    stack.Pop();
+                    continue;
+                }
+
+                if (!includeInactive)
+                {
+                    // 这里用 activeInHierarchy 作为“是否激活”的判断标准
+                    // 如果你的 UIScreen.Hide() 只是 CanvasGroup 淡出但不 SetActive(false)，那它仍会被认为是激活的
+                    if (!s.gameObject.activeInHierarchy)
+                    {
+                        stack.Pop();
+                        continue;
+                    }
+                }
+
+                return s;
+            }
+            return null;
+        }
         IEnumerator DestroyAfterHide(UIScreen s)
         {
             yield return s.Hide(defaultHide);

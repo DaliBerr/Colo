@@ -1,6 +1,7 @@
 
 
 using System.Collections;
+using Kernel.GameState;
 using UnityEngine;
 
 namespace Lonize.UI
@@ -12,6 +13,7 @@ namespace Lonize.UI
         [Header("Auto")]
         [SerializeField] protected CanvasGroup canvasGroup;
 
+        public abstract Status currentStatus { get; }
         protected bool isVisible;
         protected UIManager ui;
 
@@ -35,7 +37,7 @@ namespace Lonize.UI
 
         // 子类做一次性初始化（抓引用/绑定按钮）
         protected virtual void OnInit() { }
-
+        
         public virtual IEnumerator Show(float fade = 0.15f)
         {
             OnBeforeShow();

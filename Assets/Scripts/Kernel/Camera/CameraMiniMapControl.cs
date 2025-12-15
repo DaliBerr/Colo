@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 using Lonize.Events;
 using Lonize.UI;
 using Unity.VisualScripting;
+using Kernel.GameState;
 
 namespace Kernel
 {
@@ -51,7 +52,7 @@ namespace Kernel
         /// <returns>无</returns>
         private void Update()
         {
-            if (!IsPointerCanMoveMiniMapCamera())
+            if (!CanMoveCamera())
                 return;
 
             HandlePan();
@@ -82,6 +83,19 @@ namespace Kernel
         {
             // 只要鼠标在小地图区域上，就允许操作
             return MiniMapInputArea.IsPointerOverMiniMap;
+        }
+
+        private bool isGamePaused()
+        {
+            return StatusController.HasStatus(StatusList.InPauseMenuStatus);
+        }
+
+        private bool CanMoveCamera()
+        {
+            var Res = IsPointerCanMoveMiniMapCamera();
+            var paused = isGamePaused();
+            // if (!Res)
+            return Res && !paused;
         }
     }
 }
