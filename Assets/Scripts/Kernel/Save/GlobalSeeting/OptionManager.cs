@@ -14,6 +14,11 @@ public class OptionsManager : MonoBehaviour
     // ★★★ 核心：指定一个不同的文件名 ★★★
     private string filePath;
 
+
+    private DisplayModeDropDown displayMode;
+    private MaxFrameDropDown maxFrame;
+    private ResolutionDropDown resolutionDropDown;
+
     private void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
@@ -26,8 +31,13 @@ public class OptionsManager : MonoBehaviour
         // 游戏启动时立刻加载设置
         LoadOptions();
     }
-
-    public void SaveOptions()
+        private void Start()
+        {
+            displayMode = Object.FindAnyObjectByType<DisplayModeDropDown>();
+            maxFrame = Object.FindAnyObjectByType<MaxFrameDropDown>();
+            resolutionDropDown = Object.FindAnyObjectByType<ResolutionDropDown>();
+        }
+        public void SaveOptions()
     {
         try
         {
@@ -91,16 +101,55 @@ public class OptionsManager : MonoBehaviour
         }
     }
 
-    // 应用设置的逻辑
-    private void ApplySettings()
+    public void CancelChanges()
     {
-        // 例子：应用分辨率
-        Screen.fullScreen = Settings.FullScreen;
+        // 重新加载设置文件，放弃未保存的更改
+        LoadOptions();
+    }
+
+    public void ResetToDefaults()
+    {
+        Settings = new GlobalSettings();
+        ApplySettings();
+        SaveOptions(); 
+    }
+
+    // 应用设置的逻辑
+    public void ApplySettings()
+    {
+        ApplyScreenSettings();
+
+
         
+        SaveOptions();
+        // 例子：应用分辨率
+        // Screen.fullScreen = Settings.FullScreen;
+        // Screen.SetResolution((int)Settings.Resolution.x, (int)Settings.Resolution.y, Screen.fullScreenMode);
+        // resolutionDropDown.ApplyResolution();
+        // maxFrame.ApplyFrameRate();
         // 例子：应用音量
-        AudioListener.volume = Settings.MasterVolume;
+        // AudioListener.volume = Settings.MasterVolume;
         
         // 键位不需要“应用”，游戏逻辑直接访问 OptionsManager.Instance.Settings.KeyJump 即可
+    }
+    
+
+    private void ApplyScreenSettings()
+    {
+        // Screen.fullScreen = Settings.FullScreen;
+        Screen.fullScreenMode = Settings.FullScreen switch
+        {
+            "Fullscreen" => FullScreenMode.ExclusiveFullScreen,
+            "Windowed" => FullScreenMode.Windowed,
+            "Borderless" => FullScreenMode.FullScreenWindow,
+            _ => FullScreenMode.FullScreenWindow
+        };
+        Screen.SetResolution((int)Settings.Resolution.x, (int)Settings.Resolution.y, Screen.fullScreenMode);
+        Application.targetFrameRate = Settings.MaxFrame == 0 ? -1 : Settings.MaxFrame;
+    }
+    private void ApplyAudioSettings()
+    {
+        // AudioListener.volume = Settings.MasterVolume;
     }
 }
 }

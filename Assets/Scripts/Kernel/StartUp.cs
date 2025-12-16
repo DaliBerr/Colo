@@ -12,7 +12,7 @@ namespace Kernel
 {
 
 
- namespace Kernel
+namespace Kernel
 {
     public sealed class Startup : MonoBehaviour
     {

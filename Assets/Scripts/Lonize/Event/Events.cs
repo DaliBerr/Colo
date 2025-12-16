@@ -95,4 +95,13 @@ namespace Lonize.Events
             this.isSelected = isSelected;
         }
     }
+
+    public struct SettingChanged
+    {
+        public bool needApply;
+        public SettingChanged(bool needApply)
+        {
+            this.needApply = needApply;
+        }
+    }
 }

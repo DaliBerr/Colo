@@ -97,6 +97,7 @@
     <Compile Include="Assets\Scripts\Kernel\Pool\PoolManager.cs" />
     <Compile Include="Assets\Scripts\Lonize\Log\LogBootStrap.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_B.cs" />
+    <Compile Include="Assets\Scripts\Kernel\UI\Sub UI\DropDown\DropDownHolder.cs" />
     <Compile Include="Assets\Scripts\Kernel\Input\KeyBoaradControl.cs" />
     <Compile Include="Assets\Scripts\Kernel\Building\BuildingColliderInit.cs" />
     <Compile Include="Assets\Scripts\Colo\Building\PowerGenerator.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ShaderPropAnimator.cs" />
     <Compile Include="Assets\Scripts\Colo\GameSaveController.cs" />
     <Compile Include="Assets\Scripts\Kernel\Nav\PathfindingManager.cs" />
+    <Compile Include="Assets\Scripts\Kernel\UI\Sub UI\DropDown\DisplayModeDropDown.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextInfoDebugTool.cs" />
     <Compile Include="Assets\Scripts\Kernel\Map\MapGenerator.cs" />
     <Compile Include="Assets\Scripts\Lonize\Log\GameDebug.cs" />
@@ -121,6 +123,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark04.cs" />
     <Compile Include="Assets\Scripts\Kernel\Status\StatusController.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ChatController.cs" />
+    <Compile Include="Assets\Scripts\Kernel\UI\Sub UI\Toggle\ToggleHodler.cs" />
     <Compile Include="Assets\Scripts\Kernel\Flow\FlowEndComponent.cs" />
     <Compile Include="Assets\Scripts\Kernel\Building\BuildingSaveRuntime.cs" />
     <Compile Include="Assets\Scripts\Lonize\Flow\FlowSystem.cs" />
@@ -143,6 +146,7 @@
     <Compile Include="Assets\Scripts\Kernel\StartUp.cs" />
     <Compile Include="Assets\Scripts\Lonize\Scribe\ScribeCrossRefs.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs" />
+    <Compile Include="Assets\Scripts\Kernel\UI\Sub UI\DropDown\MaxFrameDropDown.cs" />
     <Compile Include="Assets\Scripts\Lonize\Event\EventBus.cs" />
     <Compile Include="Assets\Scripts\Kernel\Building\BuildingRemoveController.cs" />
     <Compile Include="Assets\Scripts\Kernel\TickControl.cs" />
@@ -160,6 +164,7 @@
     <Compile Include="Assets\Scripts\Kernel\UI\MainUI.cs" />
     <Compile Include="Assets\Scripts\Lonize\Math.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventCheck.cs" />
+    <Compile Include="Assets\Scripts\Kernel\UI\Sub UI\Slider\SliderHolder.cs" />
     <Compile Include="Assets\Scripts\Kernel\Save\GlobalSeeting\OptionManager.cs" />
     <Compile Include="Assets\Scripts\Kernel\Camera\CameraMainControl.cs" />
     <Compile Include="Assets\Scripts\Kernel\Camera\CamraStartPageControl.cs" />
@@ -171,6 +176,7 @@
     <Compile Include="Assets\Scripts\Lonize\Scribe\Scribe.cs" />
     <Compile Include="Assets\Scripts\Kernel\Status\StatusSaveData.cs" />
     <Compile Include="Assets\Scripts\Kernel\Building\BuildingSelectionController.cs" />
+    <Compile Include="Assets\Scripts\Kernel\UI\Sub UI\DropDown\ResolutionDropDown.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
