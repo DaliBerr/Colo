@@ -73,7 +73,7 @@ namespace Kernel
             }
             // 2) 顺序压栈主菜单（作为底层界面）
             //    等 MainMenu 创建 + Show 动画完全结束
-            yield return UIManager.Instance.PushScreenAndWait<MainMenuScreen>();
+            yield return UIManager.Instance.PrePushScreenCo<MainMenuScreen>();
 
             // 3) 再添加“游戏加载中”状态，并把加载界面压在主菜单上面
             StatusController.AddStatus(StatusList.GameLoadingStatus);

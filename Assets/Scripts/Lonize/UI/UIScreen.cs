@@ -82,5 +82,16 @@ namespace Lonize.UI
             gameObject.SetActive(false);
             OnAfterHide();
         }
+
+        public void setAlpha(float alpha)
+        {
+            canvasGroup.alpha = alpha;
+        }
+        public float getAlpha()
+        {
+            float alpha = canvasGroup.alpha;
+            return alpha;
+        }
+        
     }
 }

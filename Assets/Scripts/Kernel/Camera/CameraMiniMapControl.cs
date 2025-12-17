@@ -5,6 +5,7 @@ using Lonize.Events;
 using Lonize.UI;
 using Unity.VisualScripting;
 using Kernel.GameState;
+using Lonize.Logging;
 
 namespace Kernel
 {
@@ -54,7 +55,7 @@ namespace Kernel
         {
             if (!CanMoveCamera())
                 return;
-
+            // GameDebug.LogWarning("[MiniMap] Handling mini-map camera control.");
             HandlePan();
             HandleZoom();
         }

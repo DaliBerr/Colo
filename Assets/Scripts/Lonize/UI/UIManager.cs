@@ -63,6 +63,11 @@ namespace Lonize.UI
             yield return PushScreenCo<T>();
         }
 
+        public IEnumerator PrePushScreenAndWait<T>() where T : UIScreen
+        {
+            yield return PrePushScreenCo<T>();
+        }
+
         public IEnumerator PopScreenAndWait()
         {
             if (screenStack.Count == 0) yield break;
@@ -125,9 +130,26 @@ namespace Lonize.UI
         public void HideAndDestroy(UIScreen s) => StartCoroutine(DestroyAfterHide(s));
 
         // --------- 内部：加载/实例化 ---------
+        public IEnumerator PrePushScreenCo<T>() where T : UIScreen
+        {
+            // if (screenStack.Count > 0)
+            //     yield return screenStack.Peek().Hide(defaultHide);
+
+            T screen = null;
+            yield return CreateScreenCo<T>(UILayer.Screen, s => screen = s);
+            if (screen == null) yield break;
+            screen.gameObject.SetActive(false);
+            // screen.Hide();
+            screen.setAlpha(0f);
+            screenStack.Push(screen);
+            
+        }
+    
+
+
         IEnumerator PushScreenCo<T>() where T : UIScreen
         {
-            if (screenStack.Count > 0)
+            if (screenStack.Count > 0 && screenStack.Peek().getAlpha()>0f)
                 yield return screenStack.Peek().Hide(defaultHide);
 
             T screen = null;

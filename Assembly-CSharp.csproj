@@ -66,6 +66,7 @@
     <Compile Include="Assets\Scripts\Kernel\Item\ItemComponentData.cs" />
     <Compile Include="Assets\Scripts\Lonize\Log\LogSink.cs" />
     <Compile Include="Assets\Scripts\Kernel\Item\ItemDataBase.cs" />
+    <Compile Include="Assets\Scripts\Kernel\UI\Sub UI\DropDown\UIScaleDropDown.cs" />
     <Compile Include="Assets\Scripts\Lonize\Scribe\SerializedFieldConverter.cs" />
     <Compile Include="Assets\Scripts\Kernel\Item\ItemDef.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeB.cs" />
     <Compile Include="Assets\Scripts\Kernel\Building\BuildingRuntimeHost.cs" />
     <Compile Include="Assets\Scripts\Colo\Def\Building\PowerGenerator.cs" />
+    <Compile Include="Assets\Scripts\Lonize\UI\UIScale.cs" />
     <Compile Include="Assets\Scripts\Lonize\UI\UIManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexJitter.cs" />
     <Compile Include="Assets\Scripts\Kernel\Camera\CameraMiniMapControl.cs" />
@@ -121,6 +123,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SimpleScript.cs" />
     <Compile Include="Assets\Scripts\Kernel\Camera\ICameraControl.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark04.cs" />
+    <Compile Include="Assets\Scripts\Kernel\UI\Sub UI\Slider\MusicVolumeSlider.cs" />
     <Compile Include="Assets\Scripts\Kernel\Status\StatusController.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ChatController.cs" />
     <Compile Include="Assets\Scripts\Kernel\UI\Sub UI\Toggle\ToggleHodler.cs" />
@@ -137,6 +140,7 @@
     <Compile Include="Assets\Scripts\Lonize\Log\LogForwarder.cs" />
     <Compile Include="Assets\Scripts\Kernel\Nav\PathfindingService.cs" />
     <Compile Include="Assets\Scripts\Lonize\Tick\Tick.cs" />
+    <Compile Include="Assets\Scripts\Kernel\Camera\MiniMap.cs" />
     <Compile Include="Assets\Scripts\Kernel\UI\MainMenuUI.cs" />
     <Compile Include="Assets\Scripts\Kernel\Audio\AudioDataBase.cs" />
     <Compile Include="Assets\Scripts\Kernel\Nav\NavGrid.cs" />
@@ -176,7 +180,9 @@
     <Compile Include="Assets\Scripts\Lonize\Scribe\Scribe.cs" />
     <Compile Include="Assets\Scripts\Kernel\Status\StatusSaveData.cs" />
     <Compile Include="Assets\Scripts\Kernel\Building\BuildingSelectionController.cs" />
+    <Compile Include="Assets\Scripts\Kernel\UI\Sub UI\Slider\SoundEffectSlider.cs" />
     <Compile Include="Assets\Scripts\Kernel\UI\Sub UI\DropDown\ResolutionDropDown.cs" />
+    <Compile Include="Assets\Scripts\Kernel\UI\Sub UI\Slider\MasterVolumeSlider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

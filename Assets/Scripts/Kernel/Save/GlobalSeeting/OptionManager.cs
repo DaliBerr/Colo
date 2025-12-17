@@ -1,7 +1,8 @@
 using System.IO;
 using UnityEngine;
 using Lonize.Scribe;
-using Lonize.Logging; // 假设你有这个日志工具
+using Lonize.Logging;
+using UnityEngine.UI; // 假设你有这个日志工具
 
 namespace Kernel{
 public class OptionsManager : MonoBehaviour
@@ -14,10 +15,11 @@ public class OptionsManager : MonoBehaviour
     // ★★★ 核心：指定一个不同的文件名 ★★★
     private string filePath;
 
+    private UIScale _uiScale;
 
-    private DisplayModeDropDown displayMode;
-    private MaxFrameDropDown maxFrame;
-    private ResolutionDropDown resolutionDropDown;
+    // private DisplayModeDropDown displayMode;
+    // private MaxFrameDropDown maxFrame;
+    // private ResolutionDropDown resolutionDropDown;
 
     private void Awake()
     {
@@ -27,15 +29,15 @@ public class OptionsManager : MonoBehaviour
 
         // 设置文件路径，与 save.json 分开
         filePath = Path.Combine(Application.persistentDataPath, "settings.json");
-
+        _uiScale = GetComponent<UIScale>();
         // 游戏启动时立刻加载设置
         LoadOptions();
     }
         private void Start()
         {
-            displayMode = Object.FindAnyObjectByType<DisplayModeDropDown>();
-            maxFrame = Object.FindAnyObjectByType<MaxFrameDropDown>();
-            resolutionDropDown = Object.FindAnyObjectByType<ResolutionDropDown>();
+            // displayMode = Object.FindAnyObjectByType<DisplayModeDropDown>();
+            // maxFrame = Object.FindAnyObjectByType<MaxFrameDropDown>();
+            // resolutionDropDown = Object.FindAnyObjectByType<ResolutionDropDown>();
         }
         public void SaveOptions()
     {
@@ -111,14 +113,14 @@ public class OptionsManager : MonoBehaviour
     {
         Settings = new GlobalSettings();
         ApplySettings();
-        SaveOptions(); 
+        SaveOptions();
     }
 
     // 应用设置的逻辑
     public void ApplySettings()
     {
         ApplyScreenSettings();
-
+        ApplyAudioSettings();
 
         
         SaveOptions();
@@ -144,12 +146,45 @@ public class OptionsManager : MonoBehaviour
             "Borderless" => FullScreenMode.FullScreenWindow,
             _ => FullScreenMode.FullScreenWindow
         };
+        float uiScale = float.TryParse(Settings.UIScale.Replace("%", ""), out float scaleValue) ? scaleValue / 100f : 1.0f;
+        // 应用 UI 缩放
+        _uiScale.ApplyUIScale(scaleValue/100f);
+        
         Screen.SetResolution((int)Settings.Resolution.x, (int)Settings.Resolution.y, Screen.fullScreenMode);
         Application.targetFrameRate = Settings.MaxFrame == 0 ? -1 : Settings.MaxFrame;
     }
+
+    // private void ApplyUIScale(string scalePercentage)
+    // {
+    //     // 从字符串解析出百分比数值（例如 "100%" -> 1.0）
+    //     if (float.TryParse(scalePercentage.Replace("%", ""), out float scaleValue))
+    //     {
+    //         float scale = scaleValue / 100f;
+    //         GameDebug.Log($"[Options] Applying UI Scale: {scalePercentage} -> {scale}");
+    //         // 找到场景中所有的 Canvas，应用缩放
+    //         Canvas[] canvases = Object.FindObjectsByType<Canvas>(FindObjectsSortMode.None);
+    //         foreach (Canvas canvas in canvases)
+    //         {
+    //             CanvasScaler canvasScaler = canvas.GetComponent<CanvasScaler>();
+    //             if (canvasScaler != null)
+    //             {
+    //                 canvasScaler.scaleFactor = scale;
+    //             }
+    //         }
+            
+    //         GameDebug.Log($"[Options] UI Scale applied: {scalePercentage}");
+    //         Log.Info($"[Options] UI Scale applied: {scalePercentage}");
+    //     }
+    //     else
+    //     {
+    //         GameDebug.LogWarning($"[Options] Invalid UI scale format: {scalePercentage}");
+    //         Log.Warn($"[Options] Invalid UI scale format: {scalePercentage}");
+    //     }
+    // }
     private void ApplyAudioSettings()
     {
-        // AudioListener.volume = Settings.MasterVolume;
+        AudioListener.volume = Settings.MasterVolume;
+
     }
 }
 }

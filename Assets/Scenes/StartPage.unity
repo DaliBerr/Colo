@@ -392,6 +392,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1041377858 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8881180582002946490, guid: f5741c776f7482543bcdab8e38e5be49, type: 3}
+  m_PrefabInstance: {fileID: 4683376907322697411}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1310737494
 GameObject:
   m_ObjectHideFlags: 0
@@ -600,6 +605,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1716536988}
   - component: {fileID: 1716536987}
+  - component: {fileID: 1716536989}
   m_Layer: 0
   m_Name: OptionManager
   m_TagString: Untagged
@@ -634,6 +640,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1716536989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1716536986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c319bb8ce7b6c84449146e4ad1c56d39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIScale
+  uiRoot: {fileID: 1041377858}
+  minUIScale: 0.5
+  maxUIScale: 2
+  compensateLayout: 1
+  spacingVisualScale: 0.1
+  paddingVisualScale: 0.1
 --- !u!1001 &4683376907322697411
 PrefabInstance:
   m_ObjectHideFlags: 0
