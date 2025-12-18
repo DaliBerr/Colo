@@ -127,6 +127,14 @@ namespace Kernel.GameState
             allowSwitchWith = new List<string> { "Paused", "Playing", "GameLoading" },
             Persistent = false
         };
+
+        public static Status PopUpStatus = new Status
+        {
+            StatusName = "PopUp",
+            InActiveWith = null,
+            allowSwitchWith = null,
+            Persistent = false
+        };
         #endregion
 
         /// <summary>

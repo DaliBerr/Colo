@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Kernel;
 using Lonize.Events;
+using Lonize.UI;
 using TMPro;
 using UnityEngine;
 
@@ -111,5 +112,6 @@ public class ResolutionDropDown : DropdownHolder
 
         Events.eventBus?.Publish(new SettingChanged(true));
         // TODO: 添加确认弹窗，并计时回退
+        UIManager.Instance.ShowModal<OptionConfirmPopupModal>();
     }
 }

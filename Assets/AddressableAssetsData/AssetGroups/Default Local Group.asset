@@ -30,6 +30,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9fa75d7c2ba1d7641bec24ae97a71256
+    m_Address: Prefabs/UI/Pop-up Prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d6b112f6616a3ac4b8b108a7014b6145
     m_Address: Prefabs/UI/PauseMenuUI
     m_ReadOnly: 0

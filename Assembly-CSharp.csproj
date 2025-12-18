@@ -77,6 +77,7 @@
     <Compile Include="Assets\Scripts\Kernel\UI\PauseMenuUI.cs" />
     <Compile Include="Assets\Scripts\Kernel\Audio\AudioManager.cs" />
     <Compile Include="Assets\Scripts\Lonize\Event\Events.cs" />
+    <Compile Include="Assets\Scripts\Kernel\UI\Sub UI\Popup\PopupModal.cs" />
     <Compile Include="Assets\Scripts\Kernel\UI\UIInputRouter.cs" />
     <Compile Include="Assets\Scripts\Kernel\Pool\PoolMember.cs" />
     <Compile Include="Assets\Scripts\Kernel\Camera\MiniMapInputHandle.cs" />
@@ -128,12 +129,14 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ChatController.cs" />
     <Compile Include="Assets\Scripts\Kernel\UI\Sub UI\Toggle\ToggleHodler.cs" />
     <Compile Include="Assets\Scripts\Kernel\Flow\FlowEndComponent.cs" />
+    <Compile Include="Assets\Scripts\Lonize\Localization\localizationPack.cs" />
     <Compile Include="Assets\Scripts\Kernel\Building\BuildingSaveRuntime.cs" />
     <Compile Include="Assets\Scripts\Lonize\Flow\FlowSystem.cs" />
     <Compile Include="Assets\Scripts\Lonize\UI\UIPrefabAttribute.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_DigitValidator.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_FrameRateCounter.cs" />
     <Compile Include="Assets\Scripts\Lonize\Scribe\ScrobePolymorph.cs" />
+    <Compile Include="Assets\Scripts\Kernel\UI\Sub UI\Popup\OptionConfirmPopupModal.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshSpawner.cs" />
     <Compile Include="Assets\Scripts\Lonize\Scribe\ScribeDeep.cs" />
