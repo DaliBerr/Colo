@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 using Kernel.GameState;
 using Kernel.UI;
 using Lonize.Events;
+using Lonize.Localization;
 using Lonize.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -130,18 +132,26 @@ namespace Kernel.Building
                     {
                         if (!ta) continue;
 
+
                         // 第一步：先读头部，拿到 Id 和 DefType
-                        var header = JsonConvert.DeserializeObject<BuildingDefHeader>(ta.text, _jsonSettings);
+                        var root = LocalizedJsonUtility.ParseAndLocalize(ta.text, "BuildingDef");
+                        var header = root.ToObject<BuildingDefHeader>(JsonSerializer.Create(_jsonSettings));
+                        // var root = JObject.Parse(ta.text);
+                        
                         if (header == null)
                         {
                             GameDebug.LogError($"[Building] 解析头部失败（资产：{ta.name}）");
                             continue;
                         }
 
+                        // LocalizationManager.TryApplyExternalJsonPatch("BuildingDef",header.Id, root);
+
                         var targetType = ResolveDefType(header.defType);
 
                         // 第二步：按具体类型反序列化
-                        var defObj = JsonConvert.DeserializeObject(ta.text, targetType, _jsonSettings);
+                        // var defObj = JsonConvert.DeserializeObject(ta.text, targetType, _jsonSettings);
+                        var defObj = root.ToObject(targetType, JsonSerializer.Create(_jsonSettings));
+                        
                         if (defObj is not BuildingDef def)
                         {
                             GameDebug.LogError($"[Building] 解析失败，结果不是 BuildingDef（资产：{ta.name}，类型：{targetType}）");

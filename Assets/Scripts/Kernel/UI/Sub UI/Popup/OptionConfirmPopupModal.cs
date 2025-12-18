@@ -1,4 +1,5 @@
 using Kernel;
+using Lonize.Localization;
 using Lonize.UI;
 using UnityEngine;
 
@@ -19,11 +20,11 @@ public class OptionConfirmPopupModal : PopupModal
         {
             ConfirmButtonAction();
         });
-        SetCloseButtonText("Cancel changes");
-        SetConfirmButtonText("Apply changes");
+        SetCloseButtonText("Cancel changes".Translate());
+        SetConfirmButtonText("Apply changes".Translate());
 
     }
-    
+
     public void Start()
     {
         countdownTimer = CountDownSeconds;

@@ -27,6 +27,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - AudioDef
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6f77346ee8f77004b8217a56d4d0af2c
+    m_Address: Assets/Defs/Audio
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ItemDef
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d7707e0feaa472547a8a45136d119512
     m_Address: AudioClips/BGM/Forced_landing
     m_ReadOnly: 0

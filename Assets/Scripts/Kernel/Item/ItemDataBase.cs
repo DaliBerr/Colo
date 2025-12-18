@@ -94,7 +94,7 @@ namespace Kernel.Item
                         GameDebug.Log($"[Items] Loading ItemDef from asset: {ta.name}");
                         Log.Info($"[Items] Loading ItemDef from asset: {ta?.name}");
                         if (ta == null) continue;
-
+                        
                         var def = JsonConvert.DeserializeObject<ItemDef>(ta.text, _jsonSettings);
                         if (ItemValidation.Validate(def, out var msg))
                         {

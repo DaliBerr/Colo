@@ -107,6 +107,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SkewTextExample.cs" />
     <Compile Include="Assets\Scripts\Kernel\Building\BuildingDataBase.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\WarpTextExample.cs" />
+    <Compile Include="Assets\Scripts\Lonize\Localization\StringLocalizationExtensions.cs" />
     <Compile Include="Assets\Scripts\Kernel\Save\ScribeSaveManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ShaderPropAnimator.cs" />
     <Compile Include="Assets\Scripts\Colo\GameSaveController.cs" />
@@ -155,6 +156,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs" />
     <Compile Include="Assets\Scripts\Kernel\UI\Sub UI\DropDown\MaxFrameDropDown.cs" />
     <Compile Include="Assets\Scripts\Lonize\Event\EventBus.cs" />
+    <Compile Include="Assets\Scripts\Lonize\Localization\LocalizationManager.cs" />
     <Compile Include="Assets\Scripts\Kernel\Building\BuildingRemoveController.cs" />
     <Compile Include="Assets\Scripts\Kernel\TickControl.cs" />
     <Compile Include="Assets\Scripts\Kernel\Audio\MainAudioPlayer.cs" />
@@ -174,6 +176,7 @@
     <Compile Include="Assets\Scripts\Kernel\UI\Sub UI\Slider\SliderHolder.cs" />
     <Compile Include="Assets\Scripts\Kernel\Save\GlobalSeeting\OptionManager.cs" />
     <Compile Include="Assets\Scripts\Kernel\Camera\CameraMainControl.cs" />
+    <Compile Include="Assets\Scripts\Lonize\Localization\LocalizationJsonUtility.cs" />
     <Compile Include="Assets\Scripts\Kernel\Camera\CamraStartPageControl.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshProFloatingText.cs" />
     <Compile Include="Assets\Scripts\Kernel\Save\PolySaveData.cs" />

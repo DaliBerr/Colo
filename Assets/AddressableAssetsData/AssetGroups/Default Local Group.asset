@@ -31,7 +31,12 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9fa75d7c2ba1d7641bec24ae97a71256
-    m_Address: Prefabs/UI/Pop-up Prefab
+    m_Address: Prefabs/UI/PopupPrefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: af97a232d97ca3f45ab6d06115eb2bdc
+    m_Address: Prefabs/UI/OptionPopup
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

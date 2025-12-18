@@ -8,6 +8,7 @@ using Lonize.Logging;
 using Lonize.UI;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using System.Threading.Tasks;
 namespace Kernel
 {
 
@@ -64,6 +65,7 @@ namespace Kernel
         
         private IEnumerator Boot()
         {
+            yield return InitLanguage();
             // 1) 初始化状态系统
             StatusController.Initialize();
             GlobalLoadingProgress.Reset();
@@ -87,6 +89,19 @@ namespace Kernel
 
             // 5) 不要再 Push 主菜单：GameLoading 完成时会自己 Pop，
             //    然后 UIManager 会把下面的 MainMenu 再 Show 出来。
+        }
+
+        private IEnumerator InitLanguage()
+        {
+            var task = Lonize.Localization.LocalizationManager.InitializeAsync();
+            while (!task.IsCompleted)
+            {
+                yield return null;
+            }
+            if (task.IsFaulted)
+            {
+                GameDebug.LogError($"InitLanguage failed: {task.Exception}");
+            }
         }
 
         /// <summary>
