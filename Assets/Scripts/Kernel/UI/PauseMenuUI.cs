@@ -65,7 +65,7 @@ namespace Kernel.UI
                 // Application.Quit();
             });
         }
-        
+
         private void TryResumeGame()
         {
             try{

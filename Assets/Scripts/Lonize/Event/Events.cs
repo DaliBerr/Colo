@@ -30,16 +30,7 @@ namespace Lonize.Events
             this.currentGameSpeed = currentGameSpeed;
         }
     }
-    // public readonly struct ItemLoadingProgress
-    // {
-    //     public readonly int loadedCount;
-    //     public readonly int totalCount;
-    //     public ItemLoadingProgress(int loadedCount, int totalCount)
-    //     {
-    //         this.loadedCount = loadedCount;
-    //         this.totalCount = totalCount;
-    //     }
-    // }
+
     public readonly struct ItemLoaded
     {
         public readonly int itemCount;
@@ -50,16 +41,6 @@ namespace Lonize.Events
         }
     }
 
-    // public readonly struct BuildingLoadingProgress
-    // {
-    //     public readonly int loadedCount;
-    //     public readonly int totalCount;
-    //     public BuildingLoadingProgress(int loadedCount, int totalCount)
-    //     {
-    //         this.loadedCount = loadedCount;
-    //         this.totalCount = totalCount;
-    //     }
-    // }
     public readonly struct BuildingLoaded
     {
         public readonly int buildingCount;
@@ -102,6 +83,15 @@ namespace Lonize.Events
         public SettingChanged(bool needApply)
         {
             this.needApply = needApply;
+        }
+    }
+
+    public struct CancelSettingChange
+    {
+        public List<string> undoSetting;
+        public CancelSettingChange(List<string> undoSetting)
+        {
+            this.undoSetting = undoSetting;
         }
     }
 }

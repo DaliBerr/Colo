@@ -27,7 +27,6 @@ namespace Kernel.UI
             Btn1.onClick.AddListener(() => TrybuildingPlacementMode());
             Btn2.onClick.AddListener(() => TryBuildingRemoveMode());
         }
-
         private void TryBuildingRemoveMode()
         {
             BuildingRemoveController buildingRemoveController = FindAnyObjectByType<BuildingRemoveController>();

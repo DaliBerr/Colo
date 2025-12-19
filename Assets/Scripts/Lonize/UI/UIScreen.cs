@@ -2,6 +2,7 @@
 
 using System.Collections;
 using Kernel.GameState;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Lonize.UI
@@ -32,9 +33,16 @@ namespace Lonize.UI
             canvasGroup.interactable = false;
             canvasGroup.blocksRaycasts = false;
             isVisible = false;
+            StatusController.AddStatus(currentStatus);
             OnInit();
         }
 
+        // public void Start()
+        // {
+            
+        //     HandleStart();
+        // }
+        // public abstract void HandleStart();
         // 子类做一次性初始化（抓引用/绑定按钮）
         protected virtual void OnInit() { }
         

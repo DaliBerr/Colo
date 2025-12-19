@@ -14,9 +14,13 @@ public class PopupModal : UIScreen
     public Button confirmButton;
     public TextMeshProUGUI messageText;
 
-    
+
     // protected override void OnInit()
     // {
+    // }
+    // public virtual void Start()
+    // {
+    //     StatusController.AddStatus(StatusList.PopUpStatus);
     // }
 
     public void SetMessage(string message)

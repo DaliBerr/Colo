@@ -63,7 +63,7 @@ namespace Kernel.UI
         }
         private void OnSettingsChanged(SettingChanged evt)
         {
-            GameDebug.Log($"[{nameof(OptionsModal)}] 设置已更改，启用应用与取消按钮");
+            // GameDebug.Log($"[{nameof(OptionsModal)}] 设置已更改，启用应用与取消按钮");
             ApplyBtn.gameObject.SetActive(true);
             CancelBtn.gameObject.SetActive(true);
             CloseBtn.onClick.RemoveAllListeners();

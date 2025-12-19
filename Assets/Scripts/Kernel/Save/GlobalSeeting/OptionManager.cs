@@ -2,7 +2,9 @@ using System.IO;
 using UnityEngine;
 using Lonize.Scribe;
 using Lonize.Logging;
-using UnityEngine.UI; // 假设你有这个日志工具
+using UnityEngine.UI;
+using Lonize.Events;
+using System.Collections.Generic;
 
 namespace Kernel{
 public class OptionsManager : MonoBehaviour
@@ -89,7 +91,11 @@ public class OptionsManager : MonoBehaviour
                 
                 Scribe.FinalizeLoading();
             }
-            
+            // foreach(var setting in Settings.GetType().GetProperties())
+            // {
+            //     GameDebug.Log($"[Options] Loaded setting: {setting.Name} = {setting.GetValue(Settings)}");
+            // }
+            GameDebug.Log("[Options] Settings loaded from " + filePath);
             ApplySettings(); // ★ 读取完立刻应用（如修改音量）
             Log.Info("[Options] Settings loaded.");
             GameDebug.Log("[Options] Settings loaded.");
@@ -105,8 +111,8 @@ public class OptionsManager : MonoBehaviour
 
     public void CancelChanges()
     {
-        // 重新加载设置文件，放弃未保存的更改
         LoadOptions();
+        Events.eventBus.Publish(new CancelSettingChange(new List<string>()));
     }
 
     public void ResetToDefaults()
@@ -151,6 +157,7 @@ public class OptionsManager : MonoBehaviour
         _uiScale.ApplyUIScale(scaleValue/100f);
         
         Screen.SetResolution((int)Settings.Resolution.x, (int)Settings.Resolution.y, Screen.fullScreenMode);
+        // GameDebug.Log($"[Options] Applied Resolution: {Settings.Resolution.x}x{Settings.Resolution.y}, FullScreenMode: {Screen.fullScreenMode}, UI Scale: {uiScale}");
         Application.targetFrameRate = Settings.MaxFrame == 0 ? -1 : Settings.MaxFrame;
     }
 

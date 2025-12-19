@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Kernel;
 using Lonize.Events;
+using Lonize.Logging;
 using Lonize.UI;
 using TMPro;
 using UnityEngine;
@@ -17,7 +18,7 @@ public class ResolutionDropDown : DropdownHolder
 
     // 真实分辨率映射：index -> (width,height)
     private readonly List<Vector2Int> _resolutionMap = new List<Vector2Int>();
-
+    private bool _suppressCallback;
     public override TMP_Dropdown dropdown => _dropdown;
     public override List<string> Options { get => _options; set => _options = value; }
 
@@ -47,6 +48,15 @@ public class ResolutionDropDown : DropdownHolder
         onValueChanged(OnResolutionChanged);
     }
 
+    private void SetDropdownIndexSilently(int index)
+    {
+        if (index < 0) return;
+
+        _suppressCallback = true;
+        _dropdown.SetValueWithoutNotify(index);
+        _dropdown.RefreshShownValue();
+        _suppressCallback = false;
+    }
     /// <summary>
     /// 从 Screen.resolutions 生成可选分辨率列表（去重并排序），并构建 index->分辨率映射。
     /// </summary>
@@ -113,5 +123,27 @@ public class ResolutionDropDown : DropdownHolder
         Events.eventBus?.Publish(new SettingChanged(true));
         // TODO: 添加确认弹窗，并计时回退
         UIManager.Instance.ShowModal<OptionConfirmPopupModal>();
+    }
+
+    private void Awake()
+    {
+        Events.eventBus.Subscribe<CancelSettingChange>(OnCancelSettingChange);
+    }
+    private void OnDestroy()
+    {
+        Events.eventBus.Unsubscribe<CancelSettingChange>(OnCancelSettingChange);
+    }
+    private void OnCancelSettingChange(CancelSettingChange evt)
+    {
+        // CancelChanges 后 Settings.Resolution 应该已经回到旧值
+        // GameDebug.Log("[ResolutionDropDown] Reverting resolution selection due to CancelSettingChange event.");
+        Vector2Int undoRes = OptionsManager.Instance.Settings.Resolution;
+        // GameDebug.Log($"[ResolutionDropDown] Undo to resolution: {undoRes.x} x {undoRes.y}");
+        int undoIndex = FindIndex(undoRes);
+        if (undoIndex >= 0)
+        {
+            SetDropdownIndexSilently(undoIndex);
+            _dropdown.RefreshShownValue();
+        }
     }
 }

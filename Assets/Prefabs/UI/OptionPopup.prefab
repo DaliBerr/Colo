@@ -168,6 +168,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6310451883252652994, guid: 9fa75d7c2ba1d7641bec24ae97a71256, type: 3}
+      propertyPath: m_Name
+      value: CancelButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 6609298053834472749, guid: 9fa75d7c2ba1d7641bec24ae97a71256, type: 3}
+      propertyPath: m_Name
+      value: ApplyButton
+      objectReference: {fileID: 0}
     - target: {fileID: 8892127626319212555, guid: 9fa75d7c2ba1d7641bec24ae97a71256, type: 3}
       propertyPath: m_Spacing
       value: 40

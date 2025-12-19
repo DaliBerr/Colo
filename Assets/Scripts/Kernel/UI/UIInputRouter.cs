@@ -5,6 +5,7 @@ using Kernel.UI;
 using Lonize.Logging;
 using Lonize.UI;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Kernel.UI
 {
@@ -18,6 +19,34 @@ namespace Kernel.UI
             {
                 if (UIManager.Instance)
                 {
+                    if (StatusController.HasStatus(StatusList.PopUpStatus))
+                    {
+                        
+                        var top = UIManager.Instance.GetTopModal(true);
+                        if(top is OptionConfirmPopupModal)
+                        {
+                            // Special handling for OptionConfirmPopupModal
+                            var optionModal = top as OptionConfirmPopupModal;
+                            optionModal.CancelButtonAction();
+                            StatusController.RemoveStatus(StatusList.PopUpStatus);
+                            return;
+                        }
+                        else
+                        {
+                            //TODO:实现通用的 Popup 关闭逻辑
+                        }
+                        // GameDebug.Log("[UIInputRouter] Closing Top Modal: " + (top?.name ?? "No Modal"));
+                        // var Buttons = top?.GetComponents<Button>();
+                        // foreach (var btn in Buttons)
+                        // {
+                        //     if (btn.name == "CancelButton")
+                        //     {
+                        //         btn.onClick.Invoke();
+                        //         StatusController.RemoveStatus(StatusList.PopUpStatus);
+                        //         return;
+                        //     }
+                        // }
+                    }
                     if (StatusController.HasStatus(StatusList.PlayingStatus))
                     {
                         // 在游戏中按返回键，先打开暂停菜单

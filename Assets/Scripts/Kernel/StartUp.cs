@@ -110,6 +110,7 @@ namespace Kernel
         /// <returns>协程枚举器。</returns>
         private IEnumerator InitGlobal()
         {
+            //TODO: 修改def为外部加载,不走Addressables
             // 1) Addressables 初始化
             var initHandle = Addressables.InitializeAsync();
             yield return initHandle;
