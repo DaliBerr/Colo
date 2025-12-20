@@ -79,7 +79,7 @@ namespace Kernel
 
             // 3) 再添加“游戏加载中”状态，并把加载界面压在主菜单上面
             StatusController.AddStatus(StatusList.GameLoadingStatus);
-            StatusController.AddStatus(StatusList.InMainMenuStatus);
+            
             //    同样顺序压栈 GameLoading（这时 MainMenu 会被 Hide）
             yield return UIManager.Instance.PushScreenAndWait<GameLoading>();
             GameDebug.Log("[Startup] Pushed GameLoading Screen (with waiting)");

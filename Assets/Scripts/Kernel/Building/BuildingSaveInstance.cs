@@ -6,7 +6,7 @@ namespace Kernel.Building
 {
     public class SaveBuildingInstance
     {
-        public string DefId;
+        public string DefId; 
         public long RuntimeId;
 
         // 位置 & 旋转（基于网格）

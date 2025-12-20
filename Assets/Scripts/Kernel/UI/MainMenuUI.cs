@@ -31,7 +31,7 @@ namespace Kernel.UI
                 () => TryOpenOptions()
             );
             quitBtn.onClick.AddListener(
-                () => Application.Quit()
+                () => TryQuitGame()
             );
             //TODO: 在没有存档的情况下禁用加载按钮
             // TODO: 随机背景图
@@ -54,7 +54,7 @@ namespace Kernel.UI
             else
             {
                 // 普通模式：显示加载界面 + 标记加载状态
-                StatusController.AddStatus(StatusList.GameLoadingStatus);
+                // StatusController.AddStatus(StatusList.GameLoadingStatus);
                 UIManager.Instance.PushScreen<GameLoading>();
 
                 // TODO: 在这里启动真正的关卡加载 / 存档读取协程，
@@ -66,7 +66,12 @@ namespace Kernel.UI
         private void TryOpenOptions()
         {
             UIManager.Instance.PushScreen<OptionsModal>();
-            StatusController.AddStatus(StatusList.InMenuStatus);
+            // StatusController.AddStatus(StatusList.InMenuStatus);
+        }
+
+        private void TryQuitGame()
+        {
+            UIManager.Instance.ShowModal<QuitConfirmPopupModal>();
         }
     }
 }

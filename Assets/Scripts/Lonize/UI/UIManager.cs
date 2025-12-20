@@ -47,11 +47,41 @@ namespace Lonize.UI
                 DontDestroyOnLoad(go);
             }
         }
+        private bool _isNavigating;
 
+        /// <summary>
+        /// 当前 UI 是否正在执行过渡（Push/Pop/Show/Hide 等）。
+        /// </summary>
+        /// <param name="none">无</param>
+        /// <return>正在过渡返回 true，否则 false</return>
+        public bool IsNavigating()
+        {
+            return _isNavigating;
+        }
+
+        /// <summary>
+        /// 以互斥方式执行一个 UI 导航协程：过渡期间直接丢弃新请求，防止栈并发错乱。
+        /// </summary>
+        /// <param name="routine">要执行的导航协程</param>
+        /// <return>可 yield 的协程枚举器</return>
+        private IEnumerator RunNavigationLocked(IEnumerator routine)
+        {
+            if (_isNavigating) yield break;
+
+            _isNavigating = true;
+            try
+            {
+                yield return routine;
+            }
+            finally
+            {
+                _isNavigating = false;
+            }
+        }
         // --------- 公共 API ---------
         public void PushScreen<T>() where T : UIScreen
         {
-            StartCoroutine(PushScreenCo<T>());
+            StartCoroutine(RunNavigationLocked(PushScreenCo<T>()));
         }
 
         // summary: 顺序压栈指定类型的UIScreen，并等待动画完成。
@@ -60,38 +90,38 @@ namespace Lonize.UI
         public IEnumerator PushScreenAndWait<T>() where T : UIScreen
         {
 
-            yield return PushScreenCo<T>();
+            yield return RunNavigationLocked(PushScreenCo<T>());
         }
 
         public IEnumerator PrePushScreenAndWait<T>() where T : UIScreen
         {
-            yield return PrePushScreenCo<T>();
+            yield return RunNavigationLocked(PrePushScreenCo<T>());
         }
 
         public IEnumerator PopScreenAndWait()
         {
             if (screenStack.Count == 0) yield break;
-            yield return PopScreenCo();
+            yield return RunNavigationLocked(PopScreenCo());
         }
         public IEnumerator PopModalAndWait()
         {
             if (modalStack.Count == 0) yield break;
-            yield return DestroyAfterHide(modalStack.Pop());
+            yield return RunNavigationLocked(DestroyAfterHide(modalStack.Pop()));
         }
         public void PopScreen()
         {
             // Debug.Log("Popping screen.");
             if (screenStack.Count == 0) return;
-            StartCoroutine(PopScreenCo());
+            StartCoroutine(RunNavigationLocked(PopScreenCo()));
         }
         public void ShowModal<T>() where T : UIScreen
         {
-            StartCoroutine(ShowModalCo<T>());
+            StartCoroutine(RunNavigationLocked(ShowModalCo<T>()));
         }
         public void CloseTopModal()
         {
             if (modalStack.Count == 0) return;
-            StartCoroutine(DestroyAfterHide(modalStack.Pop()));
+            StartCoroutine(RunNavigationLocked(DestroyAfterHide(modalStack.Pop())));
         }
 
         public void CloseTop()

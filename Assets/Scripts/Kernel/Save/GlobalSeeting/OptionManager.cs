@@ -5,6 +5,7 @@ using Lonize.Logging;
 using UnityEngine.UI;
 using Lonize.Events;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace Kernel{
 public class OptionsManager : MonoBehaviour
@@ -145,49 +146,48 @@ public class OptionsManager : MonoBehaviour
     private void ApplyScreenSettings()
     {
         // Screen.fullScreen = Settings.FullScreen;
-        Screen.fullScreenMode = Settings.FullScreen switch
+        var fullScreenMode = Settings.FullScreen switch
         {
             "Fullscreen" => FullScreenMode.ExclusiveFullScreen,
             "Windowed" => FullScreenMode.Windowed,
             "Borderless" => FullScreenMode.FullScreenWindow,
             _ => FullScreenMode.FullScreenWindow
         };
-        float uiScale = float.TryParse(Settings.UIScale.Replace("%", ""), out float scaleValue) ? scaleValue / 100f : 1.0f;
-        // 应用 UI 缩放
-        _uiScale.ApplyUIScale(scaleValue/100f);
-        
-        Screen.SetResolution((int)Settings.Resolution.x, (int)Settings.Resolution.y, Screen.fullScreenMode);
-        // GameDebug.Log($"[Options] Applied Resolution: {Settings.Resolution.x}x{Settings.Resolution.y}, FullScreenMode: {Screen.fullScreenMode}, UI Scale: {uiScale}");
+        // if(Screen.fullScreenMode != fullScreenMode)
+        // {
+        //     Screen.fullScreen = false;
+        // }
         Application.targetFrameRate = Settings.MaxFrame == 0 ? -1 : Settings.MaxFrame;
-    }
+        ApplyResolutionWithVerify((int)Settings.Resolution.x, (int)Settings.Resolution.y, fullScreenMode);
+        // GameDebug.Log($"[Options] Applied FullScreenMode(Local): {fullScreenMode}");
+        // GameDebug.Log($"[Options] Applied FullScreenMode(True): {Screen.fullScreenMode}");
+            _ = float.TryParse(Settings.UIScale.Replace("%", ""), out float scaleValue) ? scaleValue / 100f : 1.0f;
+            // 应用 UI 缩放
+            _uiScale.ApplyUIScale(scaleValue/100f);
 
-    // private void ApplyUIScale(string scalePercentage)
-    // {
-    //     // 从字符串解析出百分比数值（例如 "100%" -> 1.0）
-    //     if (float.TryParse(scalePercentage.Replace("%", ""), out float scaleValue))
-    //     {
-    //         float scale = scaleValue / 100f;
-    //         GameDebug.Log($"[Options] Applying UI Scale: {scalePercentage} -> {scale}");
-    //         // 找到场景中所有的 Canvas，应用缩放
-    //         Canvas[] canvases = Object.FindObjectsByType<Canvas>(FindObjectsSortMode.None);
-    //         foreach (Canvas canvas in canvases)
-    //         {
-    //             CanvasScaler canvasScaler = canvas.GetComponent<CanvasScaler>();
-    //             if (canvasScaler != null)
-    //             {
-    //                 canvasScaler.scaleFactor = scale;
-    //             }
-    //         }
-            
-    //         GameDebug.Log($"[Options] UI Scale applied: {scalePercentage}");
-    //         Log.Info($"[Options] UI Scale applied: {scalePercentage}");
-    //     }
-    //     else
-    //     {
-    //         GameDebug.LogWarning($"[Options] Invalid UI scale format: {scalePercentage}");
-    //         Log.Warn($"[Options] Invalid UI scale format: {scalePercentage}");
-    //     }
-    // }
+        // Screen.SetResolution((int)Settings.Resolution.x, (int)Settings.Resolution.y, Screen.fullScreenMode);
+        // GameDebug.Log($"[Options] Applied Resolution: {Settings.Resolution.x}x{Settings.Resolution.y}, FullScreenMode: {Screen.fullScreenMode}, UI Scale: {uiScale}");
+    }
+    private void ApplyResolutionWithVerify(int width, int height, FullScreenMode mode)
+    {
+        StartCoroutine(ApplyWithVerifyCo(width, height, mode));
+    }
+    private static IEnumerator ApplyWithVerifyCo(int width, int height, FullScreenMode mode)
+    {
+        GameDebug.Log($"[Options] Apply Request: {width}x{height}, mode={mode}, isEditor={Application.isEditor}, platform={Application.platform}");
+        Log.Info($"[Options] Apply Request: {width}x{height}, mode={mode}, isEditor={Application.isEditor}, platform={Application.platform}");
+        Screen.SetResolution(width, height, mode);
+
+        // 立刻读一次（通常是旧值）
+        GameDebug.Log($"[Options] After SetResolution (Immediate): mode={Screen.fullScreenMode}, fullScreen={Screen.fullScreen}, size={Screen.width}x{Screen.height}");
+
+        // 等一帧/两帧再读（更接近最终状态）
+        yield return null;
+        yield return null;
+
+        GameDebug.Log($"[Options] After SetResolution (2 frames later): mode={Screen.fullScreenMode}, fullScreen={Screen.fullScreen}, size={Screen.width}x{Screen.height}");
+        Log.Info($"[Options] Applied Resolution: {width}x{height}, FullScreenMode: {Screen.fullScreenMode}");
+    }
     private void ApplyAudioSettings()
     {
         AudioListener.volume = Settings.MasterVolume;

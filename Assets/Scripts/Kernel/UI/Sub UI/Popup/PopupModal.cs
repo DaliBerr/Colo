@@ -47,6 +47,9 @@ public class PopupModal : UIScreen
     {
         closeButton.GetComponentInChildren<TextMeshProUGUI>().text = text;
     }
-
+    public virtual void CancelButtonAction()
+    {
+        UIManager.Instance.CloseTopModal();
+    }
 
 }

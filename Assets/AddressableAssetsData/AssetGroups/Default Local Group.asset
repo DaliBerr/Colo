@@ -35,6 +35,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a258aac09ce91c7459627be9f449e95c
+    m_Address: Prefabs/UI/QuitPopup
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: af97a232d97ca3f45ab6d06115eb2bdc
     m_Address: Prefabs/UI/OptionPopup
     m_ReadOnly: 0

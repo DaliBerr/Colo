@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Lonize.Tick
 {
-        public enum GameSpeed
+    public enum GameSpeed
     {
         Paused = 0,
         Normal = 1,   // 1x

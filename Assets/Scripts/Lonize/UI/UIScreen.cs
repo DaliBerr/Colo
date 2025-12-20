@@ -37,11 +37,23 @@ namespace Lonize.UI
             OnInit();
         }
 
-        // public void Start()
-        // {
+        protected virtual void Awake()
+        {
+            if (!canvasGroup) canvasGroup = GetComponent<CanvasGroup>();
             
-        //     HandleStart();
-        // }
+            // 【关键点】
+            // 在物体诞生的第一毫秒，强制将其设为透明。
+            // 此时渲染管线还没来得及画出这一帧，所以玩家完全看不见闪烁。
+            // 而在编辑器（Edit Mode）下，Awake 不会运行，所以你可以正常看到界面。
+            if (canvasGroup)
+            {
+                canvasGroup.alpha = 0f;
+                
+                // 建议同时也把交互关掉，防止隐形按钮挡住操作
+                canvasGroup.interactable = false;
+                canvasGroup.blocksRaycasts = false;
+            }
+        }
         // public abstract void HandleStart();
         // 子类做一次性初始化（抓引用/绑定按钮）
         protected virtual void OnInit() { }

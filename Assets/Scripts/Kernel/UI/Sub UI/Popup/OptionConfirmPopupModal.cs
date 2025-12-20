@@ -51,18 +51,15 @@ public class OptionConfirmPopupModal : PopupModal
         //     SetMessage($"Cancel  changes in ({Mathf.CeilToInt(countdownTimer)})s");
         // }
     }
-    public void CancelButtonAction()
+    public  override void CancelButtonAction()
     {
-        
+        base.CancelButtonAction();
         // UIManager.Instance.CloseTopModal();
         StartCoroutine(CoCancelNextFrame());
-        StartCoroutine(CoCloseNextFrame());
+        // StartCoroutine(CoCloseNextFrame());
         
         // OptionsManager.Instance.CancelChanges();
         // StartCoroutine(CoApplyNextFrame());
-
-
-
     }
     private IEnumerator CoCloseNextFrame()
     {

@@ -51,7 +51,6 @@ public class GlobalSettings : IExposable, ILoadReferenceable
         // Scribe_Values.LookEnum("key_interact", ref KeyInteract, KeyCode.F);
         // Scribe_Values.LookEnum("key_attack", ref KeyAttack, KeyCode.Mouse0);
         Resolution = new Vector2Int(ResolutionWidth, ResolutionHeight);
-        
     }
     
     // 如果不需要引用功能，这个可以返回 null
